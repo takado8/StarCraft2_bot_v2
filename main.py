@@ -40,7 +40,7 @@ class Octopus(sc2.BotAI):
         self.build_assimilators()
         await self.morph_gates()
         self.army = self.units().filter(lambda x: x.type_id in self.army_ids)
-        if (self.army.amount > 14 and not self.first_attack) or (self.first_attack and self.army.amount > 24):
+        if (self.army.amount > 7 and not self.first_attack) or (self.first_attack and self.army.amount > 24):
             self.first_attack = True
             self.attack = True
 
@@ -81,13 +81,13 @@ class Octopus(sc2.BotAI):
         gates_count += self.structures(unit.WARPGATE).amount
 
         if gates_count < 2 and self.can_afford(unit.GATEWAY) and self.structures(unit.PYLON).ready.exists and\
-                self.already_pending(unit.GATEWAY) < 2:
+                self.already_pending(unit.GATEWAY) < 1:
             pylon = self.get_proper_pylon()
             if pylon is None:
                 print("Cannot find proper pylon for gateway")
                 return
             await self.build(unit.GATEWAY, near=pylon, placement_step=2)
-        elif 1 < gates_count < 4 and self.can_afford(unit.GATEWAY) and self.structures(unit.PYLON).ready.exists and\
+        elif 1 < gates_count < 3 and self.can_afford(unit.GATEWAY) and self.structures(unit.PYLON).ready.exists and\
                 self.already_pending(unit.GATEWAY) < 1:
             pylon = self.get_proper_pylon()
             if pylon is None:
@@ -258,7 +258,7 @@ class Octopus(sc2.BotAI):
                 threats = self.enemy_units().filter(
                         lambda unit_: unit_.can_attack_ground and unit_.distance_to(st) <= st.ground_range + st.radius and
                                       unit_.type_id not in self.units_to_ignore and unit_.type_id not in self.workers_ids)
-                if threats.amount < 4:
+                if threats.amount < 3:
                     enemy_workers = self.enemy_units().filter(lambda x: x.type_id in self.workers_ids and
                                                                         x.distance_to(st) < 7)
                     if enemy_workers.exists:
@@ -268,7 +268,7 @@ class Octopus(sc2.BotAI):
                     target = closest_enemy
                     # prefer wounded enemy
                     threats = threats.sorted(lambda x: x.health)
-                    if threats[0].distance_to(st) - target.distance_to(st) < 3:
+                    if threats[0].distance_to(st) - target.distance_to(st) < 5:
                         target = threats[0]
 
                     enemy_range = closest_enemy.ground_range + closest_enemy.radius
@@ -279,9 +279,9 @@ class Octopus(sc2.BotAI):
                             st.weapon_cooldown > 0 and st.distance_to(closest_enemy) <= enemy_range):
                         place = None
                         dist = 0
-                        pos = st.position.towards(target.position,-5)
-                        if await self._client.query_pathing(pos,target.position) is None:
-                            pos = st.position.towards(target.position,st.distance_to(target) + target.ground_range + 5)
+                        pos = st.position.towards(self.game_info.map_center.position, 20)#target.position,-5)
+                        # if await self._client.query_pathing(pos,target.position) is None:
+                        #     pos = st.position.towards(target.position,st.distance_to(target) + target.ground_range + 5)
                         placement = None
                         while placement is None:
                             placement = await self.find_placement(unit.PYLON,pos,placement_step=1)
@@ -295,13 +295,13 @@ class Octopus(sc2.BotAI):
                         self.do(st.attack(target))
         # zealot micro
         for zl in self.units(unit.ZEALOT):
-            enemy_workers = self.enemy_units().filter(lambda x: x.type_id in self.workers_ids and
-                                                                x.distance_to(zl) < 12)
-            if enemy_workers.exists:
-                enemy = enemy_workers
-            else:
-                enemy = self.enemy_units().filter(lambda x: x.distance_to(zl) < 7 and not x.is_flying and
-                                                              x.type_id not in self.units_to_ignore)
+            enemy = self.enemy_units().filter(lambda x: x.distance_to(zl) < 7 and not x.is_flying and
+                                x.type_id not in self.workers_ids and x.type_id not in self.units_to_ignore)
+            if enemy.amount < 3:
+                enemy_workers = self.enemy_units().filter(lambda x: x.type_id in self.workers_ids and
+                                                                    x.distance_to(zl) < 12)
+                if enemy_workers.exists:
+                    enemy = enemy_workers
             if enemy.exists:
                 closest_enemy = enemy.closest_to(zl)
                 target = closest_enemy
@@ -316,7 +316,6 @@ class Octopus(sc2.BotAI):
                 else:
                     self.do(zl.attack(target))
         # adepts
-        workers = [unit.SCV, unit.ADEPT, unit.PROBE]
 
         for ad in self.units(unit.ADEPT):
             enemy_workers = self.enemy_units().filter(lambda x: x.type_id in self.workers_ids and
@@ -324,7 +323,7 @@ class Octopus(sc2.BotAI):
             if enemy_workers.exists:
                 threats = enemy_workers
             else:
-                threats = self.enemy_units().filter(lambda x: x.type_id in workers and x.distance_to(ad) <= 9)
+                threats = self.enemy_units().filter(lambda x: x.type_id in self.workers_ids and x.distance_to(ad) <= 5)
             if not threats.exists:
                 threats = self.enemy_units().filter(
                     lambda unit_: unit_.can_attack_ground and unit_.distance_to(ad) <= ad.ground_range + ad.radius and
@@ -386,9 +385,9 @@ class Octopus(sc2.BotAI):
             elif enemy_on_his_side is not None and enemy_on_his_side.exists:
                 enemy = enemy_on_his_side.filter(lambda x: x.type_id not in self.units_to_ignore and (
                                                                    x.can_attack_ground or x.can_attack_air))
-                workers = enemy.filter(lambda x: x.type_id in self.workers_ids)
-                if workers.exists:
-                    enemy = workers
+                # workers = enemy.filter(lambda x: x.type_id in self.workers_ids)
+                # if workers.exists:
+                #     enemy = workers
                 if not enemy.exists:
                     enemy = enemy_on_his_side
                 destination = enemy.closest_to(self.start_location.position)
@@ -402,9 +401,9 @@ class Octopus(sc2.BotAI):
             start = army.exclude_type({unit.OBSERVER}).closest_to(destination)
             # point halfway
             dist = start.distance_to(destination)
-            if dist > 40:
+            if dist > 20:
                 point = start.position.towards(destination,dist / 4)
-            elif dist > 12:
+            elif dist > 10:
                 point = start.position.towards(destination,dist / 2)
             else:
                 point = destination.position
@@ -418,7 +417,7 @@ class Octopus(sc2.BotAI):
                     print("can't find position for army.")
                     return
             # if everybody's here, we can go
-            _range = 8
+            _range = 7
             nova = self.enemy_units(unit.DISRUPTORPHASED)
             nova.extend(self.units(unit.DISRUPTORPHASED))
             nearest = army.closer_than(_range,start.position)
@@ -447,7 +446,7 @@ class Octopus(sc2.BotAI):
                         self.do(man.move(position))
             else:
                 # center = nearest.center
-                for man in army.filter(lambda man_: man_.distance_to(start) > 9 and not man_.is_attacking):
+                for man in army.filter(lambda man_: man_.distance_to(start) > 7 and not man_.is_attacking):
                     self.do(man.move(start))
         else:
             enemies = self.enemy_units()
