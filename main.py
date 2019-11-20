@@ -36,7 +36,7 @@ class Octopus(sc2.BotAI):
         self.build_assimilators()
         await self.morph_gates()
         self.army = self.units().filter(lambda x: x.type_id in self.army_ids)
-        if (self.army.amount > 5 and not self.first_attack) or (self.first_attack and self.army.amount > 20):
+        if (self.army.amount > 5 and not self.first_attack) or (self.first_attack and self.army.amount > 24):
             self.first_attack = True
             self.attack = True
         if self.army.amount > 1:
@@ -86,21 +86,21 @@ class Octopus(sc2.BotAI):
         gates_count = self.structures(unit.GATEWAY).amount
         gates_count += self.structures(unit.WARPGATE).amount
 
-        if gates_count < 3 and self.can_afford(unit.GATEWAY) and self.structures(unit.PYLON).ready.exists and\
+        if gates_count < 2 and self.can_afford(unit.GATEWAY) and self.structures(unit.PYLON).ready.exists and\
+                self.already_pending(unit.GATEWAY) < 2:
+            pylon = self.get_proper_pylon()
+            if pylon is None:
+                print("Cannot find proper pylon for gateway")
+                return
+            await self.build(unit.GATEWAY, near=pylon, placement_step=2)
+        elif 1 < gates_count < 4 and self.can_afford(unit.GATEWAY) and self.structures(unit.PYLON).ready.exists and\
                 self.already_pending(unit.GATEWAY) < 1:
             pylon = self.get_proper_pylon()
             if pylon is None:
                 print("Cannot find proper pylon for gateway")
                 return
             await self.build(unit.GATEWAY, near=pylon, placement_step=2)
-        elif 2 < gates_count < 3 and self.can_afford(unit.GATEWAY) and self.structures(unit.PYLON).ready.exists and\
-                self.already_pending(unit.GATEWAY) < 1:
-            pylon = self.get_proper_pylon()
-            if pylon is None:
-                print("Cannot find proper pylon for gateway")
-                return
-            await self.build(unit.GATEWAY, near=pylon, placement_step=2)
-        elif 2 < gates_count < 7 and self.can_afford(unit.GATEWAY) and self.structures(unit.NEXUS).ready.amount > 1 and\
+        elif 3 < gates_count < 7 and self.can_afford(unit.GATEWAY) and self.structures(unit.NEXUS).ready.amount > 1 and\
                 self.already_pending(unit.GATEWAY) < 2:
             pylon = self.get_proper_pylon()
             if pylon is None:
@@ -202,7 +202,7 @@ class Octopus(sc2.BotAI):
                     pos = furthest_pylon.position.to2.random_on_distance(4)
                 else:
                     pos = self.structures(unit.PYLON).ready.closer_than(30, self.start_location).furthest_to(
-                                                                                                    self.start_location)
+                                                                                self.start_location).position
 
                 if self.can_afford(unit.STALKER) and self.supply_left > 1 and self.units(unit.STALKER).amount < 30:
                     placement = await self.find_placement(ability.WARPGATETRAIN_STALKER, pos, placement_step=1)
@@ -269,6 +269,9 @@ class Octopus(sc2.BotAI):
                 self.do(self.structures(unit.CYBERNETICSCORE).ready.idle.random.research(upgrade.WARPGATERESEARCH))
 
     async def micro_units(self):
+
+        # wyznacz max duze koło, pkty z 1 ćwiartki (x+, y+)
+        # wektory, czy się nie spotykają.
         # stalkers
         stalkers = self.units().filter(lambda x: x.type_id == unit.STALKER)
         if stalkers.exists:
@@ -334,15 +337,15 @@ class Octopus(sc2.BotAI):
                     if enemy_range < 4:
                         enemy_range = 4
 
-                    if st.ground_range + st.radius >= enemy_range and (
-                            st.weapon_cooldown > 0 and st.distance_to(closest_enemy) <= enemy_range):
+                    if st.ground_range + st.radius+1 >= enemy_range and (
+                            st.weapon_cooldown > 0 and st.distance_to(closest_enemy) <= enemy_range + 2):
                         place = None
                         dist = 0
-                        if target2.distance_to(self.game_info.map_center) > st.distance_to(self.game_info.map_center):
-                            pos = st.position.towards(self.game_info.map_center.position, 20)  # target.position,-5)
+                        # if target2.distance_to(self.game_info.map_center) > st.distance_to(self.game_info.map_center):
+                        pos = st.position.towards(closest_enemy.position, -8)  # target.position,-5)
                         # if await self._client.query_pathing(pos,target.position) is None:
-                        else:
-                            pos = st.position.towards(target2.position, -5)
+                        # else:
+                        #     pos = st.position.towards(target2.position, -5)
                         placement = None
                         while placement is None:
                             placement = await self.find_placement(unit.PYLON, pos, placement_step=1)
@@ -492,11 +495,11 @@ class Octopus(sc2.BotAI):
                             closest_en = enemy.closest_to(man)
                             self.do(man.attack(closest_en))
                     else:
-                        if not man.is_attacking:
-                            self.do(man.move(position))
+                        #if not man.is_attacking:
+                        self.do(man.move(position))
             else:
                 # center = nearest.center
-                for man in army.filter(lambda man_: man_.distance_to(start) > 7 and not man_.is_attacking):
+                for man in army.filter(lambda man_: man_.distance_to(start) > 12):# and not man_.is_attacking):
                     self.do(man.move(start))
         else:
             enemies = self.enemy_units()
@@ -519,7 +522,7 @@ class Octopus(sc2.BotAI):
         if gates_count < 1:
             return
         nexuses = self.structures(unit.NEXUS).ready
-        if nexuses.amount < 2 and self.attack or self.proper_nexus_count == 2:
+        if nexuses.amount < 2 and ((self.first_attack and not self.attack) or self.proper_nexus_count == 2):
             self.proper_nexus_count = 2
             if self.can_afford(unit.NEXUS) and not self.already_pending(unit.NEXUS):
                 await self.expand_now2()
@@ -605,7 +608,7 @@ def botVsComputer():
     race_index = random.randint(0, 2)
     run_game(map_settings=maps.get(maps_set[3]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[1], difficulty=Difficulty.Harder)
+        Computer(race=races[1], difficulty=Difficulty.Hard, ai_build=AIBuild.Macro)
     ], realtime=True)
 
 

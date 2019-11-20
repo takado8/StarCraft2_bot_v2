@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8c31ee0e-5715-4e85-a78f-7d7c2ebf81b0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -15,33 +15,34 @@
     <session id="-907730567">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="4" />
+          <entry key="project.closed" value="7" />
+          <entry key="project.open.time.1" value="1" />
           <entry key="project.open.time.10" value="1" />
           <entry key="project.open.time.5" value="1" />
           <entry key="project.open.time.6" value="1" />
-          <entry key="project.open.time.7" value="1" />
+          <entry key="project.open.time.7" value="2" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="5" />
+          <entry key="project.opened" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="4852" />
+          <entry key="py" value="4926" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="4852" />
+          <entry key="Python" value="4926" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="8" />
+          <entry key="py" value="9" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="8" />
+          <entry key="Python" value="9" />
         </counts>
       </usages-collector>
     </session>
@@ -51,29 +52,34 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="495" column="28" selection-start-line="495" selection-start-column="28" selection-end-line="495" selection-end-column="28" />
+            <state relative-caret-position="499">
+              <caret line="344" column="76" selection-start-line="344" selection-start-column="76" selection-end-line="344" selection-end-column="76" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
-                <element signature="e#5166#5806#0" />
-                <element signature="e#6666#7202#0" />
-                <element signature="e#7245#7517#0" />
-                <element signature="e#9439#11159#0" />
-                <element signature="e#11213#11620#0" />
-                <element signature="e#11671#12048#0" />
-                <element signature="e#22935#23173#0" />
-                <element signature="e#23211#24893#0" />
-                <element signature="e#24936#25567#0" />
-                <element signature="e#25618#26517#0" />
-                <marker date="1573508766063" expanded="true" signature="638:643" ph="..." />
-                <marker date="1573508766063" expanded="true" signature="743:1184" ph="..." />
-                <marker date="1573508766063" expanded="true" signature="1832:1841" ph="..." />
-                <marker date="1573508766063" expanded="true" signature="1868:2057" ph="..." />
-                <marker date="1573508766063" expanded="true" signature="2078:3253" ph="..." />
-                <marker date="1573508766063" expanded="true" signature="2681:3253" ph="..." />
-                <marker date="1573508766063" expanded="true" signature="4648:4846" ph="..." />
-                <marker date="1573508766063" expanded="true" signature="30088:30093" ph="..." />
+                <element signature="e#8777#10890#0" />
+                <element signature="e#10932#12597#0" />
+                <element signature="e#12651#13058#0" />
+                <element signature="e#26574#26813#0" />
+                <element signature="e#28576#29207#0" />
+                <element signature="e#29258#30157#0" />
+                <marker date="1574209247537" expanded="true" signature="638:643" ph="..." />
+                <marker date="1574209247537" expanded="true" signature="743:1184" ph="..." />
+                <marker date="1574209247537" expanded="true" signature="1832:1841" ph="..." />
+                <marker date="1574209247537" expanded="true" signature="1868:2057" ph="..." />
+                <marker date="1574209247537" expanded="true" signature="2078:3253" ph="..." />
+                <marker date="1574209247537" expanded="true" signature="2681:3253" ph="..." />
+                <marker date="1574209247537" expanded="true" signature="4648:4846" ph="..." />
+                <marker date="1574209247537" expanded="true" signature="30207:30212" ph="..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/bot_ai.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="14660">
+              <caret line="771" selection-start-line="771" selection-end-line="771" />
             </state>
           </provider>
         </entry>
@@ -91,7 +97,7 @@
         <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/data.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="260">
-              <caret line="23" column="51" selection-start-line="23" selection-start-column="51" selection-end-line="23" selection-end-column="51" />
+              <caret line="24" column="42" selection-start-line="24" selection-start-column="42" selection-end-line="24" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -99,8 +105,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/s2clientprotocol/sc2api_pb2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3300">
-              <caret line="165" column="7" selection-start-line="165" selection-start-column="7" selection-end-line="165" selection-end-column="7" />
+            <state relative-caret-position="667">
+              <caret line="198" selection-start-line="198" selection-end-line="198" />
             </state>
           </provider>
         </entry>
@@ -133,7 +139,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="315" />
     <option name="y" value="117" />
     <option name="width" value="1215" />
@@ -162,7 +168,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -174,6 +179,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -230,7 +236,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1295" height="695" extended-state="7" />
+    <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13036565" />
@@ -256,13 +262,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/bot_ai.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="335" column="14" selection-start-line="335" selection-start-column="14" selection-end-line="335" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/google/protobuf/descriptor.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="8470">
@@ -270,31 +269,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/bot_ai.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="495" column="28" selection-start-line="495" selection-start-column="28" selection-end-line="495" selection-end-column="28" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-            <element signature="e#5166#5806#0" />
-            <element signature="e#6666#7202#0" />
-            <element signature="e#7245#7517#0" />
-            <element signature="e#9439#11159#0" />
-            <element signature="e#11213#11620#0" />
-            <element signature="e#11671#12048#0" />
-            <element signature="e#22935#23173#0" />
-            <element signature="e#23211#24893#0" />
-            <element signature="e#24936#25567#0" />
-            <element signature="e#25618#26517#0" />
-            <marker date="1573508766063" expanded="true" signature="638:643" ph="..." />
-            <marker date="1573508766063" expanded="true" signature="743:1184" ph="..." />
-            <marker date="1573508766063" expanded="true" signature="1832:1841" ph="..." />
-            <marker date="1573508766063" expanded="true" signature="1868:2057" ph="..." />
-            <marker date="1573508766063" expanded="true" signature="2078:3253" ph="..." />
-            <marker date="1573508766063" expanded="true" signature="2681:3253" ph="..." />
-            <marker date="1573508766063" expanded="true" signature="4648:4846" ph="..." />
-            <marker date="1573508766063" expanded="true" signature="30088:30093" ph="..." />
-          </folding>
+        <state relative-caret-position="14660">
+          <caret line="771" selection-start-line="771" selection-end-line="771" />
         </state>
       </provider>
     </entry>
@@ -305,24 +283,48 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/units.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4940">
+          <caret line="257" selection-start-line="257" selection-end-line="257" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/data.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="260">
-          <caret line="23" column="51" selection-start-line="23" selection-start-column="51" selection-end-line="23" selection-end-column="51" />
+          <caret line="24" column="42" selection-start-line="24" selection-start-column="42" selection-end-line="24" selection-end-column="42" />
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/s2clientprotocol/sc2api_pb2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3300">
-          <caret line="165" column="7" selection-start-line="165" selection-start-column="7" selection-end-line="165" selection-end-column="7" />
+        <state relative-caret-position="667">
+          <caret line="198" selection-start-line="198" selection-end-line="198" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/units.py">
+    <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4940">
-          <caret line="257" selection-start-line="257" selection-end-line="257" />
+        <state relative-caret-position="499">
+          <caret line="344" column="76" selection-start-line="344" selection-start-column="76" selection-end-line="344" selection-end-column="76" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#8777#10890#0" />
+            <element signature="e#10932#12597#0" />
+            <element signature="e#12651#13058#0" />
+            <element signature="e#26574#26813#0" />
+            <element signature="e#28576#29207#0" />
+            <element signature="e#29258#30157#0" />
+            <marker date="1574209247537" expanded="true" signature="638:643" ph="..." />
+            <marker date="1574209247537" expanded="true" signature="743:1184" ph="..." />
+            <marker date="1574209247537" expanded="true" signature="1832:1841" ph="..." />
+            <marker date="1574209247537" expanded="true" signature="1868:2057" ph="..." />
+            <marker date="1574209247537" expanded="true" signature="2078:3253" ph="..." />
+            <marker date="1574209247537" expanded="true" signature="2681:3253" ph="..." />
+            <marker date="1574209247537" expanded="true" signature="4648:4846" ph="..." />
+            <marker date="1574209247537" expanded="true" signature="30207:30212" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
