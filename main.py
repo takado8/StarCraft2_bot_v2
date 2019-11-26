@@ -5,9 +5,14 @@ import sc2
 from sc2.ids.ability_id import AbilityId as ability
 from sc2.ids.unit_typeid import UnitTypeId as unit
 from sc2.player import Bot, Computer
-
+from sc2 import units
 from sc2.ids.buff_id import BuffId as buff
 from sc2.ids.upgrade_id import UpgradeId as upgrade
+import dqn
+from visual import Visual
+from sc2.position import Point2
+import numpy as np
+import cv2
 
 
 class Octopus(sc2.BotAI):
@@ -19,35 +24,90 @@ class Octopus(sc2.BotAI):
     workers_ids = [unit.SCV, unit.PROBE, unit.DRONE]
     proper_nexus_count = 1
     army = []
+    known_enemies = []
+    v = None
+    game_map = None
+
+    async def on_unit_destroyed(self, unit_tag):
+        try:
+            if unit_tag in self.known_enemies:
+                print('known unit died!')
+                self.known_enemies.remove(unit_tag)
+        except:
+            pass
+
+    def draw_map(self):
+        x = self.game_info.map_size[0]
+        y = self.game_info.map_size[1]
+        print('map size: x: '+str(x)+' y: '+str(y))
+        self.game_map = np.zeros((x,y,3),np.uint8)
+        for i in range(x):
+            for j in range(y):
+                if self.in_pathing_grid(Point2((i,j))):
+                    self.game_map[i,j] = (255,255,255)
+        self.game_map = 255 - self.game_map
+
+
+    def draw_units(self):
+        map_copy = np.array(self.game_map)
+        for unit in self.units():
+            position = unit.position
+            cv2.circle(map_copy,(int(position[1]),int(position[0])),1,(50,200,0),-1)  # BGR
+            # game_data[10*int(position[1]),10*int(position[0])] = (50,200,0)
+        for unit in self.enemy_units():
+            position = unit.position
+            # game_data[10*int(position[1]),10*int(position[0])] = (50,0,200)
+            cv2.circle(map_copy,(int(position[1]),int(position[0])),1,(50,0,200),-1)  # BGR
+        cv2.circle(map_copy,(0,0),10,(50,0,255),-1)  # BGR
+
+        map_copy = cv2.flip(map_copy,0)
+        map_copy = cv2.resize(map_copy,dsize=None,fx=4,fy=4)
+        cv2.imshow('Visual', map_copy)
+        cv2.waitKey(1)
+
+
+    async def on_start(self):
+        self.draw_map()
 
     async def on_step(self, iteration):
-        await self.nexus_buff()
-        await self.first_pylon()
-        await self.build_pylons()
-        await self.distribute_workers()
-        await self.expand()
-        self.train_workers()
-        if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS):
-            await self.build_gate()
-            self.train_army()
-            await self.warp_new_units()
-            await self.cybernetics_core_build()
-            self.cybernetics_core_upgrades()
-        self.build_assimilators()
-        await self.morph_gates()
-        self.army = self.units().filter(lambda x: x.type_id in self.army_ids)
-        if (self.army.amount > 5 and not self.first_attack) or (self.first_attack and self.army.amount > 24):
-            self.first_attack = True
-            self.attack = True
-        if self.army.amount > 1:
-            await self.outside_pylon()
-        if self.attack and self.army.amount < 5:
-            self.attack = False
+        self.draw_units()
+        # for enemy in self.enemy_units():
+        #     if enemy.tag not in self.known_enemies:
+        #         print('new enemy!')
+        #         self.known_enemies.append(enemy.tag)
 
-        if self.attack:
-            await self.attack_formation()
-        else:
-            self.defend()
+        self.army = self.units().filter(lambda x: x.type_id not in [unit.PROBE,unit.OBSERVER,unit.WARPPRISM,
+                                                                    unit.DISRUPTOR,unit.HIGHTEMPLAR])
+
+        # self.draw_map()
+        # self.v.render(self.army, self.enemy_units)
+        # await self.nexus_buff()
+        # await self.first_pylon()
+        # await self.build_pylons()
+        # await self.distribute_workers()
+        # await self.expand()
+        # self.train_workers()
+        # if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS):
+        #     await self.build_gate()
+        #     self.train_army()
+        #     await self.warp_new_units()
+        #     await self.cybernetics_core_build()
+        #     self.cybernetics_core_upgrades()
+        #     self.build_assimilators()
+        # await self.morph_gates()
+        #
+        # if (self.army.amount > 5 and not self.first_attack) or (self.first_attack and self.army.amount > 24):
+        #     self.first_attack = True
+        #     self.attack = True
+        # if self.army.amount > 1:
+        #     await self.outside_pylon()
+        # if self.attack and self.army.amount < 5:
+        #     self.attack = False
+        #
+        # if self.attack:
+        #     await self.attack_formation()
+        # else:
+        #     self.defend()
         await self.micro_units()
 
     async def start_step(self):
@@ -273,151 +333,35 @@ class Octopus(sc2.BotAI):
         # wyznacz max duze koło, pkty z 1 ćwiartki (x+, y+)
         # wektory, czy się nie spotykają.
         # stalkers
-        stalkers = self.units().filter(lambda x: x.type_id == unit.STALKER)
+        stalkers = self.army.filter(lambda x: x.type_id == unit.STALKER)
         if stalkers.exists:
 
-            # closest_to_enemy = stalkers.closest_to(self.enemy_start_locations[0].position)
-            # group = stalkers.closer_than(12, closest_to_enemy)
-            # center = group.center
-            # targets = self.enemy_units().filter(
-            #     lambda unit_: unit_.can_attack_ground and unit_.distance_to(center) <= 7 and
-            #                   unit_.type_id not in self.units_to_ignore and unit_.type_id not in self.workers_ids)
-            # if targets.amount < 3:
-            #     enemy_workers = self.enemy_units().filter(lambda x: x.type_id in self.workers_ids and
-            #                                                         x.distance_to(center) < 10)
-            #     if enemy_workers.exists:
-            #         targets = enemy_workers
-            # if targets.exists:
-            #     target = targets.closest_to(center)
-            #     targets = targets.sorted(lambda x: x.health)
-            #     if targets[0].distance_to(center) - target.distance_to(center) < 5:
-            #         target = targets[0]
-            # else:
-            #     target = None
-            # if target is not None:
-            #     for st in group:
-            #         if st.weapon_cooldown == 0:
-            #         #     place = None
-            #         #     dist = 0
-            #         #     if target.distance_to(self.game_info.map_center) > st.distance_to(self.game_info.map_center):
-            #         #         pos = st.position.towards(self.game_info.map_center.position, 20)  # target.position,-5)
-            #         #     # if await self._client.query_pathing(pos,target.position) is None:
-            #         #     else:
-            #         #         pos = st.position.towards(target.position,-5)
-            #         #     placement = None
-            #         #     while placement is None:
-            #         #         placement = await self.find_placement(unit.PYLON, pos, placement_step=1)
-            #         #     d = await self._client.query_pathing(placement, target.position)
-            #         #     if d is not None and d > dist:
-            #         #         place = placement
-            #         #
-            #         #     if not await self.blink(st, place):
-            #         #         self.do(st.move(place))
-            #         # else:
-            #             self.do(st.attack(target))
-            # stalkers = stalkers.tags_not_in(group)
-            for st in stalkers:
-                threats = self.enemy_units().filter(
-                        lambda unit_: unit_.can_attack_ground and unit_.distance_to(st) <= st.ground_range + st.radius and
-                                      unit_.type_id not in self.units_to_ignore and unit_.type_id not in self.workers_ids)
-                # if threats.amount < 3:
-                #     enemy_workers = self.enemy_units().filter(lambda x: x.type_id in self.workers_ids and
-                #                                                         x.distance_to(st) < 7)
-                #     if enemy_workers.exists:
-                #         threats = enemy_workers
-                if threats.exists:
-                    closest_enemy = threats.closest_to(st)
-                    target2 = closest_enemy
-                    # prefer wounded enemy
-                    threats = threats.sorted(lambda x: x.health)
-                    if threats[0].distance_to(st) - target2.distance_to(st) < 5:
-                        target2 = threats[0]
-
-                    enemy_range = closest_enemy.ground_range + closest_enemy.radius
-                    if enemy_range < 4:
-                        enemy_range = 4
-
-                    if st.ground_range + st.radius+1 >= enemy_range and (
-                            st.weapon_cooldown > 0 and st.distance_to(closest_enemy) <= enemy_range + 2):
-                        place = None
-                        dist = 0
-                        # if target2.distance_to(self.game_info.map_center) > st.distance_to(self.game_info.map_center):
-                        pos = st.position.towards(closest_enemy.position, -8)  # target.position,-5)
-                        # if await self._client.query_pathing(pos,target.position) is None:
-                        # else:
-                        #     pos = st.position.towards(target2.position, -5)
-                        placement = None
-                        while placement is None:
-                            placement = await self.find_placement(unit.PYLON, pos, placement_step=1)
-                        d = await self._client.query_pathing(placement, target2.position)
-                        if d is not None and d > dist:
-                            place = placement
-
-                        if not await self.blink(st, place):
-                            self.do(st.move(place))
-                    else:
-                        self.do(st.attack(target2))
-        # zealot micro
-        for zl in self.units(unit.ZEALOT):
-            enemy = self.enemy_units().filter(lambda x: x.distance_to(zl) < 7 and not x.is_flying and
-                                x.type_id not in self.workers_ids and x.type_id not in self.units_to_ignore)
-            if enemy.amount < 3:
-                enemy_workers = self.enemy_units().filter(lambda x: x.type_id in self.workers_ids and
-                                                                                        x.distance_to(zl) < 12)
-                if enemy_workers.exists:
-                    enemy = enemy_workers
-            if enemy.exists:
-                closest_enemy = enemy.closest_to(zl)
-                target = closest_enemy
-
-                abilities = await self.get_available_abilities(zl)
-                if ability.EFFECT_CHARGE in abilities:
-                    self.do(zl(ability.EFFECT_CHARGE, target=target))
-                else:
-                    self.do(zl.attack(target))
-        # adepts
-
-        for ad in self.units(unit.ADEPT):
-            enemy_workers = self.enemy_units().filter(lambda x: x.type_id in self.workers_ids and
-                                                                x.distance_to(ad) < 12)
-            if enemy_workers.exists:
-                threats = enemy_workers
-            else:
-                threats = self.enemy_units().filter(lambda x: x.type_id in self.workers_ids and x.distance_to(ad) <= 5)
-            if not threats.exists:
-                threats = self.enemy_units().filter(
-                    lambda unit_: unit_.can_attack_ground and unit_.distance_to(ad) <= ad.ground_range + ad.radius and
-                                  unit_.type_id not in self.units_to_ignore)
+            while True:
+                stalker = stalkers.random
+                close = stalkers.closer_than(9, stalker)
+                if close.exists:
+                    if close.amount + 1 >= 0.5 * stalkers.amount:
+                        break
+            threats = self.enemy_units().filter(
+                lambda unit_: unit_.can_attack_ground and unit_.distance_to(stalker) <= 9 and
+                              unit_.type_id not in self.units_to_ignore)
             if threats.exists:
-                closest_enemy = threats.closest_to(ad)
-                target = closest_enemy
-                # prefer wounded enemy
-                threats = threats.sorted(lambda x: x.health)
-                if threats[0].distance_to(ad) - target.distance_to(ad) < 2:
-                    target = threats[0]
+                closest_enemy = threats.closest_to(stalker)
+                target = threats.sorted(lambda x: x.health + x.shield)[0]
+                if target.health_percentage * target.shield_percentage == 1:
+                    target = closest_enemy
 
-                enemy_range = closest_enemy.ground_range + closest_enemy.radius
-                if enemy_range < 4:
-                    enemy_range = 4
+                pos = stalker.position.towards(closest_enemy.position,-8)
+                placement = None
+                while placement is None:
+                    placement = await self.find_placement(unit.PYLON,pos,placement_step=1)
 
-                if ad.ground_range + ad.radius >= enemy_range and (
-                        ad.weapon_cooldown > 0 and ad.distance_to(closest_enemy) <= enemy_range):
-                    place = None
-                    dist = 0
-                    pos = ad.position.towards(target.position, -5)
-                    if await self._client.query_pathing(pos, target.position) is None:
-                        pos = ad.position.towards(target.position, ad.distance_to(target) + target.ground_range + 5)
-                    placement = None
-                    while placement is None:
-                        placement = await self.find_placement(unit.PYLON, pos, placement_step=1)
-                    d = await self._client.query_pathing(placement, target.position)
-                    if d is not None and d > dist:
-                        place = placement
-
-                    if not await self.blink(ad, place):
-                        self.do(ad.move(place))
-                else:
-                    self.do(ad.attack(target))
+                for st in stalkers:
+                        if st.weapon_cooldown > 0:
+                            if not await self.blink(st, placement):
+                                self.do(st.move(placement))
+                        else:
+                            self.do(st.attack(target))
 
     async def attack_formation(self):
         army_ids = [unit.ZEALOT, unit.STALKER, unit.ADEPT]
@@ -600,17 +544,16 @@ class Octopus(sc2.BotAI):
 
 
 def botVsComputer():
-    maps_set = ["CrystalCavern", "Bandwidth", "Reminiscence", "TheTimelessVoid", "PrimusQ9", "Ephemeron",
+    maps_set = ["zealots", "Bandwidth", "Reminiscence", "TheTimelessVoid", "PrimusQ9", "Ephemeron",
                 "Sanglune", "Urzagol"]
     training_maps = ["DefeatZealotswithBlink", "ParaSiteTraining"]
     races = [sc2.Race.Protoss, sc2.Race.Zerg, sc2.Race.Terran]
     map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
-    run_game(map_settings=maps.get(maps_set[3]), players=[
+    run_game(map_settings=maps.get(maps_set[1]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
         Computer(race=races[1], difficulty=Difficulty.Hard, ai_build=AIBuild.Macro)
     ], realtime=True)
-
 
 
 botVsComputer()
