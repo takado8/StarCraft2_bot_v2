@@ -24,7 +24,7 @@ class DeepCraft(sc2.BotAI):
     army = []
     known_enemies = []
     visual = None
-    game_map = None
+    # game_map = None
 
     step_reward = 0
     action_dict = {0: 'attack_closest', 1: 'attack_low_hp', 2: 'up', 3: 'down', 4: 'left',5: 'right'}
@@ -106,12 +106,12 @@ class DeepCraft(sc2.BotAI):
 
     async def on_unit_destroyed(self,unit_tag):
         if unit_tag in self.known_enemies:
-            print('enemy unit died!')
+            # print('enemy unit died!')
             self.known_enemies.remove(unit_tag)
             # reward ++
             self.step_reward += reward_val['kill']
         elif unit_tag in self.army.tags:
-            print('friendly unit died!')
+            # print('friendly unit died!')
             # reward --
             self.step_reward += reward_val['die']
 
@@ -138,7 +138,7 @@ class DeepCraft(sc2.BotAI):
             red = 255 * ((_unit.health + _unit.shield) / 200)  # encode units health
             green = 255
             blue = (_unit.weapon_cooldown / 50) * 255  # ready to shot, or not
-            print('cd: '+str(_unit.weapon_cooldown))
+            # print('cd: '+str(_unit.weapon_cooldown))
             cv2.circle(game_map,(int(position[1]),int(position[0])),1,(blue,green,red),-1)  # BGR
             # game_data[10*int(position[1]),10*int(position[0])] = (50,200,0)
         for _unit in self.enemy_units():
@@ -171,30 +171,46 @@ def botVsComputer(ai):
 
 def prep_data(states, actions, rewards):
     res = []
-    for j in range(len(actions)-1):
+    print('actions len: ' + str(len(actions)))
+    for j in range(len(actions)):
         full_state = {'state': states[j], 'action': actions[j],'reward': rewards[j+1],
                       'new_state': states[j+1]}
+        if full_state is None:
+            print('FULL STATEEE EEE')
+            continue
         res.append(full_state)
-    for thing in res[len(res) - 1]:
-        print(res[len(res) - 1][thing])
+    print('data len: ' + str(len(res)))
     return res
 
 
 dqn = DQN()
-for i in range(20):
+for i in range(10):
     ai = DeepCraft()
+    ai.states = []
+    ai.actions_list = []
+    ai.rewards = []
     ai.dqn = dqn
     result = botVsComputer(ai)
     if result == Result.Victory:
         ai.rewards.append(reward_val['win'])
     else:
         ai.rewards.append(reward_val['loose'])
-    # ai.states.append(None)
+    ai.states.append(None)
+    print('states: ' + str(len(ai.states)))
+    print('actions: ' + str(len(ai.actions_list)))
+    print('rewards: ' + str(len(ai.rewards)))
+
+    # fake_states = [None if x is None else c for c, x in enumerate(ai.states,0)]
     data = prep_data(ai.states,ai.actions_list,ai.rewards)
+    # print('data len: '+ str(len(data)))
+    # i = 0
+    # for k in range(len(data)):# in data:
+    #     print(str(k) + '. ' +str(data[k]['state']) + ', ' + str(data[k]['action']) + ', ' + str(data[k]['reward']) + ', ' + str(data[k]['new_state']))
+    # print('new_state none: ' + str(data[len(data)-1]['new_state']))
     dqn.replay_memory.extend(data)
     print('repl mem size: ' + str(len(dqn.replay_memory)))
     # print('>>> result: ' + str(result))
     # train on memory
-    for _ in range(5):
+    for _ in range(20):
         dqn.train()
     dqn.main_model.save('model.ml')

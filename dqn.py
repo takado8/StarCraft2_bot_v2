@@ -6,7 +6,7 @@ import numpy as np
 import random
 
 REPLAY_MEMORY_MAX_SIZE = 2048
-REPLAY_MEMORY_MIN_SIZE = 128
+REPLAY_MEMORY_MIN_SIZE = 256
 BATCH_SIZE = 64
 TARGET_MODEL_UPDATE_INTERVAL = 5
 
@@ -41,11 +41,14 @@ class DQN:
             for data in batch:
                 if data['state'] is None:
                     print('state is none!')
+                    print(print(str(data['state']) + ', ' + str(data['action']) + ', ' + str(data['reward']) + ', ' + str('newstate')))
                     input()
+
                 # predict q values for given state
                 qs = self.main_model.predict(data['state'], batch_size=1)[0]
                 # calculate new q value
                 if data['new_state'] is None:  # final step
+                    print('final state')
                     new_q = data['reward']  # reward
                 else:
                     # predict max future q value for next state
