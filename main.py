@@ -8,7 +8,6 @@ from sc2.player import Bot, Computer
 from sc2 import units
 from sc2.ids.buff_id import BuffId as buff
 from sc2.ids.upgrade_id import UpgradeId as upgrade
-import dqn
 from visual import Visual
 from sc2.position import Point2
 import numpy as np
@@ -71,43 +70,43 @@ class Octopus(sc2.BotAI):
 
     async def on_step(self, iteration):
         self.draw_units()
-        # for enemy in self.enemy_units():
-        #     if enemy.tag not in self.known_enemies:
-        #         print('new enemy!')
-        #         self.known_enemies.append(enemy.tag)
+        for enemy in self.enemy_units():
+            if enemy.tag not in self.known_enemies:
+                print('new enemy!')
+                self.known_enemies.append(enemy.tag)
 
         self.army = self.units().filter(lambda x: x.type_id not in [unit.PROBE,unit.OBSERVER,unit.WARPPRISM,
                                                                     unit.DISRUPTOR,unit.HIGHTEMPLAR])
 
         # self.draw_map()
         # self.v.render(self.army, self.enemy_units)
-        # await self.nexus_buff()
-        # await self.first_pylon()
-        # await self.build_pylons()
-        # await self.distribute_workers()
-        # await self.expand()
-        # self.train_workers()
-        # if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS):
-        #     await self.build_gate()
-        #     self.train_army()
-        #     await self.warp_new_units()
-        #     await self.cybernetics_core_build()
-        #     self.cybernetics_core_upgrades()
-        #     self.build_assimilators()
-        # await self.morph_gates()
-        #
-        # if (self.army.amount > 5 and not self.first_attack) or (self.first_attack and self.army.amount > 24):
-        #     self.first_attack = True
-        #     self.attack = True
-        # if self.army.amount > 1:
-        #     await self.outside_pylon()
-        # if self.attack and self.army.amount < 5:
-        #     self.attack = False
-        #
-        # if self.attack:
-        #     await self.attack_formation()
-        # else:
-        #     self.defend()
+        await self.nexus_buff()
+        await self.first_pylon()
+        await self.build_pylons()
+        await self.distribute_workers()
+        await self.expand()
+        self.train_workers()
+        if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS):
+            await self.build_gate()
+            self.train_army()
+            await self.warp_new_units()
+            await self.cybernetics_core_build()
+            self.cybernetics_core_upgrades()
+            self.build_assimilators()
+        await self.morph_gates()
+
+        if (self.army.amount > 5 and not self.first_attack) or (self.first_attack and self.army.amount > 24):
+            self.first_attack = True
+            self.attack = True
+        if self.army.amount > 1:
+            await self.outside_pylon()
+        if self.attack and self.army.amount < 5:
+            self.attack = False
+
+        if self.attack:
+            await self.attack_formation()
+        else:
+            self.defend()
         await self.micro_units()
 
     async def start_step(self):
@@ -550,10 +549,13 @@ def botVsComputer():
     races = [sc2.Race.Protoss, sc2.Race.Zerg, sc2.Race.Terran]
     map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
-    run_game(map_settings=maps.get(maps_set[1]), players=[
+    res = run_game(map_settings=maps.get(maps_set[1]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
         Computer(race=races[1], difficulty=Difficulty.Hard, ai_build=AIBuild.Macro)
-    ], realtime=True)
+    ], realtime=False)
+    return res
 
 
-botVsComputer()
+for i in range(2):
+    res = botVsComputer()
+    print(res)

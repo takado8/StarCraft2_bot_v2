@@ -1,30 +1,75 @@
+import socket
+import prepare_data
+import model
+from collections import deque
 import numpy as np
-from tensorflow import keras
+import random
+
+REPLAY_MEMORY_MAX_SIZE = 2048
+REPLAY_MEMORY_MIN_SIZE = 128
+BATCH_SIZE = 64
+TARGET_MODEL_UPDATE_INTERVAL = 5
+
+DISCOUNT_RATE = 0.99
+# EXPLORATION_RATE_DECAY = 0.0003
+EXPLORATION_RATE_MIN = 0.001
 
 
-def makeNew():
-    inputs = [
-        [0, 0],  # 0
-        [0, 1],  # 1
-        [1, 0],  # 1
-        [1, 1]   # 0
-    ]
+class DQN:
+    def __init__(self):
+        # gets trained every step
+        try:
+            self.main_model = model.load_model('model.ml')
+        except:
+            self.main_model = model.newCNNNetwork()
+        # gets main_models weights every n steps
+        self.target_model = model.newCNNNetwork()
+        self.target_model.set_weights(self.main_model.get_weights())
+        self.replay_memory = deque(maxlen=REPLAY_MEMORY_MAX_SIZE)
+        self.target_model_update_counter = 0
+        self.exploration_rate = 0.5
 
-    answers = [
-        [0],
-        [1],
-        [1],
-        [0]
-    ]
-    inputs = np.array(inputs)
-    answers = np.array(answers)
+    def train(self):
+        # check replay memory size
+        if len(self.replay_memory) >= REPLAY_MEMORY_MIN_SIZE:
+            # train
+            # get random batch
+            batch = random.sample(self.replay_memory, BATCH_SIZE)
+            # predict for each state a q value
+            xs = []
+            ys = []
+            for data in batch:
+                if data['state'] is None:
+                    print('state is none!')
+                    input()
+                # predict q values for given state
+                qs = self.main_model.predict(data['state'], batch_size=1)[0]
+                # calculate new q value
+                if data['new_state'] is None:  # final step
+                    new_q = data['reward']  # reward
+                else:
+                    # predict max future q value for next state
+                    max_future_q = np.max(self.target_model.predict(data['new_state'], batch_size=1)[0])
+                    new_q = data['reward'] + DISCOUNT_RATE * max_future_q
+                # print(qs)
+                # print(qs.shape)
+                qs[data['action']] = new_q
+                xs.append(data['state'])
+                ys.append(qs)
+            xs = np.array(xs)
+            xs = xs.reshape(xs.shape[0], 64, 64, 3)
+            ys = np.array(ys)
+            # train main_model with batch, x = states, y = new q values
+            # print('starting training....')
+            self.main_model.fit(x=xs, y=ys,epochs=1, batch_size=8, verbose=1, shuffle=False)
+            # update target_model every n steps
+            if self.target_model_update_counter == TARGET_MODEL_UPDATE_INTERVAL:
+                self.target_model_update_counter = 0
+                self.target_model.set_weights(self.main_model.get_weights())
+            self.target_model_update_counter += 1
 
-    model = keras.Sequential()
-    model.add(keras.layers.Dense(3, activation='sigmoid', input_shape=(2,)))
-    model.add(keras.layers.Dense(1, activation="sigmoid",))
-
-    optimizer = keras.optimizers.Adam(lr=0.1)
-    model.compile(optimizer, loss='mean_squared_error', metrics=['accuracy'])
-    model.fit(inputs, answers, batch_size=1, epochs=300, use_multiprocessing=False)
-    keras.backend.clear_session()
-    #model.save('model.h5')
+    def get_decision(self, input_img):
+        if random.uniform(0,1) > self.exploration_rate:
+            return np.argmax(self.main_model.predict(input_img, batch_size=1))
+        else:
+            return random.randint(0,3)
