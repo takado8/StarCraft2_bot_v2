@@ -11,13 +11,14 @@ from sc2.position import Point2
 import numpy as np
 import cv2
 from dqn import DQN
-
-
+from collections import deque
+import plot
 
 reward_val = {'kill': 0.1,'die': -0.1,'win': 0.3,'loose': -0.3}
 
 
 class DeepCraft(sc2.BotAI):
+    ID = 0
     army_ids = [unit.ADEPT, unit.STALKER, unit.ZEALOT]
     units_to_ignore = [unit.LARVA, unit.EGG]
     workers_ids = [unit.SCV, unit.PROBE, unit.DRONE]
@@ -34,6 +35,11 @@ class DeepCraft(sc2.BotAI):
     training_interval = 2
     training_counter = 0
     dqn = DQN()
+    total_kills = deque(maxlen=10)
+    kills = 0
+    avgs = []
+    game_counter = 0
+    cc = 0
 
     async def on_start(self):
         pass
@@ -64,26 +70,43 @@ class DeepCraft(sc2.BotAI):
         await self.train_and_reset()
 
     async def train_and_reset(self):
-        if self.army.amount == 0 or self.enemy_units().amount == 0 and not self.already_reseting:
+        if self.army.amount == 0 or self.enemy_units().amount == 0 and not self.already_reseting and not (len(self.army) == len(self.enemy_units()) == 0):
+            print(self.cc)
+            self.cc += 1
             self.already_reseting = True
             if self.army.amount == 0:
                 result = 'loose'
             else:
                 result = 'win'
+            print('--------------------------------------------')
+            print('game '+ str(self.game_counter) + '. ' + result)
+            print('kills: ' + str(self.kills))
+            self.total_kills.append(self.kills)
+            avg = 0
+            for e in self.total_kills:
+                avg += e
+            avg = avg / len(self.total_kills)
+            print('Last 10 games avg kill: ' + str(avg))
+            print('--------------------------------------------')
+            self.avgs.append(avg)
+            if self.game_counter % 100 == 0:
+                plot.plot([x for x in range(len(self.avgs))],self.avgs)
+            self.game_counter += 1
             data = self.prep_data(result)
             if len(data) > 2:
                 self.dqn.replay_memory.extend(data)
-                if self.training_counter == self.training_interval:
-                    self.training_counter = 0
-                    for i in range(int(self.training_interval / 2)):
-                        self.dqn.train()
-                    self.dqn.main_model.save('model.ml')
-                self.training_counter += 1
+                # if self.training_counter == self.training_interval:
+                #     self.training_counter = 0
+                self.dqn.train()
+                self.dqn.main_model.save('model.ml')
+                # self.training_counter += 1
             self.states = []
             self.actions_list = []
             self.rewards = []
             await self.chat_send('reset')
             self.already_reseting = False
+            self.kills = 0
+
 
     async def execute_action(self, action):
         if len(self.army) > 0:
@@ -130,10 +153,11 @@ class DeepCraft(sc2.BotAI):
 
     async def on_unit_destroyed(self,unit_tag):
         if unit_tag in self.known_enemies:
-            # print('enemy unit died!')
+            print('enemy unit died!')
             self.known_enemies.remove(unit_tag)
             # reward ++
             self.step_reward += reward_val['kill']
+            self.kills +=1
         elif unit_tag in self.army.tags:
             # print('friendly unit died!')
             # reward --
@@ -146,12 +170,13 @@ class DeepCraft(sc2.BotAI):
         else:
             self.rewards.append(reward_val['loose'])
         self.states.append(None)
-        print('actions len: ' + str(len(self.actions_list)))
+        # print('actions len: ' + str(len(self.actions_list)))
         for j in range(len(self.actions_list)):
             full_state = {'state': self.states[j],'action': self.actions_list[j],'reward': self.rewards[j + 1],
-                          'new_state': self.states[j + 1]}
+                          'new_state': self.states[j + 1], 'id': self.ID}
             res.append(full_state)
-        print('data len: ' + str(len(res)))
+            self.ID += 1
+        # print('data len: ' + str(len(res)))
         return res
 
     def input_from_game_state(self, state_img):
