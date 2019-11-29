@@ -25,14 +25,15 @@ class DeepCraft(sc2.BotAI):
     known_enemies = []
     visual = None
     # game_map = None
-
+    already_reseting = False
     step_reward = 0
     action_dict = {0: 'attack_closest', 1: 'attack_low_hp', 2: 'up', 3: 'down', 4: 'left',5: 'right'}
     states = []
     actions_list = []
     rewards = []
-
-    dqn = None
+    training_interval = 2
+    training_counter = 0
+    dqn = DQN()
 
     async def on_start(self):
         pass
@@ -53,13 +54,36 @@ class DeepCraft(sc2.BotAI):
 
         self.states.append(self.input_from_game_state(state))
         # get decision
-        action = random.randint(0,5)#self.dqn.get_decision(input_img=state)
+        action = self.dqn.get_decision(input_img=self.input_from_game_state(state))
         self.actions_list.append(action)
         await self.execute_action(action)
         # reward
         self.rewards.append(self.step_reward)
         self.step_reward = 0
+        # reset if end
+        await self.train_and_reset()
 
+    async def train_and_reset(self):
+        if self.army.amount == 0 or self.enemy_units().amount == 0 and not self.already_reseting:
+            self.already_reseting = True
+            if self.army.amount == 0:
+                result = 'loose'
+            else:
+                result = 'win'
+            data = self.prep_data(result)
+            if len(data) > 2:
+                self.dqn.replay_memory.extend(data)
+                if self.training_counter == self.training_interval:
+                    self.training_counter = 0
+                    for i in range(int(self.training_interval / 2)):
+                        self.dqn.train()
+                    self.dqn.main_model.save('model.ml')
+                self.training_counter += 1
+            self.states = []
+            self.actions_list = []
+            self.rewards = []
+            await self.chat_send('reset')
+            self.already_reseting = False
 
     async def execute_action(self, action):
         if len(self.army) > 0:
@@ -115,6 +139,21 @@ class DeepCraft(sc2.BotAI):
             # reward --
             self.step_reward += reward_val['die']
 
+    def prep_data(self, game_result):
+        res = []
+        if game_result == 'win':
+            self.rewards.append(reward_val['win'])
+        else:
+            self.rewards.append(reward_val['loose'])
+        self.states.append(None)
+        print('actions len: ' + str(len(self.actions_list)))
+        for j in range(len(self.actions_list)):
+            full_state = {'state': self.states[j],'action': self.actions_list[j],'reward': self.rewards[j + 1],
+                          'new_state': self.states[j + 1]}
+            res.append(full_state)
+        print('data len: ' + str(len(res)))
+        return res
+
     def input_from_game_state(self, state_img):
         img = np.array(state_img)
         img = img.reshape(-1,64,64,3)
@@ -169,48 +208,58 @@ def botVsComputer(ai):
     return res
 
 
-def prep_data(states, actions, rewards):
-    res = []
-    print('actions len: ' + str(len(actions)))
-    for j in range(len(actions)):
-        full_state = {'state': states[j], 'action': actions[j],'reward': rewards[j+1],
-                      'new_state': states[j+1]}
-        if full_state is None:
-            print('FULL STATEEE EEE')
-            continue
-        res.append(full_state)
-    print('data len: ' + str(len(res)))
-    return res
+# def prep_data(states, actions, rewards):
+#     res = []
+#     print('actions len: ' + str(len(actions)))
+#     for j in range(len(actions)):
+#         full_state = {'state': states[j], 'action': actions[j],'reward': rewards[j+1],
+#                       'new_state': states[j+1]}
+#         if full_state is None:
+#             print('FULL STATEEE EEE')
+#             continue
+#         res.append(full_state)
+#     print('data len: ' + str(len(res)))
+#     return res
 
 
-dqn = DQN()
-for i in range(10):
-    ai = DeepCraft()
-    ai.states = []
-    ai.actions_list = []
-    ai.rewards = []
-    ai.dqn = dqn
-    result = botVsComputer(ai)
-    if result == Result.Victory:
-        ai.rewards.append(reward_val['win'])
-    else:
-        ai.rewards.append(reward_val['loose'])
-    ai.states.append(None)
-    print('states: ' + str(len(ai.states)))
-    print('actions: ' + str(len(ai.actions_list)))
-    print('rewards: ' + str(len(ai.rewards)))
+ai = DeepCraft()
+botVsComputer(ai)
 
-    # fake_states = [None if x is None else c for c, x in enumerate(ai.states,0)]
-    data = prep_data(ai.states,ai.actions_list,ai.rewards)
-    # print('data len: '+ str(len(data)))
-    # i = 0
-    # for k in range(len(data)):# in data:
-    #     print(str(k) + '. ' +str(data[k]['state']) + ', ' + str(data[k]['action']) + ', ' + str(data[k]['reward']) + ', ' + str(data[k]['new_state']))
-    # print('new_state none: ' + str(data[len(data)-1]['new_state']))
-    dqn.replay_memory.extend(data)
-    print('repl mem size: ' + str(len(dqn.replay_memory)))
-    # print('>>> result: ' + str(result))
-    # train on memory
-    for _ in range(20):
-        dqn.train()
-    dqn.main_model.save('model.ml')
+
+# dqn = DQN()
+# for i in range(10):
+#     ai = DeepCraft()
+#     ai.states = []
+#     ai.actions_list = []
+#     ai.rewards = []
+#     ai.dqn = dqn
+#     try:
+#         result = botVsComputer(ai)
+#         print(result.__str__())
+#         if result == Result.Victory:
+#             ai.rewards.append(reward_val['win'])
+#         else:
+#             ai.rewards.append(reward_val['loose'])
+#
+#     except:
+#         print('ex')
+#
+#     ai.states.append(None)
+#     print('states: ' + str(len(ai.states)))
+#     print('actions: ' + str(len(ai.actions_list)))
+#     print('rewards: ' + str(len(ai.rewards)))
+#
+#     # fake_states = [None if x is None else c for c, x in enumerate(ai.states,0)]
+#     # data = prep_data(ai.states,ai.actions_list,ai.rewards)
+#     # # print('data len: '+ str(len(data)))
+#     # # i = 0
+#     # # for k in range(len(data)):# in data:
+#     # #     print(str(k) + '. ' +str(data[k]['state']) + ', ' + str(data[k]['action']) + ', ' + str(data[k]['reward']) + ', ' + str(data[k]['new_state']))
+#     # # print('new_state none: ' + str(data[len(data)-1]['new_state']))
+#     # dqn.replay_memory.extend(data)
+#     # print('repl mem size: ' + str(len(dqn.replay_memory)))
+#     # # print('>>> result: ' + str(result))
+#     # # train on memory
+#     # for _ in range(3):
+#     #     dqn.train()
+#     # dqn.main_model.save('model.ml')

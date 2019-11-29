@@ -6,8 +6,8 @@ import numpy as np
 import random
 
 REPLAY_MEMORY_MAX_SIZE = 2048
-REPLAY_MEMORY_MIN_SIZE = 256
-BATCH_SIZE = 64
+REPLAY_MEMORY_MIN_SIZE = 32
+BATCH_SIZE = 32
 TARGET_MODEL_UPDATE_INTERVAL = 5
 
 DISCOUNT_RATE = 0.99
@@ -27,44 +27,56 @@ class DQN:
         self.target_model.set_weights(self.main_model.get_weights())
         self.replay_memory = deque(maxlen=REPLAY_MEMORY_MAX_SIZE)
         self.target_model_update_counter = 0
-        self.exploration_rate = 0.5
+        self.exploration_rate = 0.70
 
     def train(self):
+        print('replay mem size:' + str(len(self.replay_memory)))
         # check replay memory size
         if len(self.replay_memory) >= REPLAY_MEMORY_MIN_SIZE:
             # train
             # get random batch
             batch = random.sample(self.replay_memory, BATCH_SIZE)
             # predict for each state a q value
-            xs = []
-            ys = []
-            for data in batch:
-                if data['state'] is None:
-                    print('state is none!')
-                    print(print(str(data['state']) + ', ' + str(data['action']) + ', ' + str(data['reward']) + ', ' + str('newstate')))
-                    input()
+            new_states = []
+            for i in range(len(batch)-1):
+                if batch[i]['new_state'] is None:  # to the end of list with it
+                    temp = batch[i]
+                    del batch[i]
+                    batch.append(temp)
+            for i in range(len(batch)-2):
+                new_states.append(batch[i]['new_state'])
+            xs = [x['state'] for x in batch]
+            xs = np.array(xs)
+            xs = xs.reshape(xs.shape[0],64,64,3)
+            new_states = np.array(new_states)
+            new_states = new_states.reshape(new_states.shape[0],64,64,3)
 
+            ys = []
+            total_qs = self.main_model.predict(xs, batch_size=32)
+            total_new_qs = self.target_model.predict(new_states, batch_size=32)
+            i = 0
+            for data in batch:
                 # predict q values for given state
-                qs = self.main_model.predict(data['state'], batch_size=1)[0]
+                qs = total_qs[i]#self.main_model.predict(data['state'], batch_size=1)[0]
                 # calculate new q value
                 if data['new_state'] is None:  # final step
-                    print('final state')
                     new_q = data['reward']  # reward
                 else:
                     # predict max future q value for next state
-                    max_future_q = np.max(self.target_model.predict(data['new_state'], batch_size=1)[0])
+                    max_future_q = np.max(total_new_qs[i])#np.max(self.target_model.predict(data['new_state'], batch_size=1)[0])
                     new_q = data['reward'] + DISCOUNT_RATE * max_future_q
                 # print(qs)
                 # print(qs.shape)
                 qs[data['action']] = new_q
-                xs.append(data['state'])
+                # xs.append(data['state'])
                 ys.append(qs)
-            xs = np.array(xs)
-            xs = xs.reshape(xs.shape[0], 64, 64, 3)
+                i += 1
+            # xs = np.array(xs)
+            # xs = xs.reshape(xs.shape[0], 64, 64, 3)
             ys = np.array(ys)
             # train main_model with batch, x = states, y = new q values
             # print('starting training....')
-            self.main_model.fit(x=xs, y=ys,epochs=1, batch_size=8, verbose=1, shuffle=False)
+            self.main_model.fit(x=xs, y=ys,epochs=1, batch_size=32, verbose=1, shuffle=False)
             # update target_model every n steps
             if self.target_model_update_counter == TARGET_MODEL_UPDATE_INTERVAL:
                 self.target_model_update_counter = 0
