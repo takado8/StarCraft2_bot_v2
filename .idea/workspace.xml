@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8c31ee0e-5715-4e85-a78f-7d7c2ebf81b0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/deep_craft.py" beforeDir="false" afterPath="$PROJECT_DIR$/deep_craft.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dqn.py" beforeDir="false" afterPath="$PROJECT_DIR$/dqn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/plot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,48 +15,48 @@
     <session id="-907730567">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="20" />
+          <entry key="project.closed" value="21" />
           <entry key="project.open.time.0" value="4" />
           <entry key="project.open.time.1" value="2" />
           <entry key="project.open.time.10" value="1" />
           <entry key="project.open.time.5" value="1" />
-          <entry key="project.open.time.6" value="8" />
+          <entry key="project.open.time.6" value="9" />
           <entry key="project.open.time.7" value="5" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="22" />
+          <entry key="project.opened" value="23" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="3" />
-          <entry key="py" value="13608" />
+          <entry key="py" value="14632" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="3" />
-          <entry key="Python" value="13608" />
+          <entry key="Python" value="14632" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="27" />
+          <entry key="py" value="32" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="27" />
+          <entry key="Python" value="32" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/deep_craft.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="158" column="33" selection-start-line="158" selection-start-column="33" selection-end-line="158" selection-end-column="33" />
+            <state relative-caret-position="349">
+              <caret line="136" column="25" selection-start-line="136" selection-start-column="25" selection-end-line="136" selection-end-column="25" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
                 <marker date="1575063003948" expanded="true" signature="1206:1207" ph="..." />
@@ -66,48 +65,30 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prepare_data.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="-3954">
+              <caret line="300" column="53" selection-start-line="300" selection-start-column="53" selection-end-line="300" selection-end-column="53" />
               <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dqn.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="91">
-              <caret line="31" column="36" selection-start-line="31" selection-start-column="36" selection-end-line="31" selection-end-column="36" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1220">
-              <caret line="61" selection-start-line="61" selection-end-line="61" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/plot.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="13" column="4" selection-start-line="13" selection-start-column="4" selection-end-line="13" selection-end-column="4" />
-              <folding>
-                <element signature="e#0#17#0" expanded="true" />
+                <element signature="e#0#11#0" expanded="true" />
+                <element signature="e#3927#3931#0" />
+                <element signature="e#3963#4137#0" />
+                <element signature="e#4173#4731#0" />
+                <element signature="e#5375#6700#0" />
+                <element signature="e#6970#8325#0" />
+                <element signature="e#8364#9004#0" />
+                <element signature="e#9048#9819#0" />
+                <element signature="e#9861#10502#0" />
+                <element signature="e#10545#10817#0" />
+                <element signature="e#10863#12976#0" />
+                <element signature="e#14737#15144#0" />
+                <element signature="e#15195#15572#0" />
+                <element signature="e#21778#22017#0" />
+                <element signature="e#22055#23767#0" />
+                <element signature="e#23810#24441#0" />
+                <element signature="e#24492#25391#0" />
+                <marker date="1575079013386" expanded="true" signature="1071:1090" ph="..." />
               </folding>
             </state>
           </provider>
@@ -137,15 +118,15 @@
         <option value="$PROJECT_DIR$/visual.py" />
         <option value="$PROJECT_DIR$/main — kopia.py" />
         <option value="$PROJECT_DIR$/DeepCraft.py" />
-        <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/model.py" />
         <option value="$PROJECT_DIR$/plot.py" />
         <option value="$PROJECT_DIR$/dqn.py" />
         <option value="$PROJECT_DIR$/deep_craft.py" />
+        <option value="$PROJECT_DIR$/main.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="174" />
     <option name="y" value="18" />
     <option name="width" value="1215" />
@@ -190,7 +171,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="SearchEverywhereHistoryKey" value="typo&#9;null&#9;null" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/deep_craft.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/main.py" />
     <property name="settings.editor.selected.configurable" value="Errors" />
   </component>
   <component name="RunDashboard">
@@ -205,8 +186,8 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
-    <configuration name="Unnamed" type="PythonConfigurationType" factoryName="Python">
+  <component name="RunManager" selected="Python.octopus">
+    <configuration name="deepCraft" type="PythonConfigurationType" factoryName="Python">
       <module name="sc2_bot_v2" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -227,6 +208,31 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="octopus" type="PythonConfigurationType" factoryName="Python">
+      <module name="sc2_bot_v2" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\korne\Desktop\sc2_bot_v2\venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.deepCraft" />
+      <item itemvalue="Python.octopus" />
+    </list>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -242,7 +248,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
+    <frame x="-7" y="-7" width="1295" height="695" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.11685215" />
@@ -250,7 +256,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.42882562" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.8807829" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39679715" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -311,13 +317,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/visual.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="10" column="41" selection-start-line="10" selection-start-column="41" selection-end-line="10" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/bot_ai.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="474">
@@ -346,20 +345,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
+    <entry file="file://$PROJECT_DIR$/prepare_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="547" column="45" selection-start-line="547" selection-start-column="45" selection-end-line="547" selection-end-column="45" />
+        <state>
           <folding>
-            <element signature="e#0#11#0" expanded="true" />
-            <marker date="1574815535036" expanded="true" signature="2272:2302" ph="..." />
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dqn.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="91">
+          <caret line="31" column="36" selection-start-line="31" selection-start-column="36" selection-end-line="31" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1220">
+        <state relative-caret-position="474">
           <caret line="61" selection-start-line="61" selection-end-line="61" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -377,32 +384,47 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dqn.py">
+    <entry file="file://$PROJECT_DIR$/visual.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="91">
-          <caret line="31" column="36" selection-start-line="31" selection-start-column="36" selection-end-line="31" selection-end-column="36" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prepare_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="180">
+          <caret line="10" column="41" selection-start-line="10" selection-start-column="41" selection-end-line="10" selection-end-column="41" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/deep_craft.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="158" column="33" selection-start-line="158" selection-start-column="33" selection-end-line="158" selection-end-column="33" />
+        <state relative-caret-position="349">
+          <caret line="136" column="25" selection-start-line="136" selection-start-column="25" selection-end-line="136" selection-end-column="25" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
             <marker date="1575063003948" expanded="true" signature="1206:1207" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3954">
+          <caret line="300" column="53" selection-start-line="300" selection-start-column="53" selection-end-line="300" selection-end-column="53" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#3927#3931#0" />
+            <element signature="e#3963#4137#0" />
+            <element signature="e#4173#4731#0" />
+            <element signature="e#5375#6700#0" />
+            <element signature="e#6970#8325#0" />
+            <element signature="e#8364#9004#0" />
+            <element signature="e#9048#9819#0" />
+            <element signature="e#9861#10502#0" />
+            <element signature="e#10545#10817#0" />
+            <element signature="e#10863#12976#0" />
+            <element signature="e#14737#15144#0" />
+            <element signature="e#15195#15572#0" />
+            <element signature="e#21778#22017#0" />
+            <element signature="e#22055#23767#0" />
+            <element signature="e#23810#24441#0" />
+            <element signature="e#24492#25391#0" />
+            <marker date="1575079013386" expanded="true" signature="1071:1090" ph="..." />
           </folding>
         </state>
       </provider>

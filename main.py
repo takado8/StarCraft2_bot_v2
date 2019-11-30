@@ -35,41 +35,11 @@ class Octopus(sc2.BotAI):
         except:
             pass
 
-    def draw_map(self):
-        x = self.game_info.map_size[0]
-        y = self.game_info.map_size[1]
-        print('map size: x: '+str(x)+' y: '+str(y))
-        self.game_map = np.zeros((x,y,3),np.uint8)
-        for i in range(x):
-            for j in range(y):
-                if self.in_pathing_grid(Point2((i,j))):
-                    self.game_map[i,j] = (255,255,255)
-        self.game_map = 255 - self.game_map
-
-
-    def draw_units(self):
-        map_copy = np.array(self.game_map)
-        for unit in self.units():
-            position = unit.position
-            cv2.circle(map_copy,(int(position[1]),int(position[0])),1,(50,200,0),-1)  # BGR
-            # game_data[10*int(position[1]),10*int(position[0])] = (50,200,0)
-        for unit in self.enemy_units():
-            position = unit.position
-            # game_data[10*int(position[1]),10*int(position[0])] = (50,0,200)
-            cv2.circle(map_copy,(int(position[1]),int(position[0])),1,(50,0,200),-1)  # BGR
-        cv2.circle(map_copy,(0,0),10,(50,0,255),-1)  # BGR
-
-        map_copy = cv2.flip(map_copy,0)
-        map_copy = cv2.resize(map_copy,dsize=None,fx=4,fy=4)
-        cv2.imshow('Visual', map_copy)
-        cv2.waitKey(1)
-
 
     async def on_start(self):
-        self.draw_map()
+        pass
 
     async def on_step(self, iteration):
-        self.draw_units()
         for enemy in self.enemy_units():
             if enemy.tag not in self.known_enemies:
                 print('new enemy!')
@@ -77,9 +47,7 @@ class Octopus(sc2.BotAI):
 
         self.army = self.units().filter(lambda x: x.type_id not in [unit.PROBE,unit.OBSERVER,unit.WARPPRISM,
                                                                     unit.DISRUPTOR,unit.HIGHTEMPLAR])
-
-        # self.draw_map()
-        # self.v.render(self.army, self.enemy_units)
+        await self.build_TwilightCouncil()
         await self.nexus_buff()
         await self.first_pylon()
         await self.build_pylons()
@@ -130,6 +98,35 @@ class Octopus(sc2.BotAI):
             return
         for gateway in self.structures(unit.GATEWAY).ready.idle:
             self.do(gateway.train(u))
+
+    async def build_TwilightCouncil(self):
+        if self.structures(unit.CYBERNETICSCORE).ready.exists:
+            if not self.structures(unit.TWILIGHTCOUNCIL).exists \
+                    and not self.already_pending(unit.TWILIGHTCOUNCIL) and self.can_afford(unit.TWILIGHTCOUNCIL):
+                pylon = self.get_proper_pylon()
+                await self.build(unit.TWILIGHTCOUNCIL,near=pylon.position,
+                                 random_alternative=True,placement_step=2)
+            # elif self.units(unit.TWILIGHTCOUNCIL).ready.exists and not self.units(unit.TEMPLARARCHIVE).exists and \
+            #         self.can_afford(unit.TEMPLARARCHIVE) and not self.already_pending(unit.TEMPLARARCHIVE):
+            #     await self.build(unit.TEMPLARARCHIVE,near=self.get_proper_pylon())
+            # elif self.units(unit.TEMPLARARCHIVE).ready.exists:
+            #     temparch = self.units(unit.TEMPLARARCHIVE).ready.random
+            #     abilities = await self.get_available_abilities(temparch)
+            #     if ability.RESEARCH_PSISTORM in abilities:
+            #         await self.do(temparch(ability.RESEARCH_PSISTORM))
+            if self.structures(unit.TWILIGHTCOUNCIL).ready.exists:
+                tc = self.units(unit.TWILIGHTCOUNCIL).ready.idle
+                if tc.exists:
+                    tc = tc.random
+                else:
+                    return
+                abilities = await self.get_available_abilities(tc)
+                # if ability.RESEARCH_ADEPTRESONATINGGLAIVES in abilities:
+                #     await self.do(tc(ability.RESEARCH_ADEPTRESONATINGGLAIVES))
+                # if ability.RESEARCH_CHARGE in abilities:
+                #     await self.do(tc(ability.RESEARCH_CHARGE))
+                if ability.RESEARCH_BLINK in abilities:
+                    self.do(tc(ability.RESEARCH_BLINK))
 
     async def outside_pylon(self):
         pylons = self.structures(unit.PYLON)
@@ -301,7 +298,7 @@ class Octopus(sc2.BotAI):
                     target = target.random
                 else:
                     target = self.structures().filter(lambda x: x.type_id == unit.NEXUS and x.is_ready
-                                    and not x.noqueue and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
+                                    and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
                     if target.exists:
                         target = target.random
                     else:
@@ -334,7 +331,6 @@ class Octopus(sc2.BotAI):
         # stalkers
         stalkers = self.army.filter(lambda x: x.type_id == unit.STALKER)
         if stalkers.exists:
-
             while True:
                 stalker = stalkers.random
                 close = stalkers.closer_than(9, stalker)
@@ -347,20 +343,85 @@ class Octopus(sc2.BotAI):
             if threats.exists:
                 closest_enemy = threats.closest_to(stalker)
                 target = threats.sorted(lambda x: x.health + x.shield)[0]
-                if target.health_percentage * target.shield_percentage == 1:
+                if target.health_percentage * target.shield_percentage == 1 or target.distance_to(stalker) > \
+                        stalker.distance_to(closest_enemy) + 3:
                     target = closest_enemy
+                pos = stalker.position.towards(closest_enemy.position,-5)
+                if not self.in_pathing_grid(pos):
+                    # retreat point, check 4 directions
+                    enemy_x = closest_enemy.position.x
+                    enemy_y = closest_enemy.position.y
+                    x = stalker.position.x
+                    y = stalker.position.y
+                    delta_x = x - enemy_x
+                    delta_y = y - enemy_y
+                    left_legal = True
+                    right_legal = True
+                    up_legal = True
+                    down_legal = True
+                    if abs(delta_x) > abs(delta_y):   # check x direction
+                        if delta_x > 0:  # dont run left
+                            left_legal = False
+                        else:      # dont run right
+                            right_legal = False
+                    else:     # check y dir
+                        if delta_y > 0:    # dont run up
+                            up_legal = False
+                        else:      # dont run down
+                            down_legal = False
 
-                pos = stalker.position.towards(closest_enemy.position,-8)
-                placement = None
-                while placement is None:
-                    placement = await self.find_placement(unit.PYLON,pos,placement_step=1)
+                    x_ = x
+                    y_ = y
+                    counter = 0
+                    paths_length = []
+                    # left
+                    if left_legal:
+                        while self.in_pathing_grid(Point2((x_,y_))):
+                            counter += 1
+                            x_ -= 1
+                        paths_length.append((counter, (x_,y_)))
+                        counter = 0
+                        x_ = x
+                    # right
+                    if right_legal:
+                        while self.in_pathing_grid(Point2((x_,y_))):
+                            counter += 1
+                            x_ += 1
+                        paths_length.append((counter, (x_,y_)))
+                        counter = 0
+                        x_ = x
+                    # up
+                    if up_legal:
+                        while self.in_pathing_grid(Point2((x_,y_))):
+                            counter += 1
+                            y_ -= 1
+                        paths_length.append((counter, (x_,y_)))
+                        counter = 0
+                        y_ = y
+                    # down
+                    if down_legal:
+                        while self.in_pathing_grid(Point2((x_,y_))):
+                            counter += 1
+                            y_ += 1
+                        paths_length.append((counter, (x_,y_)))
+
+                    max_ = (-2,0)
+                    for path in paths_length:
+                        if path[0] > max_[0]:
+                            max_ = path
+
+                    pos = Point2(max_[1])
+                # placement = None
+                # while placement is None:
+                #     placement = await self.find_placement(unit.PYLON,pos,placement_step=1)
 
                 for st in stalkers:
-                        if st.weapon_cooldown > 0:
-                            if not await self.blink(st, placement):
-                                self.do(st.move(placement))
-                        else:
-                            self.do(st.attack(target))
+                    if st.weapon_cooldown > 0 and st.shield_percentage < 0.5 and closest_enemy.ground_range <= \
+                            st.ground_range:# and (st.is_idle or st.is_attacking):
+                        if not await self.blink(st, pos):
+                            self.do(st.move(pos))
+                    else:
+                        self.do(st.attack(target))
 
     async def attack_formation(self):
         army_ids = [unit.ZEALOT, unit.STALKER, unit.ADEPT]
@@ -404,7 +465,7 @@ class Octopus(sc2.BotAI):
             # point halfway
             dist = start.distance_to(destination)
             if dist > 20:
-                point = start.position.towards(destination, dist / 4)
+                point = start.position.towards(destination, dist / 3)
             elif dist > 10:
                 point = start.position.towards(destination, dist / 2)
             else:
@@ -419,7 +480,7 @@ class Octopus(sc2.BotAI):
                     print("can't find position for army.")
                     return
             # if everybody's here, we can go
-            _range = 7
+            _range = 9
             nova = self.enemy_units(unit.DISRUPTORPHASED)
             nova.extend(self.units(unit.DISRUPTORPHASED))
             nearest = army.closer_than(_range, start.position)
@@ -442,7 +503,7 @@ class Octopus(sc2.BotAI):
                         self.do(man.move(position))
             else:
                 # center = nearest.center
-                for man in army.filter(lambda man_: man_.distance_to(start) > 12):# and not man_.is_attacking):
+                for man in army.filter(lambda man_: man_.distance_to(start) > 9):# and not man_.is_attacking):
                     self.do(man.move(start))
         else:
             enemies = self.enemy_units()
@@ -543,19 +604,17 @@ class Octopus(sc2.BotAI):
 
 
 def botVsComputer():
-    maps_set = ["zealots", "Bandwidth", "Reminiscence", "TheTimelessVoid", "PrimusQ9", "Ephemeron",
+    maps_set = ['blink', "zealots", "Bandwidth", "Reminiscence", "TheTimelessVoid", "PrimusQ9", "Ephemeron",
                 "Sanglune", "Urzagol"]
     training_maps = ["DefeatZealotswithBlink", "ParaSiteTraining"]
     races = [sc2.Race.Protoss, sc2.Race.Zerg, sc2.Race.Terran]
     map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
-    res = run_game(map_settings=maps.get(maps_set[1]), players=[
+    res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[1], difficulty=Difficulty.Hard, ai_build=AIBuild.Macro)
-    ], realtime=False)
+        Computer(race=races[2], difficulty=Difficulty.VeryHard, ai_build=AIBuild.Macro)
+    ], realtime=True)
     return res
 
 
-for i in range(2):
-    res = botVsComputer()
-    print(res)
+botVsComputer()
