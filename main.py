@@ -26,6 +26,7 @@ class Octopus(sc2.BotAI):
     known_enemies = []
     v = None
     game_map = None
+    leader = None
 
     async def on_unit_destroyed(self, unit_tag):
         try:
@@ -46,6 +47,7 @@ class Octopus(sc2.BotAI):
                 self.known_enemies.append(enemy.tag)
 
         self.army = self.units().filter(lambda x: x.type_id in self.army_ids)
+        self.leader = self.select_leader()
         await self.nexus_buff()
         await self.first_pylon()
         await self.build_pylons()
@@ -61,10 +63,10 @@ class Octopus(sc2.BotAI):
             self.build_assimilators()
         await self.morph_gates()
 
-        if (self.army.amount > 9 and not self.first_attack) or (self.first_attack and self.army.amount > 24):
+        if (self.army.amount > 6 and not self.first_attack) or (self.first_attack and self.army.amount > 24):
             self.first_attack = True
             self.attack = True
-        if self.army.amount > 3:
+        if self.army.amount > 2:
             await self.proxy()
         if self.attack and self.army.amount < 5:
             self.attack = False
@@ -88,7 +90,7 @@ class Octopus(sc2.BotAI):
         if self.minerals < 100 or not gateway.exists or not gateway.idle.exists:
             return
         if self.can_afford(unit.SENTRY) and self.structures(unit.CYBERNETICSCORE).ready.exists and self.units(
-            unit.SENTRY).amount < 2 and self.units(unit.STALKER).amount > 2:
+            unit.SENTRY).amount < 1 and self.units(unit.STALKER).amount > 5:
             u = unit.SENTRY
         elif self.can_afford(unit.STALKER) and self.structures(unit.CYBERNETICSCORE).ready.exists:
             u = unit.STALKER
@@ -136,7 +138,7 @@ class Octopus(sc2.BotAI):
             if pylons.further_than(40, self.start_location.position).amount == 0 and not\
                     self.already_pending(unit.PYLON):
                 pos = self.game_info.map_center.position.towards(self.enemy_start_locations[0], 30)
-                pos = Point2((pos.x, pos.y - 15))
+                # pos = Point2((pos.x, pos.y - 25))
                 placement = await self.find_placement(unit.PYLON, near=pos, max_distance=20, placement_step=1,
                                                      random_alternative=False)
                 await self.build(unit.PYLON, near=placement)
@@ -149,27 +151,27 @@ class Octopus(sc2.BotAI):
                 self.already_pending(unit.GATEWAY) < 2:
             pylon = self.get_proper_pylon()
             if pylon is None:
-                print("Cannot find proper pylon for gateway")
+                # print("Cannot find proper pylon for gateway")
                 return
             await self.build(unit.GATEWAY, near=pylon, placement_step=2)
         elif 1 < gates_count < 4 and self.can_afford(unit.GATEWAY) and self.structures(unit.PYLON).ready.exists and\
                 self.already_pending(unit.GATEWAY) < 1:
             pylon = self.get_proper_pylon()
             if pylon is None:
-                print("Cannot find proper pylon for gateway")
+                # print("Cannot find proper pylon for gateway")
                 return
             await self.build(unit.GATEWAY, near=pylon, placement_step=2)
-        elif 3 < gates_count < 7 and self.can_afford(unit.GATEWAY) and self.structures(unit.NEXUS).ready.amount > 1 and\
-                self.already_pending(unit.GATEWAY) < 2:
+        elif 3 < gates_count < 6 and self.can_afford(unit.GATEWAY) and self.structures(unit.NEXUS).ready.amount > 1 and\
+                self.already_pending(unit.GATEWAY) < 1:
             pylon = self.get_proper_pylon()
             if pylon is None:
-                print("Cannot find proper pylon for gateway")
+                # print("Cannot find proper pylon for gateway")
                 return
             await self.build(unit.GATEWAY, near=pylon, placement_step=2)
 
     async def first_pylon(self):
         if self.structures(unit.PYLON).amount < 1 and self.can_afford(unit.PYLON):
-            await self.build(unit.PYLON, self.start_location.position.towards(self.game_info.map_center, 5))
+            await self.build(unit.PYLON, self.start_location.position.towards(self.game_info.map_center, 7))
 
     async def build_pylons(self):
         if self.structures(unit.PYLON).exists:
@@ -225,7 +227,7 @@ class Octopus(sc2.BotAI):
                         break
 
                     if not self.structures(unit.ASSIMILATOR).exists or (not
-                            self.structures(unit.ASSIMILATOR).closer_than(1.0, vaspene).exists and self.time > 90):
+                            self.structures(unit.ASSIMILATOR).closer_than(1.0, vaspene).exists and self.time > 100):
                         self.do(worker.build(unit.ASSIMILATOR, vaspene))
                         return
 
@@ -262,24 +264,24 @@ class Octopus(sc2.BotAI):
                 else:
                     pos = self.structures(unit.PYLON).ready.closer_than(30, self.start_location).furthest_to(
                                                                                 self.start_location).position
-                if self.can_afford(unit.SENTRY) and self.units(unit.STALKER).amount > 5 and \
-                        self.structures(unit.CYBERNETICSCORE).ready.exists and self.units(unit.SENTRY).amount < 2:
+                if self.can_afford(unit.SENTRY) and self.units(unit.STALKER).amount > 6 and \
+                        self.structures(unit.CYBERNETICSCORE).ready.exists and self.units(unit.SENTRY).amount < 1:
                     placement = await self.find_placement(ability.TRAINWARP_ADEPT,pos,placement_step=1)
                     if placement is None:
-                        print("can't place")
+                        # print("can't place")
                         continue
                     self.do(warpgate.warp_in(unit.SENTRY,placement))
                 elif self.can_afford(unit.STALKER) and self.supply_left > 1 and self.units(unit.STALKER).amount < 30:
                     placement = await self.find_placement(ability.WARPGATETRAIN_STALKER, pos, placement_step=1)
                     if placement is None:
-                        print("can't place")
+                        # print("can't place")
                         continue
                     self.do(warpgate.warp_in(unit.STALKER, placement))
                 elif self.minerals > 130 and self.supply_left > 1 and \
                         self.structures(unit.CYBERNETICSCORE).ready.exists and self.units(unit.ADEPT).amount < 5:
                     placement = await self.find_placement(ability.TRAINWARP_ADEPT, pos, placement_step=1)
                     if placement is None:
-                        print("can't place")
+                        # print("can't place")
                         continue
                     self.do(warpgate.warp_in(unit.ADEPT, placement))
 
@@ -287,7 +289,7 @@ class Octopus(sc2.BotAI):
                         self.supply_left > 10 and self.units(unit.ZEALOT).amount < 6:
                     placement = await self.find_placement(ability.WARPGATETRAIN_ZEALOT, pos, placement_step=1)
                     if placement is None:
-                        print("can't place")
+                        # print("can't place")
                         continue
                     self.do(warpgate.warp_in(unit.ZEALOT, placement))
 
@@ -322,7 +324,6 @@ class Octopus(sc2.BotAI):
     async def cybernetics_core_build(self):
         if self.structures(unit.CYBERNETICSCORE).amount < 1 and not self.already_pending(unit.CYBERNETICSCORE) and \
                 self.structures(unit.GATEWAY).ready.exists and self.can_afford(unit.CYBERNETICSCORE):
-
             cybernetics_position = self.get_proper_pylon()
             if cybernetics_position:
                 await self.build(unit.CYBERNETICSCORE, near=cybernetics_position, placement_step=3)
@@ -333,57 +334,69 @@ class Octopus(sc2.BotAI):
                     upgrade.WARPGATERESEARCH) and self.can_afford(upgrade.WARPGATERESEARCH):
                 self.do(self.structures(unit.CYBERNETICSCORE).ready.idle.random.research(upgrade.WARPGATERESEARCH))
 
-    async def micro_units(self):
-
-        # wyznacz max duze koło, pkty z 1 ćwiartki (x+, y+)
-        # wektory, czy się nie spotykają.
-        # stalkers
-
-
-        # stalkers
-        stalkers = self.army.filter(lambda x: x.type_id == unit.STALKER)
-        if stalkers.exists:
-            stalker = None
-            for _ in range(500):
-                stalker = stalkers.random
-                close = stalkers.closer_than(9, stalker)
+    def select_leader(self):
+        army = self.army.filter(lambda x: x.type_id in [unit.STALKER,unit.ADEPT,unit.IMMORTAL])
+        if army.exists:
+            leader = None
+            for _ in range(100):
+                leader = army.random
+                close = army.closer_than(9,leader)
                 if close.exists:
-                    if close.amount + 1 >= 0.5 * stalkers.amount:
+                    if close.amount + 1 >= 0.33 * army.amount:
                         break
-            if stalker is None:
-                return
+            if leader is None:
+                print('couldnt select leader  <<--------')
+                return None
+            return leader
+
+    async def micro_units(self):
+        # stalkers // mixed
+        army = self.army.filter(lambda x: x.type_id in [unit.STALKER, unit.ADEPT, unit.IMMORTAL])
+        if army.exists:
+            leader = self.leader
+            if leader is None:
+                leader = army.random
+            # for _ in range(100):
+            #     stalker = stalkers.random
+            #     close = stalkers.closer_than(9, stalker)
+            #     if close.exists:
+            #         if close.amount + 1 >= 0.33 * stalkers.amount:
+            #             break
+            # if stalker is None:
+            #     print('couldnt select leader  <<--------')
+            #     return
             threats = self.enemy_units().filter(
-                lambda unit_: unit_.can_attack_ground and unit_.distance_to(stalker) <= 9 and
+                lambda unit_: unit_.can_attack_ground and unit_.distance_to(leader) <= 9 and
                               unit_.type_id not in self.units_to_ignore)
             if threats.exists:
                 #  Sentry region  #
                 for se in self.units(unit.SENTRY):
-                    if threats.amount > 4 and not se.has_buff(buff.GUARDIANSHIELD):
+                    if threats.amount > 3 and not se.has_buff(buff.GUARDIANSHIELD):
                         if await self.can_cast(se,ability.GUARDIANSHIELD_GUARDIANSHIELD):
                             self.do(se(ability.GUARDIANSHIELD_GUARDIANSHIELD))
 
                     army_center = self.army.closer_than(8,se)
                     if army_center.exists:
                         army_center = army_center.center
-                        if se.distance_to(army_center) > 3:
+                        if se.distance_to(army_center) > 2:
                             if not threats.exists:
                                 self.do(se.move(army_center))
                             else:
-                                self.do(se.move(army_center.towards(threats.closest_to(se),-3)))
+                                self.do(se.move(army_center.towards(threats.closest_to(se),-2)))
 
                 #  Stalker region  #
-                closest_enemy = threats.closest_to(stalker)
+                closest_enemy = threats.closest_to(leader)
                 target = threats.sorted(lambda x: x.health + x.shield)[0]
-                if target.health_percentage * target.shield_percentage == 1 or target.distance_to(stalker) > \
-                        stalker.distance_to(closest_enemy) + 3:
+                if target.health_percentage * target.shield_percentage == 1 or target.distance_to(leader) > \
+                        leader.distance_to(closest_enemy) + 3:
                     target = closest_enemy
-                pos = stalker.position.towards(closest_enemy.position,-8)
+                pos = leader.position.towards(closest_enemy.position,-8)
                 if not self.in_pathing_grid(pos):
                     # retreat point, check 4 directions
                     enemy_x = closest_enemy.position.x
                     enemy_y = closest_enemy.position.y
-                    x = stalker.position.x
-                    y = stalker.position.y
+                    x = leader.position.x
+                    y = leader.position.y
                     delta_x = x - enemy_x
                     delta_y = y - enemy_y
                     left_legal = True
@@ -440,106 +453,87 @@ class Octopus(sc2.BotAI):
                     for path in paths_length:
                         if path[0] > max_[0]:
                             max_ = path
-
-                    pos = Point2(max_[1])
+                    if max_[0] < 4:    # there is nowhere to run - fight.
+                        pos = None
+                    else:
+                        pos = Point2(max_[1])
                 # placement = None
                 # while placement is None:
                 #     placement = await self.find_placement(unit.PYLON,pos,placement_step=1)
 
-                for st in stalkers:
-                    if st.weapon_cooldown > 0 and st.shield_percentage < 0.5 and closest_enemy.ground_range <= \
-                            st.ground_range:# and (st.is_idle or st.is_attacking):
+                for st in army:
+                    if pos is not None and st.weapon_cooldown > 0 and st.shield_percentage < 0.33 and \
+                            closest_enemy.ground_range <= st.ground_range:
                         if not await self.blink(st, pos):
                             self.do(st.move(pos))
                     else:
                         self.do(st.attack(target))
 
     async def attack_formation(self):
-        if not self.enemy_main_base_down:
-            # if self.time > 1800 and self.army.closer_than(10, self.enemy_start_locations[0]).amount > 12:
-            #     self.enemy_main_base_down = True  # ugly fix of army getting stuck on enemy location when almost win.
-            #
-            # if self.army.closer_than(15, self.enemy_start_locations[0].position).amount > 5 and \
-            #         self.enemy_structures().closer_than(20, self.enemy_start_locations[0].position).amount < 4:
-            #     # await self.observe()
-            #     self.enemy_main_base_down = True
-
-            enemy_units = self.enemy_units()
-
-            if enemy_units.exists:
-                enemy_in_my_base = enemy_units.closer_than(30, self.start_location.position)
-                enemy_on_his_side = self.enemy_units().further_than(80, self.start_location.position)
+        enemy_units = self.enemy_units()
+        enemy = enemy_units.filter(lambda x: x.type_id not in self.units_to_ignore and x.can_attack_ground)
+        if enemy.exists:
+            if self.leader is not None:
+                destination = enemy.closest_to(self.leader)
             else:
-                enemy_in_my_base = None
-                enemy_on_his_side = None
-            if enemy_in_my_base is not None and enemy_in_my_base.amount > 5:
-                destination = enemy_in_my_base.closest_to(self.start_location.position)
-                enemy = enemy_in_my_base
-            elif enemy_on_his_side is not None and enemy_on_his_side.exists:
-                enemy = enemy_on_his_side.filter(lambda x: x.type_id not in self.units_to_ignore and (
-                                                                   x.can_attack_ground or x.can_attack_air))
-                # workers = enemy.filter(lambda x: x.type_id in self.workers_ids)
-                # if workers.exists:
-                #     enemy = workers
-                if not enemy.exists:
-                    enemy = enemy_on_his_side
                 destination = enemy.closest_to(self.start_location.position)
-            elif self.enemy_structures().exists:
-                enemy = self.enemy_structures()
+        elif self.enemy_structures().exists:
+            enemy = self.enemy_structures()
+            if self.leader is not None:
+                destination = enemy.closest_to(self.leader)
+            else:
                 destination = enemy.closest_to(self.start_location.position)
-            else:
-                enemy = None
-                destination = self.enemy_start_locations[0].position
-            start = self.army.exclude_type({unit.OBSERVER}).closest_to(destination)
-            # point halfway
-            dist = start.distance_to(destination)
-            if dist > 20:
-                point = start.position.towards(destination, dist / 3)
-            elif dist > 10:
-                point = start.position.towards(destination, dist / 2)
-            else:
-                point = destination.position
-            position = None
-            i = 0
-            while position is None:
-                position = await self.find_placement(unit.PYLON, near=point, max_distance=30, placement_step=1,
-                                                     random_alternative=False)
-                i += 1
-                if i > 10:
-                    print("can't find position for army.")
-                    return
-            # if everybody's here, we can go
-            _range = 9
-            nova = self.enemy_units(unit.DISRUPTORPHASED)
-            nova.extend(self.units(unit.DISRUPTORPHASED))
-            nearest = self.army.closer_than(_range, start.position)
-            exclude = [unit.DISRUPTOR, unit.DARKTEMPLAR]
-
-            if nearest.amount > self.army.amount * 0.7:
-                for man in self.army:
-                    # if man.is_idle:
-                    if enemy is not None and not enemy.in_attack_range_of(man).exists:
-                        if man.type_id == unit.STALKER:
-                            if await self.blink(man, enemy.closest_to(man).position.towards(man.position, 6)):
-                                continue
-                        if man.type_id in exclude:
-                            continue
-                        else:
-                            closest_en = enemy.closest_to(man)
-                            self.do(man.attack(closest_en))
-                    else:
-                        #if not man.is_attacking:
-                        self.do(man.move(position))
-            else:
-                # center = nearest.center
-                for man in self.army.filter(lambda man_: man_.distance_to(start) > 9):# and not man_.is_attacking):
-                    self.do(man.move(start))
         else:
-            enemies = self.enemy_units()
-            if enemies.exists:
-                for man in self.army.idle:
-                    if not enemies.in_attack_range_of(man).exists:
-                        self.do(man.attack(enemies.closest_to(man)))
+            enemy = None
+            destination = self.enemy_start_locations[0].position
+        if self.leader is not None:
+            start = self.leader
+        else:
+            start = self.army.closest_to(destination)
+        # point halfway
+        dist = start.distance_to(destination)
+        if dist > 30:
+            point = start.position.towards(destination, dist / 3)
+        elif dist > 10:
+            point = start.position.towards(destination, dist / 2)
+        else:
+            point = destination.position
+        position = None
+        i = 0
+        while position is None:
+            position = await self.find_placement(unit.PYLON, near=point, max_distance=30, placement_step=1,
+                                                 random_alternative=False)
+            i += 1
+            if i > 10:
+                # print("can't find position for army.")
+                return
+        # if everybody's here, we can go
+        _range = 9
+        nova = self.enemy_units(unit.DISRUPTORPHASED)
+        nova.extend(self.units(unit.DISRUPTORPHASED))
+        nearest = self.army.closer_than(_range, start.position)
+        exclude = [unit.DISRUPTOR, unit.DARKTEMPLAR]
+
+        if nearest.amount > self.army.amount * 0.7:
+            for man in self.army:
+                # if man.is_idle:
+                if enemy is not None and not enemy.in_attack_range_of(man).exists:
+                    if man.type_id == unit.STALKER:
+                        if await self.blink(man, enemy.closest_to(man).position.towards(man.position, 6)):
+                            continue
+                    if man.type_id in exclude:
+                        continue
+                    else:
+                        closest_en = enemy.closest_to(man)
+                        self.do(man.attack(closest_en))
+                else:
+                    #if not man.is_attacking:
+                    self.do(man.move(position))
+        else:
+            # center = nearest.center
+            for man in self.army.filter(lambda man_: man_.distance_to(start) > 9):# and not man_.is_attacking):
+                self.do(man.move(start))
+
 
     async def blink(self, stalker, target):
         abilities = await self.get_available_abilities(stalker)
@@ -636,14 +630,43 @@ def botVsComputer():
     maps_set = ['blink', "zealots", "Bandwidth", "Reminiscence", "TheTimelessVoid", "PrimusQ9", "Ephemeron",
                 "Sanglune", "Urzagol"]
     training_maps = ["DefeatZealotswithBlink", "ParaSiteTraining"]
-    races = [sc2.Race.Protoss, sc2.Race.Zerg, sc2.Race.Terran]
+    races = [Race.Protoss, Race.Zerg, Race.Terran]
+    computer_builds = [AIBuild.Macro, AIBuild.Rush, AIBuild.Timing, AIBuild.Power, AIBuild.Air]
+    build = random.choice(computer_builds)
     map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=AIBuild.Rush)
+        Computer(race=races[race_index], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=False)
-    return res
+    return res, build, races[race_index]
 
 
-botVsComputer()
+def test():
+    results = []
+    score_board = {Race.Protoss: [0,0],Race.Zerg: [0,0],Race.Terran: [0,0]}
+    win = 0
+    for i in range(100):
+        try:
+            result = botVsComputer()
+            result_str = str(result[0]) + ' ' + str(result[2]) + ' ' + str(result[1])
+            print(result_str)
+            if result[0] == Result.Victory:
+                score_board[result[2]][0] += 1
+                win += 1
+            score_board[result[2]][1] += 1
+        except Exception as ex:
+            print('Error.')
+            print(ex)
+
+    print('================= Results ===================')
+    for res in results:
+        print(res)
+    print('=============================================')
+    print('win: ' + str(win) + '/' + '100')
+    print('win vs Protoss: ' + str(score_board[Race.Protoss][0]) + '/' + str(score_board[Race.Protoss][1]))
+    print('win vs Zerg: ' + str(score_board[Race.Zerg]) + '/' + str(score_board[Race.Zerg][1]))
+    print('win vs Terran: ' + str(score_board[Race.Terran]) + '/' + str(score_board[Race.Terran][1]))
+    print('=============================================')
+
+
