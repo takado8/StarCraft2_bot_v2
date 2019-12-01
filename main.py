@@ -14,6 +14,8 @@ import numpy as np
 import cv2
 
 
+# branch power play
+
 class Octopus(sc2.BotAI):
     enemy_main_base_down = False
     first_attack = False
