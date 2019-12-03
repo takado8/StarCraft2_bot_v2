@@ -15,6 +15,7 @@ from collections import deque
 import plot
 
 reward_val = {'kill': 0.1,'die': -0.1,'win': 0.3,'loose': -0.3}
+# branch power build
 
 
 class DeepCraft(sc2.BotAI):

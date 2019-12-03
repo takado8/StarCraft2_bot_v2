@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8c31ee0e-5715-4e85-a78f-7d7c2ebf81b0" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deep_craft.py" beforeDir="false" afterPath="$PROJECT_DIR$/deep_craft.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -14,37 +17,37 @@
     <session id="-907730567">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="23" />
+          <entry key="project.closed" value="25" />
           <entry key="project.open.time.0" value="4" />
           <entry key="project.open.time.1" value="2" />
           <entry key="project.open.time.10" value="1" />
           <entry key="project.open.time.5" value="1" />
-          <entry key="project.open.time.6" value="10" />
+          <entry key="project.open.time.6" value="11" />
           <entry key="project.open.time.7" value="6" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="25" />
+          <entry key="project.opened" value="26" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="dummy" value="3" />
-          <entry key="py" value="16668" />
+          <entry key="dummy" value="14" />
+          <entry key="py" value="18708" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="3" />
-          <entry key="Python" value="16668" />
+          <entry key="PLAIN_TEXT" value="14" />
+          <entry key="Python" value="18708" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="35" />
+          <entry key="py" value="39" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="35" />
+          <entry key="Python" value="39" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages">
@@ -56,29 +59,30 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/deep_craft.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2440">
-              <caret line="136" column="25" selection-start-line="136" selection-start-column="25" selection-end-line="136" selection-end-column="25" />
+            <state relative-caret-position="-42">
+              <caret line="751" column="20" selection-start-line="751" selection-start-column="20" selection-end-line="751" selection-end-column="20" />
               <folding>
-                <element signature="e#0#10#0" expanded="true" />
-                <marker date="1575063003948" expanded="true" signature="1206:1207" ph="..." />
+                <element signature="e#0#11#0" expanded="true" />
+                <marker date="1575324496897" expanded="true" signature="1414:1468" ph="..." />
+                <marker date="1575324496897" expanded="true" signature="3650:8694" ph="..." />
+                <marker date="1575324496897" expanded="true" signature="8342:8694" ph="..." />
+                <marker date="1575324496897" expanded="true" signature="23493:24036" ph="..." />
+                <marker date="1575324496897" expanded="true" signature="30407:30416" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/main.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/bot_ai.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
-              <caret line="16" column="19" selection-start-line="16" selection-start-column="19" selection-end-line="16" selection-end-column="19" />
+            <state relative-caret-position="541">
+              <caret line="1421" column="13" selection-start-line="1421" selection-start-column="13" selection-end-line="1421" selection-end-column="13" />
               <folding>
-                <element signature="e#0#11#0" expanded="true" />
-                <marker date="1575233859036" expanded="true" signature="1125:1144" ph="..." />
-                <marker date="1575233859036" expanded="true" signature="16949:17492" ph="..." />
-                <marker date="1575233859036" expanded="true" signature="23102:23111" ph="..." />
+                <element signature="e#0#34#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -87,8 +91,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/units.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2040">
-              <caret line="112" selection-start-line="112" selection-end-line="112" />
+            <state relative-caret-position="100">
+              <caret line="15" column="26" lean-forward="true" selection-start-line="15" selection-start-column="26" selection-end-line="15" selection-end-column="26" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/main.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="121">
+              <caret line="162" selection-start-line="162" selection-end-line="162" />
             </state>
           </provider>
         </entry>
@@ -131,6 +144,7 @@
       <find>Result\.(Victory | \w+)</find>
       <find>Result\.(\w+ | \w+)</find>
       <find>Result\.(Defeat|Victory) Race\.\w+ .+</find>
+      <find>blink</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -155,7 +169,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="174" />
     <option name="y" value="18" />
     <option name="width" value="1215" />
@@ -184,7 +198,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -196,6 +209,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -285,7 +299,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3291815" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.50711745" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.66903913" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39679715" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -355,24 +369,10 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main — kopia.py" />
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="179">
-          <caret line="483" column="4" selection-start-line="483" selection-start-column="4" selection-end-line="483" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/position.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2917">
           <caret line="150" column="6" selection-start-line="150" selection-start-column="6" selection-end-line="150" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/bot_ai.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="474">
-          <caret line="35" column="36" selection-start-line="35" selection-end-line="35" selection-end-column="36" />
         </state>
       </provider>
     </entry>
@@ -423,19 +423,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/deep_craft.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2440">
-          <caret line="136" column="25" selection-start-line="136" selection-start-column="25" selection-end-line="136" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-            <marker date="1575063003948" expanded="true" signature="1206:1207" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/units.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2040">
-          <caret line="112" selection-start-line="112" selection-end-line="112" />
+        <state relative-caret-position="-523">
+          <caret line="18" selection-start-line="18" selection-end-line="18" />
         </state>
       </provider>
     </entry>
@@ -453,15 +442,41 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="121">
+          <caret line="162" selection-start-line="162" selection-end-line="162" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/bot_ai.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="541">
+          <caret line="1421" column="13" selection-start-line="1421" selection-start-column="13" selection-end-line="1421" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#34#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/units.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="15" column="26" lean-forward="true" selection-start-line="15" selection-start-column="26" selection-end-line="15" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="16" column="19" selection-start-line="16" selection-start-column="19" selection-end-line="16" selection-end-column="19" />
+        <state relative-caret-position="-42">
+          <caret line="751" column="20" selection-start-line="751" selection-start-column="20" selection-end-line="751" selection-end-column="20" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
-            <marker date="1575233859036" expanded="true" signature="1125:1144" ph="..." />
-            <marker date="1575233859036" expanded="true" signature="16949:17492" ph="..." />
-            <marker date="1575233859036" expanded="true" signature="23102:23111" ph="..." />
+            <marker date="1575324496897" expanded="true" signature="1414:1468" ph="..." />
+            <marker date="1575324496897" expanded="true" signature="3650:8694" ph="..." />
+            <marker date="1575324496897" expanded="true" signature="8342:8694" ph="..." />
+            <marker date="1575324496897" expanded="true" signature="23493:24036" ph="..." />
+            <marker date="1575324496897" expanded="true" signature="30407:30416" ph="..." />
           </folding>
         </state>
       </provider>
