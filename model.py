@@ -4,16 +4,17 @@ from tensorflow import keras
 import datetime
 import prepare_data
 import os
+import constants
 
 
 def newCNNNetwork():
-    img_rows, img_cols = 64, 64
+    # img_rows, img_cols = 64, 64
     number_of_categories = 6
 
     keras.backend.set_image_data_format('channels_last')
 
     # if keras.backend.image_data_format() == 'channels_first':
-    input_shape = (img_rows, img_cols, 3)
+    input_shape = constants.INPUT_SHAPE    # (img_rows, img_cols, 3)
     # else:
     #     input_shape = (img_rows,img_cols,1)
 

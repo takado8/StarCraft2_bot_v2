@@ -10,7 +10,8 @@ from sc2.ids.upgrade_id import UpgradeId as upgrade
 from sc2.position import Point2
 import numpy as np
 import cv2
-from dqn import DQN
+# from dqn import DQN
+import constants
 from collections import deque
 import plot
 
@@ -35,7 +36,7 @@ class DeepCraft(sc2.BotAI):
     rewards = []
     training_interval = 2
     training_counter = 0
-    dqn = DQN()
+    #dqn = DQN()
     total_kills = deque(maxlen=10)
     kills = 0
     avgs = []
@@ -48,11 +49,11 @@ class DeepCraft(sc2.BotAI):
     async def on_step(self, iteration):
         # memory of enemy
 
-        for enemy in self.enemy_units():
-            if enemy.tag not in self.known_enemies:
-                # print('new enemy!')
-                self.known_enemies.append(enemy.tag)
-                # print('enemy count: ' + str(len(self.known_enemies)))
+        # for enemy in self.enemy_units():
+        #     if enemy.tag not in self.known_enemies:
+        #         # print('new enemy!')
+        #         self.known_enemies.append(enemy.tag)
+        #         # print('enemy count: ' + str(len(self.known_enemies)))
 
         # army
         self.army = self.units().filter(lambda x: x.type_id in self.army_ids)
@@ -61,7 +62,7 @@ class DeepCraft(sc2.BotAI):
 
         self.states.append(self.input_from_game_state(state))
         # get decision
-        action = self.dqn.get_decision(input_img=self.input_from_game_state(state))
+        action = random.randint(0,6)#self.dqn.get_decision(input_img=self.input_from_game_state(state))
         self.actions_list.append(action)
         await self.execute_action(action)
         # reward
@@ -94,20 +95,19 @@ class DeepCraft(sc2.BotAI):
                 plot.plot([x for x in range(len(self.avgs))],self.avgs)
             self.game_counter += 1
             data = self.prep_data(result)
-            if len(data) > 2:
-                self.dqn.replay_memory.extend(data)
-                # if self.training_counter == self.training_interval:
-                #     self.training_counter = 0
-                self.dqn.train()
-                self.dqn.main_model.save('model.ml')
-                # self.training_counter += 1
+            # if len(data) > 2:
+            #     self.dqn.replay_memory.extend(data)
+            #     # if self.training_counter == self.training_interval:
+            #     #     self.training_counter = 0
+            #     self.dqn.train()
+            #     self.dqn.main_model.save('model.ml')
+            #     # self.training_counter += 1
             self.states = []
             self.actions_list = []
             self.rewards = []
             await self.chat_send('reset')
             self.already_reseting = False
             self.kills = 0
-
 
     async def execute_action(self, action):
         if len(self.army) > 0:
@@ -182,8 +182,12 @@ class DeepCraft(sc2.BotAI):
 
     def input_from_game_state(self, state_img):
         img = np.array(state_img)
-        img = img.reshape(-1,64,64,3)
-        img = img / 255
+        img = img.reshape(constants.INPUT_SHAPE.insert(0,-1))
+        # img = img.reshape(tuple([-1,64,64,3]))
+        # img = img / 255
+        print('shape: ' + str(img.shape) + '  < ---------------------------------------')
+        cv2.imshow('Visual',img)
+        cv2.waitKey(1)
         return img
 
     def draw_map(self):
@@ -204,21 +208,38 @@ class DeepCraft(sc2.BotAI):
             green = 255
             blue = (_unit.weapon_cooldown / 50) * 255  # ready to shot, or not
             # print('cd: '+str(_unit.weapon_cooldown))
-            cv2.circle(game_map,(int(position[1]),int(position[0])),1,(blue,green,red),-1)  # BGR
-            # game_data[10*int(position[1]),10*int(position[0])] = (50,200,0)
+            # cv2.circle(game_map,(int(position[1]),int(position[0])),1,(blue,green,red),-1)  # BGR
+            game_map[int(position[0]),int(position[1])] = (blue,green,red)
         for _unit in self.enemy_units():
             position = _unit.position
             red = 255 * ((_unit.health + _unit.shield) / 200)  # encode units health
             green = 0
             blue = 20  # ready to shot. always 0 anyway
-            # game_data[10*int(position[1]),10*int(position[0])] = (50,0,200)
-            cv2.circle(game_map,(int(position[1]),int(position[0])),1,(blue,green,red),-1)  # BGR
+            game_map[int(position[0]),int(position[1])] = (blue,green,red)
+            # cv2.circle(game_map,(int(position[1]),int(position[0])),1,(blue,green,red),-1)  # BGR
 
-        resized = cv2.flip(cv2.resize(game_map,dsize=None,fx=4,fy=4),0)
-        cv2.imshow('Visual',resized)
-        cv2.waitKey(1)
-        return game_map
+        game_map = self.crop_image_only_outside(game_map)
+        resized = cv2.resize(game_map,dsize=None,fx=4,fy=4)
+        flipped = cv2.flip(resized,0)
+        print('shape: ' + str(resized.shape) + '  < ------------1111---------------------')
 
+        # cv2.imshow('Visual',resized)
+        # cv2.waitKey(1)
+
+        return resized
+
+    def crop_image_only_outside(self, img,tol=100):
+
+        # img is 2D or 3D image data
+        # tol  is tolerance
+        mask = img < tol
+        if img.ndim == 3:
+            mask = mask.all(2)
+        m,n = mask.shape
+        mask0,mask1 = mask.any(0),mask.any(1)
+        col_start,col_end = mask0.argmax(),n - mask0[::-1].argmax()
+        row_start,row_end = mask1.argmax(),m - mask1[::-1].argmax()
+        return img[row_start:row_end,col_start:col_end]
 
 def botVsComputer(ai):
     maps_set = ["zealots","roaches", "Bandwidth", "Reminiscence", "TheTimelessVoid", "PrimusQ9", "Ephemeron",
@@ -230,62 +251,10 @@ def botVsComputer(ai):
     res = run_game(map_settings=maps.get(maps_set[0]), players=[
         Bot(race=Race.Protoss, ai=ai, name='Octopus'),
         Computer(race=races[1], difficulty=Difficulty.Hard, ai_build=AIBuild.Macro)
-    ], realtime=False)
+    ], realtime=True)
     return res
-
-
-# def prep_data(states, actions, rewards):
-#     res = []
-#     print('actions len: ' + str(len(actions)))
-#     for j in range(len(actions)):
-#         full_state = {'state': states[j], 'action': actions[j],'reward': rewards[j+1],
-#                       'new_state': states[j+1]}
-#         if full_state is None:
-#             print('FULL STATEEE EEE')
-#             continue
-#         res.append(full_state)
-#     print('data len: ' + str(len(res)))
-#     return res
 
 
 ai = DeepCraft()
 botVsComputer(ai)
 
-
-# dqn = DQN()
-# for i in range(10):
-#     ai = DeepCraft()
-#     ai.states = []
-#     ai.actions_list = []
-#     ai.rewards = []
-#     ai.dqn = dqn
-#     try:
-#         result = botVsComputer(ai)
-#         print(result.__str__())
-#         if result == Result.Victory:
-#             ai.rewards.append(reward_val['win'])
-#         else:
-#             ai.rewards.append(reward_val['loose'])
-#
-#     except:
-#         print('ex')
-#
-#     ai.states.append(None)
-#     print('states: ' + str(len(ai.states)))
-#     print('actions: ' + str(len(ai.actions_list)))
-#     print('rewards: ' + str(len(ai.rewards)))
-#
-#     # fake_states = [None if x is None else c for c, x in enumerate(ai.states,0)]
-#     # data = prep_data(ai.states,ai.actions_list,ai.rewards)
-#     # # print('data len: '+ str(len(data)))
-#     # # i = 0
-#     # # for k in range(len(data)):# in data:
-#     # #     print(str(k) + '. ' +str(data[k]['state']) + ', ' + str(data[k]['action']) + ', ' + str(data[k]['reward']) + ', ' + str(data[k]['new_state']))
-#     # # print('new_state none: ' + str(data[len(data)-1]['new_state']))
-#     # dqn.replay_memory.extend(data)
-#     # print('repl mem size: ' + str(len(dqn.replay_memory)))
-#     # # print('>>> result: ' + str(result))
-#     # # train on memory
-#     # for _ in range(3):
-#     #     dqn.train()
-#     # dqn.main_model.save('model.ml')

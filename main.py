@@ -202,8 +202,6 @@ class Octopus(sc2.BotAI):
                 if self.structures(unit.SHIELDBATTERY).amount < 2:
                     await self.build(unit.SHIELDBATTERY, near=pylon.random,placement_step=1)
 
-    once = False
-
     async def defend(self):
         if self.structures(unit.NEXUS).amount < 2:
             self.defend_position = self.main_base_ramp.top_center
@@ -214,12 +212,11 @@ class Octopus(sc2.BotAI):
         else:
             enemy = False
         # en = self.enemy_units()
-        # if en.exists and not self.once:
+        # if en.exists:
         #     closest_en = en.closest_to(self.defend_position)
         #     if closest_en.distance_to(self.defend_position) < 7:
-        #         stalkers = self.army(unit.STALKER).sorted_by_distance_to(closest_en)
-        #         stalkers = stalkers[:int(len(stalkers)/2)]
-        #         placement = await self.find_placement(ability.TRAINWARP_ADEPT,closest_en.position,placement_step=1)
+        #         stalkers = self.army(unit.STALKER)
+        #
         #         for st in stalkers:
         #             await self.blink(st,placement)
         #         self.once = True
@@ -527,7 +524,7 @@ class Octopus(sc2.BotAI):
                 #     print('couldnt select leader  <<--------')
                 #     return
                 threats = self.enemy_units().filter(
-                    lambda unit_: unit_.can_attack_ground and unit_.distance_to(leader) <= (20 if self.attack else 12) and
+                    lambda unit_: unit_.can_attack_ground and unit_.distance_to(leader) <= (20 if self.attack else 9) and
                                   unit_.type_id not in self.units_to_ignore)
                 threats.extend(self.enemy_structures().filter(lambda x: x.can_attack_ground))
                 if threats.exists:
@@ -656,10 +653,6 @@ class Octopus(sc2.BotAI):
             start = self.leader
         else:
             start = self.army.closest_to(destination)
-        if self.build_type == 'macro' and len(self.known_enemies) < 10:
-            for man in self.army.idle:
-                self.do(man.attack(destination))
-            return
 
         # point halfway
         dist = start.distance_to(destination)
@@ -679,34 +672,33 @@ class Octopus(sc2.BotAI):
                 # print("can't find position for army.")
                 return
         # if everybody's here, we can go
-        _range = 9 if self.army.amount < 30 else 12
+        _range = 9 if self.army.amount < 24 else 12
 
         nearest = self.army.closer_than(_range, start.position)
         exclude = [unit.DISRUPTOR, unit.HIGHTEMPLAR]
 
-        if nearest.amount > self.army.amount * 0.7:
+        if nearest.amount > self.army.amount * 0.75:
             for man in self.army:
                 # if man.is_idle:
                 if enemy is not None and not enemy.in_attack_range_of(man).exists:
                     if man.type_id == unit.STALKER:
-                        if await self.blink(man, enemy.closest_to(man).position.towards(man.position, 6)):
-                            continue
+                        if not await self.blink(man, enemy.closest_to(man).position.towards(man.position, 6)):
+                            self.do(man.attack(enemy.closest_to(man)))
                     else:
                         closest_en = enemy.closest_to(man)
                         self.do(man.attack(closest_en))
-                else:
+                elif enemy is None:
                     #if not man.is_attacking:
                     self.do(man.move(position))
         else:
             # center = nearest.center
-            for man in self.army.filter(lambda man_: man_.distance_to(start) > 11):# and not man_.is_attacking):
+            for man in self.army.filter(lambda man_: man_.distance_to(start) > _range/2):# and not man_.is_attacking):
                 self.do(man.move(start))
 
     async def blink(self, stalker, target):
         abilities = await self.get_available_abilities(stalker)
         if ability.EFFECT_BLINK_STALKER in abilities:
-            placement = await self.find_placement(ability.TRAINWARP_ADEPT,target,placement_step=1)
-            self.do(stalker(ability.EFFECT_BLINK_STALKER, placement))
+            self.do(stalker(ability.EFFECT_BLINK_STALKER, target))
             return True
         else:
             return False
@@ -817,7 +809,7 @@ def botVsComputer():
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
         Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=AIBuild.Macro)
-    ], realtime=False)
+    ], realtime=True)
     return res, build, races[race_index]
 
 
