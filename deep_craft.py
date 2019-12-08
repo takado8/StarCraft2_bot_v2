@@ -64,12 +64,13 @@ class DeepCraft(sc2.BotAI):
         # get decision
         action = random.randint(0,6)#self.dqn.get_decision(input_img=self.input_from_game_state(state))
         self.actions_list.append(action)
-        await self.execute_action(action)
+        # await self.execute_action(action)
         # reward
         self.rewards.append(self.step_reward)
         self.step_reward = 0
         # reset if end
         await self.train_and_reset()
+        await self.micro_units()
 
     async def train_and_reset(self):
         if self.army.amount == 0 or self.enemy_units().amount == 0 and not self.already_reseting and not (len(self.army) == len(self.enemy_units()) == 0):
@@ -240,6 +241,109 @@ class DeepCraft(sc2.BotAI):
         col_start,col_end = mask0.argmax(),n - mask0[::-1].argmax()
         row_start,row_end = mask1.argmax(),m - mask1[::-1].argmax()
         return img[row_start:row_end,col_start:col_end]
+
+    async def micro_units(self):
+        army = self.units(unit.STALKER)
+        if army.exists:
+            # leader = self.leader
+            # if leader is None:
+            leader = army.random
+            threats = self.enemy_units().filter(
+                lambda unit_: unit_.can_attack_ground and unit_.distance_to(leader) <= 12 and
+                              unit_.type_id not in self.units_to_ignore)
+            # threats.extend(self.enemy_structures().filter(lambda x: x.can_attack_ground))
+            if threats.exists:
+                closest_enemy = threats.closest_to(leader)
+                target = threats.sorted(lambda x: x.health + x.shield)[0]
+                if target.health_percentage * target.shield_percentage == 1 or target.distance_to(leader) > \
+                        leader.distance_to(closest_enemy) + 4:
+                    target = closest_enemy
+                pos = leader.position.towards(closest_enemy.position,-8)
+                if not self.in_pathing_grid(pos):
+                    # retreat point, check 4 directions
+                    enemy_x = closest_enemy.position.x
+                    enemy_y = closest_enemy.position.y
+                    x = leader.position.x
+                    y = leader.position.y
+                    delta_x = x - enemy_x
+                    delta_y = y - enemy_y
+                    left_legal = True
+                    right_legal = True
+                    up_legal = True
+                    down_legal = True
+                    if abs(delta_x) > abs(delta_y):   # check x direction
+                        if delta_x > 0:  # dont run left
+                            left_legal = False
+                        else:      # dont run right
+                            right_legal = False
+                    else:     # check y dir
+                        if delta_y > 0:    # dont run up
+                            up_legal = False
+                        else:      # dont run down
+                            down_legal = False
+                    x_ = x
+                    y_ = y
+                    counter = 0
+                    paths_length = []
+                    # left
+                    if left_legal:
+                        while self.in_pathing_grid(Point2((x_,y_))):
+                            counter += 1
+                            x_ -= 1
+                        paths_length.append((counter, (x_,y_)))
+                        counter = 0
+                        x_ = x
+                    # right
+                    if right_legal:
+                        while self.in_pathing_grid(Point2((x_,y_))):
+                            counter += 1
+                            x_ += 1
+                        paths_length.append((counter, (x_,y_)))
+                        counter = 0
+                        x_ = x
+                    # up
+                    if up_legal:
+                        while self.in_pathing_grid(Point2((x_,y_))):
+                            counter += 1
+                            y_ -= 1
+                        paths_length.append((counter, (x_,y_)))
+                        counter = 0
+                        y_ = y
+                    # down
+                    if down_legal:
+                        while self.in_pathing_grid(Point2((x_,y_))):
+                            counter += 1
+                            y_ += 1
+                        paths_length.append((counter, (x_,y_)))
+                    max_ = (-2,0)
+                    for path in paths_length:
+                        if path[0] > max_[0]:
+                            max_ = path
+                    if max_[0] < 4:    # there is nowhere to run - fight.
+                        pos = None
+                    else:
+                        pos = Point2(max_[1])
+                # placement = None
+                # while placement is None:
+                #     placement = await self.find_placement(unit.PYLON,pos,placement_step=1)
+
+                for st in army:
+                    if pos is not None and st.weapon_cooldown > 0 and \
+                        closest_enemy.ground_range <= st.ground_range and threats.amount * 2 > army.amount:
+                        if not await self.blink(st, pos):
+                            self.do(st.move(pos))
+                    else:
+                        if st.distance_to(target) > 6:
+                            if not await self.blink(st,target.position):
+                                self.do(st.attack(target))
+
+    async def blink(self, stalker, target):
+        abilities = await self.get_available_abilities(stalker)
+        if ability.EFFECT_BLINK_STALKER in abilities:
+            self.do(stalker(ability.EFFECT_BLINK_STALKER, target))
+            return True
+        else:
+            return False
 
 def botVsComputer(ai):
     maps_set = ["zealots","roaches", "Bandwidth", "Reminiscence", "TheTimelessVoid", "PrimusQ9", "Ephemeron",

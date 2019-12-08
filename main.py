@@ -40,39 +40,38 @@ class Octopus(sc2.BotAI):
 
 
     async def on_unit_destroyed(self, unit_tag):
-        pass
-        # try:
-        #     if unit_tag in self.known_enemies:
-        #         # print('known unit died!')
-        #         self.known_enemies.remove(unit_tag)
-        # except:
-        #     pass
+        try:
+            if unit_tag in self.known_enemies:
+                # print('known unit died!')
+                self.known_enemies.remove(unit_tag)
+        except:
+            pass
 
     async def on_start(self):
         self.second_ramp = self.find_2nd_ramp()
 
     async def on_step(self, iteration):
-        # for enemy in self.enemy_units():
-        #     if enemy.tag not in self.known_enemies:
-        #         # print('new enemy!')
-        #         self.known_enemies.append(enemy.tag)
+        for enemy in self.enemy_units():
+            if enemy.tag not in self.known_enemies:
+                # print('new enemy!')
+                self.known_enemies.append(enemy.tag)
 
         self.army = self.units().filter(lambda x: x.type_id in self.army_ids)
         self.leader = self.select_leader()
+        await self.make_forge()
         await self.ramp_wall_build()
         await self.nexus_buff()
         await self.first_pylon()
         await self.build_pylons()
-        # await self.robotics_facility()
+        await self.robotics_facility()
         await self.distribute_workers()
         await self.expand()
-        await self.make_forge()
         self.train_workers()
         await self.twilight_council_build()
         # counter attack
-        if self.enemy_units().exists and self.enemy_units().closer_than(12, self.defend_position).amount > 5:
+        if self.enemy_units().exists and self.enemy_units().closer_than(18, self.defend_position).amount > 3:
             self.enemy_attack = True
-        if self.enemy_attack and self.enemy_units().exists and self.enemy_units().closer_than(12, self.defend_position).amount < 4:
+        if self.enemy_attack and not self.enemy_units().exists: # and self.enemy_units().closer_than(18, self.defend_position).amount < 4:
             self.enemy_attack = False
             self.attack = True
         if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS) or self.minerals > 400:
@@ -102,8 +101,6 @@ class Octopus(sc2.BotAI):
 
     async def start_step(self):
         pass
-
-
 
     async def make_forge(self):
         if self.time < 180:
@@ -153,7 +150,21 @@ class Octopus(sc2.BotAI):
                         upgrade.PROTOSSSHIELDSLEVEL2 in self.state.upgrades:
                     self.do(forge.research(upgrade.PROTOSSSHIELDSLEVEL3))
 
+    def forge_upg_priority(self):
+        upgds = [upgrade.PROTOSSGROUNDWEAPONSLEVEL2,upgrade.PROTOSSGROUNDARMORSLEVEL2,upgrade.PROTOSSSHIELDSLEVEL1]
+        done = True
+        for u in upgds:
+            if u not in self.state.upgrades:
+                done = False
+                break
+        if not done:
+            if self.structures(unit.FORGE).ready.idle.exists:
+                return True
+        return False
+
     async def robotics_facility(self):
+        if self.forge_upg_priority():
+            return
         if self.structures(unit.ROBOTICSFACILITY).amount < 1 and self.can_afford(unit.ROBOTICSFACILITY)\
                 and not self.already_pending(unit.ROBOTICSFACILITY) and self.time > 230:
             pylon = self.get_proper_pylon()
@@ -185,7 +196,7 @@ class Octopus(sc2.BotAI):
         #         if self.can_afford(unit.DISRUPTOR) and self.supply_left > 2:
         #             await self.do(rf.train(unit.DISRUPTOR))
         elif self.can_afford(unit.IMMORTAL) and self.supply_left > 3 and self.structures(unit.ROBOTICSFACILITY).ready.exists \
-                and self.units(unit.IMMORTAL).amount < 4:
+                and self.units(unit.IMMORTAL).amount < 5:
             for factory in self.structures(unit.ROBOTICSFACILITY).ready.idle:
                 self.do(factory.train(unit.IMMORTAL))
 
@@ -385,15 +396,15 @@ class Octopus(sc2.BotAI):
                 self.do(gateway(ability.MORPH_WARPGATE))
 
     async def warp_new_units(self):
-        # if self.structures(unit.ROBOTICSFACILITY).ready.idle.exists and \
-        #         self.army(unit.IMMORTAL).amount < 3:
-        #     return
+        if self.structures(unit.ROBOTICSFACILITY).ready.idle.exists and \
+                self.army(unit.IMMORTAL).amount < 2 or self.forge_upg_priority():
+            return
         for warpgate in self.structures(unit.WARPGATE).ready:
             abilities = await self.get_available_abilities(warpgate)
             # all the units have the same cooldown anyway so let's just look at ZEALOT
             if ability.WARPGATETRAIN_ZEALOT in abilities:
 
-                furthest_pylon = self.structures(unit.PYLON).furthest_to(self.start_location.position)
+                furthest_pylon = self.structures(unit.PYLON).ready.furthest_to(self.start_location.position)
                 if self.attack:
                     pos = furthest_pylon.position.to2.random_on_distance(6)
                 else:
@@ -406,7 +417,7 @@ class Octopus(sc2.BotAI):
                         # print("can't place")
                         continue
                     self.do(warpgate.warp_in(unit.SENTRY,placement))
-                elif self.can_afford(unit.STALKER) and self.supply_left > 1 and self.units(unit.STALKER).amount < 999:
+                elif self.can_afford(unit.STALKER) and self.supply_left > 1 and self.units(unit.STALKER).amount < 90:
                     placement = await self.find_placement(ability.WARPGATETRAIN_STALKER, pos, placement_step=1)
                     if placement is None:
                         # print("can't place")
@@ -420,8 +431,8 @@ class Octopus(sc2.BotAI):
                         continue
                     self.do(warpgate.warp_in(unit.ADEPT, placement))
 
-                elif self.vespene < 100 and self.minerals > 200 and self.can_afford(unit.ZEALOT) and \
-                        self.supply_left > 10 and self.units(unit.ZEALOT).amount < 10:
+                elif self.vespene < 50 and self.minerals > 150 and self.can_afford(unit.ZEALOT) and \
+                        self.supply_left > 5 and self.units(unit.ZEALOT).amount < 10:
                     placement = await self.find_placement(ability.WARPGATETRAIN_ZEALOT, pos, placement_step=1)
                     if placement is None:
                         # print("can't place")
@@ -548,6 +559,7 @@ class Octopus(sc2.BotAI):
                         y_ = y
                         counter = 0
                         paths_length = []
+
                         # left
                         if left_legal:
                             while self.in_pathing_grid(Point2((x_,y_))):
@@ -591,7 +603,7 @@ class Octopus(sc2.BotAI):
                     #     placement = await self.find_placement(unit.PYLON,pos,placement_step=1)
 
                     for st in army:
-                        if pos is not None and st.weapon_cooldown > 0 and st.shield_percentage < 0.33 and \
+                        if pos is not None and st.weapon_cooldown > 0 and st.shield_percentage < 0.66 and \
                             closest_enemy.ground_range <= st.ground_range and threats.amount * 2 > army.amount:
                             if not await self.blink(st, pos):
                                 self.do(st.move(pos))
@@ -634,7 +646,10 @@ class Octopus(sc2.BotAI):
     async def attack_formation(self):
         enemy_units = self.enemy_units()
         enemy = enemy_units.filter(lambda x: x.type_id not in self.units_to_ignore and x.can_attack_ground)
-        if enemy.exists:
+        if enemy.amount > 3:
+            if len(self.known_enemies) * 4 < len(self.army):
+                for man in self.army:
+                    self.do(man.attack(enemy.closest_to(man)))
             if self.leader is not None:
                 destination = enemy.closest_to(self.leader)
             else:
@@ -664,11 +679,11 @@ class Octopus(sc2.BotAI):
         position = None
         i = 0
         while position is None:
-            position = await self.find_placement(unit.PYLON, near=point, max_distance=30, placement_step=1,
+            position = await self.find_placement(unit.PYLON, near=point, max_distance=15, placement_step=5,
                                                  random_alternative=False)
             i += 1
-            if i > 5:
-                # print("can't find position for army.")
+            if i > 4:
+                print("can't find position for army.")
                 return
         # if everybody's here, we can go
         _range = 9 if self.army.amount < 24 else 12
@@ -801,13 +816,13 @@ def botVsComputer():
                 "Sanglune", "Urzagol"]
     training_maps = ["DefeatZealotswithBlink", "ParaSiteTraining"]
     races = [Race.Protoss, Race.Zerg, Race.Terran]
-    computer_builds = [AIBuild.Macro, AIBuild.Timing, AIBuild.Power, AIBuild.Air]
+    computer_builds = [AIBuild.Macro, AIBuild.Power, AIBuild.Air]
     build = random.choice(computer_builds)
     map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[race_index], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=computer_builds[0])
     ], realtime=False)
     return res, build, races[race_index]
 
@@ -818,7 +833,7 @@ def test():
         {'win': {}, 'loose':{}}}
     win = 0
     loose = 0
-    r = 10
+    r = 1
     for i in range(r):
         try:
             result = botVsComputer()
@@ -847,13 +862,13 @@ def test():
     print('win: ' + str(win) + '/' + str(r))
     print('vs Protoss:')
     for key in score_board[Race.Protoss]['win']:
-        print(str(key) + ': ' + str(score_board[Race.Protoss]['win'][key]) + ' / ' + str(score_board[Race.Protoss]['loose']))
+        print(str(key) + ': ' + str(score_board[Race.Protoss]['win'][key]) + ' / ' + str(score_board[Race.Protoss]['loose'][key]))
     print('vs Zerg:')
     for key in score_board[Race.Zerg]['win']:
-        print(str(key) + ': ' + str(score_board[Race.Zerg]['win'][key]) + ' / ' + str(score_board[Race.Zerg]['loose']))
+        print(str(key) + ': ' + str(score_board[Race.Zerg]['win'][key]) + ' / ' + str(score_board[Race.Zerg]['loose'][key]))
     print('vs Terran: ')
     for key in score_board[Race.Terran]['win']:
-        print(str(key) + ': ' + str(score_board[Race.Terran]['win'][key]) + ' / ' + str(score_board[Race.Terran]['loose']))
+        print(str(key) + ': ' + str(score_board[Race.Terran]['win'][key]) + ' / ' + str(score_board[Race.Terran]['loose'][key]))
     print('=============================================')
 
 
