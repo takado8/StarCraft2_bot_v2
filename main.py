@@ -8,7 +8,6 @@ from sc2.player import Bot, Computer
 from sc2.units import Units
 from sc2.ids.buff_id import BuffId as buff
 from sc2.ids.upgrade_id import UpgradeId as upgrade
-from visual import Visual
 from sc2.position import Point2
 import numpy as np
 import cv2
@@ -20,6 +19,7 @@ class Octopus(sc2.BotAI):
         'macro': {'gate': [30], 'cybernetics': [0], 'robotics': [0]}
         }
 
+    hunt = False
     enemy_attack = False
     second_ramp = None
     builds = ['rush', 'macro']
@@ -59,17 +59,18 @@ class Octopus(sc2.BotAI):
         self.army = self.units().filter(lambda x: x.type_id in self.army_ids)
         self.leader = self.select_leader()
         await self.make_forge()
-        await self.ramp_wall_build()
+        # await self.ramp_wall_build()
         await self.nexus_buff()
         await self.first_pylon()
         await self.build_pylons()
         await self.robotics_facility()
         await self.distribute_workers()
         await self.expand()
+        # await self.adept_hunt()
         self.train_workers()
         await self.twilight_council_build()
         # counter attack
-        if self.enemy_units().exists and self.enemy_units().closer_than(18, self.defend_position).amount > 3:
+        if self.enemy_units().exists and self.enemy_units().closer_than(20, self.defend_position).amount > 3:
             self.enemy_attack = True
         if self.enemy_attack and not self.enemy_units().exists: # and self.enemy_units().closer_than(18, self.defend_position).amount < 4:
             self.enemy_attack = False
@@ -103,7 +104,7 @@ class Octopus(sc2.BotAI):
         pass
 
     async def make_forge(self):
-        if self.time < 180:
+        if self.time < 140:
             return
         if self.structures(unit.FORGE).amount < 1 and not self.already_pending(unit.FORGE) and self.can_afford(unit.FORGE):
             if self.structures(unit.PYLON).ready.exists:
@@ -111,7 +112,7 @@ class Octopus(sc2.BotAI):
                 if placement:
                     await self.build(unit.FORGE,near=placement,placement_step=2)
         elif self.structures(unit.FORGE).ready.exists:
-            if self.time > 240 and self.structures(unit.FORGE).amount < 2 and not self.already_pending(
+            if self.time > 220 and self.structures(unit.FORGE).amount < 2 and not self.already_pending(
                     unit.FORGE) and self.can_afford(unit.FORGE):
                 placement = self.get_proper_pylon()
                 if placement:
@@ -142,7 +143,7 @@ class Octopus(sc2.BotAI):
                     self.do(forge.research(upgrade.PROTOSSGROUNDARMORSLEVEL3))
                 elif upgrade.PROTOSSSHIELDSLEVEL2 not in self.state.upgrades and not self.already_pending_upgrade(
                         upgrade.PROTOSSSHIELDSLEVEL2) and self.can_afford(upgrade.PROTOSSSHIELDSLEVEL2) and \
-                        upgrade.PROTOSSSHIELDSLEVEL1 in self.state.upgrades and self.units(
+                        upgrade.PROTOSSSHIELDSLEVEL1 in self.state.upgrades and self.structures(
                     unit.TWILIGHTCOUNCIL).ready.exists:
                     self.do(forge.research(upgrade.PROTOSSSHIELDSLEVEL2))
                 elif upgrade.PROTOSSSHIELDSLEVEL3 not in self.state.upgrades and not self.already_pending_upgrade(
@@ -151,7 +152,11 @@ class Octopus(sc2.BotAI):
                     self.do(forge.research(upgrade.PROTOSSSHIELDSLEVEL3))
 
     def forge_upg_priority(self):
-        upgds = [upgrade.PROTOSSGROUNDWEAPONSLEVEL2,upgrade.PROTOSSGROUNDARMORSLEVEL2,upgrade.PROTOSSSHIELDSLEVEL1]
+        if self.structures(unit.TWILIGHTCOUNCIL).ready.exists:
+            upgds = [upgrade.PROTOSSGROUNDWEAPONSLEVEL2,upgrade.PROTOSSGROUNDARMORSLEVEL2,upgrade.PROTOSSSHIELDSLEVEL1]
+        else:
+            upgds = [upgrade.PROTOSSGROUNDWEAPONSLEVEL1,upgrade.PROTOSSGROUNDARMORSLEVEL1,upgrade.PROTOSSSHIELDSLEVEL1]
+
         done = True
         for u in upgds:
             if u not in self.state.upgrades:
@@ -210,18 +215,32 @@ class Octopus(sc2.BotAI):
                     await self.build(unit.SHIELDBATTERY, near=pylon.random,placement_step=1)
 
     async def defend(self):
-        if self.structures(unit.NEXUS).amount < 2:
+        nex = self.structures(unit.NEXUS)
+        if nex.amount < 2:
             self.defend_position = self.main_base_ramp.top_center
-        else:
+        elif nex.amount == 2:
             self.defend_position = self.second_ramp.top_center.towards(self.second_ramp.bottom_center, -4)
-        if self.enemy_units().exists and self.enemy_units().closer_than(20, self.defend_position):
-            enemy = True
+        else:
+            min = 999
+            ramp = None
+            nex = nex.furthest_to(self.start_location)
+            for rmp in self.game_info.map_ramps:
+                d = nex.distance_to(rmp.top_center)
+                if d < min:
+                    min = d
+                    ramp = rmp
+            if min < 9:
+                self.defend_position = ramp.top_center.towards(ramp.bottom_center, -3)
+            else:
+                self.defend_position = nex.position.towards(self.game_info.map_center, 5)
+        enemy = self.enemy_units()
+        if enemy.exists and self.enemy_units().closer_than(20, self.defend_position).amount > 5:
             dist = 20
         else:
-            enemy = False
-            dist = 9
+            dist = 7
+
         for man in self.army:
-            if enemy and not man.is_attacking or man.distance_to(self.defend_position) > dist:
+            if man.distance_to(self.defend_position) > dist:
                 self.do(man.move(self.defend_position.random_on_distance(4)))
 
     def train_army(self):
@@ -231,10 +250,12 @@ class Octopus(sc2.BotAI):
         if self.can_afford(unit.SENTRY) and self.structures(unit.CYBERNETICSCORE).ready.exists and self.units(
             unit.SENTRY).amount < 1 and self.units(unit.STALKER).amount > 5:
             u = unit.SENTRY
+        elif self.can_afford(unit.ADEPT) and self.structures(unit.CYBERNETICSCORE).ready.exists and \
+                self.army(unit.ADEPT).amount < 3:
+            u = unit.ADEPT
         elif self.can_afford(unit.STALKER) and self.structures(unit.CYBERNETICSCORE).ready.exists:
             u = unit.STALKER
-        elif self.can_afford(unit.ADEPT) and self.structures(unit.CYBERNETICSCORE).ready.exists:
-            u = unit.ADEPT
+
         elif self.supply_left > 1 and self.minerals > 175 and self.units(unit.ZEALOT).amount < 4:
             u = unit.ZEALOT
         else:
@@ -316,8 +337,8 @@ class Octopus(sc2.BotAI):
 
     async def build_pylons(self):
         if self.structures(unit.PYLON).exists:
-            if self.time < 240:
-                pending = 2
+            if self.time < 120:
+                pending = 1
                 left = 5
             else:
                 pending = 2
@@ -397,7 +418,7 @@ class Octopus(sc2.BotAI):
 
     async def warp_new_units(self):
         if self.structures(unit.ROBOTICSFACILITY).ready.idle.exists and \
-                self.army(unit.IMMORTAL).amount < 2 or self.forge_upg_priority():
+                self.army(unit.IMMORTAL).amount < 5 or self.forge_upg_priority():
             return
         for warpgate in self.structures(unit.WARPGATE).ready:
             abilities = await self.get_available_abilities(warpgate)
@@ -504,6 +525,29 @@ class Octopus(sc2.BotAI):
             #     leader = army.closest_to(self.enemy_start_locations[0].position)
             return leader
 
+    async def adept_hunt(self):
+        adepts = self.army(unit.ADEPT).ready
+        destination = self.enemy_start_locations[0]
+        if adepts.amount > 3:
+            for adept in adepts:
+                targets = self.enemy_units().filter(lambda x: x.type_id in self.workers_ids and x.distance_to(adept) < 12)
+                if targets.exists:
+
+                    closest = targets.closest_to(adept)
+                    target = targets.sorted(lambda x: x.health + x.shield)[0]
+                    if target.health_percentage * target.shield_percentage == 1 or \
+                            target.distance_to(adept) > closest.distance_to(adept) + 4:
+                        target = closest
+                    self.do(adept.attack(target))
+                elif ability.ADEPTPHASESHIFT_ADEPTPHASESHIFT in await self.get_available_abilities(adept) and\
+                        adept.distance_to(destination) > 12:
+                    self.do(adept(ability.ADEPTPHASESHIFT_ADEPTPHASESHIFT, destination))
+                else:
+                    self.do(adept.move(destination))
+            for shadow in self.units(unit.ADEPTPHASESHIFT):
+                self.do(shadow.move(destination))
+
+
     async def micro_units(self):
         if not self.enemy_units().exists:
             return
@@ -514,7 +558,7 @@ class Octopus(sc2.BotAI):
                 yield lst[i:i + n]
         # stalkers // mixed
         hole_army = self.army   #.filter(lambda x: x.type_id in [unit.STALKER, unit.ADEPT, unit.IMMORTAL])
-        dist = 20 if self.attack else 6
+        dist = 20 if self.attack else 12
         part_army = chunks(hole_army, 10)
         for army_l in part_army:
             army = Units(army_l, self)
@@ -642,7 +686,6 @@ class Octopus(sc2.BotAI):
 
                 self.do(zl.attack(target))
 
-
     async def attack_formation(self):
         enemy_units = self.enemy_units()
         enemy = enemy_units.filter(lambda x: x.type_id not in self.units_to_ignore and x.can_attack_ground)
@@ -728,7 +771,7 @@ class Octopus(sc2.BotAI):
             if self.can_afford(unit.NEXUS) and not self.already_pending(unit.NEXUS):
                 await self.expand_now2()
         elif 3 > nexuses.amount > 1 and self.units(
-                unit.PROBE).amount >= 34 and len(self.army) > 10:
+                unit.PROBE).amount >= 34 and len(self.army) > 12:
             if self.proper_nexus_count == 2:
                 self.proper_nexus_count = 3
             if self.can_afford(unit.NEXUS) and not self.already_pending(unit.NEXUS):
@@ -766,45 +809,40 @@ class Octopus(sc2.BotAI):
 
     async def expand_now2(self):
         """Takes new expansion."""
-        building = None
-        if building is None:
-            # self.race is never Race.Random
-            start_townhall_type = {Race.Protoss: unit.NEXUS, Race.Terran: unit.COMMANDCENTER,
-                                   Race.Zerg: unit.HATCHERY}
-            building = start_townhall_type[self.race]
-        assert isinstance(building, unit)
-        location = None
-        if location is None:
-            location = await self.get_next_expansion2()
+        # building = None
+        # if building is None:
+        #     # self.race is never Race.Random
+        #     start_townhall_type = {Race.Protoss: unit.NEXUS, Race.Terran: unit.COMMANDCENTER,
+        #                            Race.Zerg: unit.HATCHERY}
+        building = unit.NEXUS#start_townhall_type[self.race]
+        # assert isinstance(building, unit)
+
+        location = await self.get_next_expansion2()
         if location is not None:
             await self.build(building, near=location, max_distance=5, random_alternative=False, placement_step=1)
 
     async def get_next_expansion2(self):
         """Find next expansion location."""
         closest = None
-        distance = math.inf
-        minerals = None
+        distance = 99999
+
+        def is_near_to_expansion(t):
+            return t.position.distance_to(el) < 5
 
         for el in self.expansion_locations:
-            def is_near_to_expansion(t):
-                return t.position.distance_to(el) < self.EXPANSION_GAP_THRESHOLD
-
             if any(map(is_near_to_expansion, self.townhalls)):
                 # already taken
                 continue
 
-            if minerals and minerals.distance_to(el) < 9:
-                return el
+            # if self.mineral_field.closer_than(15, el).amount < 3:
+            #     # almost out of minerals
+            #     continue
 
-            if self.mineral_field.closer_than(15, el).amount < 3:
-                # almost out of minerals
-                continue
-
-            startp = self._game_info.player_start_location
-            d = await self._client.query_pathing(startp, el)
-            if d is None:
-                continue
-
+            startp = self.structures(unit.NEXUS).closest_to(self.start_location)
+            # d = await self._client.query_pathing(startp, el)
+            # if d is None:
+            #     continue
+            d = startp.distance_to(el)
             if d < distance:
                 distance = d
                 closest = el
@@ -816,13 +854,13 @@ def botVsComputer():
                 "Sanglune", "Urzagol"]
     training_maps = ["DefeatZealotswithBlink", "ParaSiteTraining"]
     races = [Race.Protoss, Race.Zerg, Race.Terran]
-    computer_builds = [AIBuild.Macro, AIBuild.Power, AIBuild.Air]
+    computer_builds = [AIBuild.Macro, AIBuild.Power]
     build = random.choice(computer_builds)
     map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=computer_builds[0])
+        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=False)
     return res, build, races[race_index]
 
