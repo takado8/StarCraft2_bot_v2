@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8c31ee0e-5715-4e85-a78f-7d7c2ebf81b0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,22 +19,22 @@
           <entry key="project.open.time.1" value="2" />
           <entry key="project.open.time.10" value="1" />
           <entry key="project.open.time.5" value="1" />
-          <entry key="project.open.time.6" value="25" />
+          <entry key="project.open.time.6" value="26" />
           <entry key="project.open.time.7" value="12" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="46" />
+          <entry key="project.opened" value="47" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="14" />
-          <entry key="py" value="29896" />
+          <entry key="py" value="29981" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="14" />
-          <entry key="Python" value="29896" />
+          <entry key="Python" value="29981" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -60,23 +59,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="351">
-              <caret line="240" column="12" selection-start-line="240" selection-start-column="8" selection-end-line="240" selection-end-column="12" />
+            <state relative-caret-position="128">
+              <caret line="985" column="64" selection-start-line="985" selection-start-column="64" selection-end-line="985" selection-end-column="64" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
-                <marker date="1576546647529" expanded="true" signature="1254:1265" ph="..." />
-                <marker date="1576546647529" expanded="true" signature="1649:1658" ph="..." />
-                <marker date="1576546647529" expanded="true" signature="1649:1736" ph="..." />
-                <marker date="1576546647529" expanded="true" signature="1761:1921" ph="..." />
-                <marker date="1576546647529" expanded="true" signature="4900:13758" ph="..." />
-                <marker date="1576546647529" expanded="true" signature="8896:9488" ph="..." />
-                <marker date="1576546647529" expanded="true" signature="12650:12669" ph="..." />
-                <marker date="1576546647529" expanded="true" signature="12695:12920" ph="..." />
-                <marker date="1576546647529" expanded="true" signature="12952:12961" ph="..." />
-                <marker date="1576546647529" expanded="true" signature="14257:15551" ph="..." />
-                <marker date="1576546647529" expanded="true" signature="31878:33048" ph="..." />
-                <marker date="1576546647529" expanded="true" signature="39303:39315" ph="..." />
-                <marker date="1576546647529" expanded="true" signature="42875:42880" ph="..." />
+                <marker date="1576555763162" expanded="true" signature="1254:1265" ph="..." />
+                <marker date="1576555763162" expanded="true" signature="1649:1658" ph="..." />
               </folding>
             </state>
           </provider>
@@ -94,7 +82,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/bot_ai.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="351">
+            <state relative-caret-position="25000">
               <caret line="1288" column="34" selection-start-line="1288" selection-start-column="34" selection-end-line="1288" selection-end-column="34" />
             </state>
           </provider>
@@ -103,7 +91,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="211">
+            <state relative-caret-position="5560">
               <caret line="298" column="54" selection-start-line="298" selection-start-column="54" selection-end-line="298" selection-end-column="54" />
             </state>
           </provider>
@@ -112,7 +100,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
+            <state relative-caret-position="360">
               <caret line="28" selection-start-line="28" selection-end-line="28" />
             </state>
           </provider>
@@ -121,7 +109,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/s2clientprotocol/sc2api_pb2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-586">
+            <state relative-caret-position="88700">
               <caret line="4435" selection-start-line="4435" selection-end-line="4435" />
             </state>
           </provider>
@@ -174,7 +162,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="282" />
     <option name="y" value="192" />
     <option name="width" value="1215" />
@@ -203,6 +191,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -229,7 +218,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -311,7 +299,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
+    <frame x="-7" y="-7" width="1295" height="695" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.09379968" />
@@ -319,7 +307,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3291815" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.5569395" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.5569395" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39679715" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -544,6 +532,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="128">
+          <caret line="985" column="64" selection-start-line="985" selection-start-column="64" selection-end-line="985" selection-end-column="64" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+            <marker date="1576555763162" expanded="true" signature="1254:1265" ph="..." />
+            <marker date="1576555763162" expanded="true" signature="1649:1658" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/units.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
@@ -553,52 +553,29 @@
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/bot_ai.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="351">
+        <state relative-caret-position="25000">
           <caret line="1288" column="34" selection-start-line="1288" selection-start-column="34" selection-end-line="1288" selection-end-column="34" />
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="211">
+        <state relative-caret-position="5560">
           <caret line="298" column="54" selection-start-line="298" selection-start-column="54" selection-end-line="298" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/s2clientprotocol/sc2api_pb2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-586">
-          <caret line="4435" selection-start-line="4435" selection-end-line="4435" />
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
+        <state relative-caret-position="360">
           <caret line="28" selection-start-line="28" selection-end-line="28" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/s2clientprotocol/sc2api_pb2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="351">
-          <caret line="240" column="12" selection-start-line="240" selection-start-column="8" selection-end-line="240" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <marker date="1576546647529" expanded="true" signature="1254:1265" ph="..." />
-            <marker date="1576546647529" expanded="true" signature="1649:1658" ph="..." />
-            <marker date="1576546647529" expanded="true" signature="1649:1736" ph="..." />
-            <marker date="1576546647529" expanded="true" signature="1761:1921" ph="..." />
-            <marker date="1576546647529" expanded="true" signature="4900:13758" ph="..." />
-            <marker date="1576546647529" expanded="true" signature="8896:9488" ph="..." />
-            <marker date="1576546647529" expanded="true" signature="12650:12669" ph="..." />
-            <marker date="1576546647529" expanded="true" signature="12695:12920" ph="..." />
-            <marker date="1576546647529" expanded="true" signature="12952:12961" ph="..." />
-            <marker date="1576546647529" expanded="true" signature="14257:15551" ph="..." />
-            <marker date="1576546647529" expanded="true" signature="31878:33048" ph="..." />
-            <marker date="1576546647529" expanded="true" signature="39303:39315" ph="..." />
-            <marker date="1576546647529" expanded="true" signature="42875:42880" ph="..." />
-          </folding>
+        <state relative-caret-position="88700">
+          <caret line="4435" selection-start-line="4435" selection-end-line="4435" />
         </state>
       </provider>
     </entry>
