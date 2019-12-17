@@ -18,13 +18,13 @@ class Octopus(sc2.BotAI):
     enemy_attack = False
     second_ramp = None
     builds = ['rush', 'macro', 'defend_rush']
-    build_type = 'defend_rush'
+    build_type = 'macro'
     enemy_main_base_down = False
     first_attack = False
     attack = False
     after_first_attack = False
     army_ids = [unit.ADEPT, unit.STALKER, unit.ZEALOT, unit.SENTRY, unit.OBSERVER, unit.IMMORTAL, unit.ARCHON,
-                unit.HIGHTEMPLAR, unit.DISRUPTOR, unit.WARPPRISM]
+                unit.HIGHTEMPLAR, unit.DISRUPTOR, unit.WARPPRISM, unit.VOIDRAY]
     units_to_ignore = [unit.LARVA, unit.EGG]
     workers_ids = [unit.SCV, unit.PROBE, unit.DRONE]
     proper_nexus_count = 1
@@ -36,37 +36,52 @@ class Octopus(sc2.BotAI):
 
     prev_nexus_count = 0
 
-    async def on_unit_destroyed(self, unit_tag):
-        try:
-            if unit_tag in self.known_enemies:
-                # print('known unit died!')
-                self.known_enemies.remove(unit_tag)
-        except:
-            pass
+    # async def on_unit_destroyed(self, unit_tag):
+    #     try:
+    #         if unit_tag in self.known_enemies:
+    #             # print('known unit died!')
+    #             self.known_enemies.remove(unit_tag)
+    #         else:
+    #             for u in self.army:
+    #                 if u.tag == unit_tag:
+    #                     self.army.remove(u)
+    #     except:
+    #         pass
+
+    # async def on_unit_created(self, unit):
+        # if unit.type_id in self.army_ids:
+        #     self.army.append(unit)
 
     async def on_start(self):
         self.second_ramp = self.find_2nd_ramp()
+        # self.known_enemies = Units(self.known_enemies,self)
+        # self.army = Units(self.army,self)
 
     async def on_step(self, iteration):
-        for enemy in self.enemy_units():
-            if enemy.tag not in self.known_enemies:
-                # print('new enemy!')
-                self.known_enemies.append(enemy.tag)
+        # for enemy in self.enemy_units():
+        #     if enemy.tag not in self.known_enemies:
+        #         # print('new enemy!')
+        #         self.known_enemies.append(enemy.tag)
+
         self.assign_defend_position()
-        if (self.build_type == 'rush' or self.build_type == 'defend_rush') and self.after_first_attack or\
-                self.time > 260:
+        if (self.build_type == 'rush' or self.build_type == 'defend_rush') and self.after_first_attack and\
+                self.time > 420:
             self.build_type = 'macro'
+
         self.army = self.units().filter(lambda x: x.type_id in self.army_ids)
-        if self.time < 300 and self.enemy_units().amount > 3:
+        if self.time < 300 and self.enemy_units().exists and\
+                self.enemy_units().closer_than(20,self.defend_position).amount > 3 and self.army(unit.PROBE).amount == 0:
             probes = self.units(unit.PROBE).sorted(lambda x: x.shield + x.health)
             self.army.extend(probes[int(len(probes)/2):])
+        elif self.time < 360:
+            self.army = self.army.filter(lambda x: x.type_id != unit.PROBE)
         # self.leader = self.select_leader()
 
-        await self.twilight_council_build()
-        await self.robotics_facility()
-
+        # await self.twilight_council_build()
+        # await self.robotics_facility()
+        await self.stargate_build()
         await self.make_forge()
-        await self.ramp_wall_build()
+        # await self.ramp_wall_build()
         await self.nexus_buff()
         await self.first_pylon()
         await self.build_pylons()
@@ -97,9 +112,8 @@ class Octopus(sc2.BotAI):
             self.attack = True
         if self.build_type == 'rush' and self.army.amount > 2 or self.attack:
             await self.proxy()
-        if self.attack and self.army.amount < (5 if self.build_type == 'rush' else 16):
+        if self.attack and self.army.amount < (5 if self.build_type == 'rush' else 30):
             self.attack = False
-
         if self.attack:
             await self.attack_formation()
         else:
@@ -110,7 +124,7 @@ class Octopus(sc2.BotAI):
         pass
 
     async def make_forge(self):
-        if self.time < 140 or self.build_type is not 'macro':
+        if self.time < 160 or self.build_type is not 'macro':
             return
         if self.structures(unit.FORGE).amount < 1 and not self.already_pending(unit.FORGE) and self.can_afford(unit.FORGE):
             if self.structures(unit.PYLON).ready.exists:
@@ -215,6 +229,17 @@ class Octopus(sc2.BotAI):
             for factory in self.structures(unit.ROBOTICSFACILITY).ready.idle:
                 self.do(factory.train(unit.IMMORTAL))
 
+    async def stargate_build(self):
+        if self.structures(unit.STARGATE).exists:
+            if self.can_afford(unit.ORACLE) and self.units(unit.ORACLE).amount < 3:
+                self.train(unit_type=unit.ORACLE)
+        elif self.structures(unit.CYBERNETICSCORE).ready.exists\
+                and self.can_afford(unit.STARGATE) and not self.already_pending(unit.STARGATE):
+            await self.build(unit.STARGATE, near=self.get_proper_pylon())
+
+    async def oracle_micro(self):
+        pass
+
     def build_batteries(self):
         if not self.structures(unit.PYLON).closer_than(5,self.defend_position).exists:
             self.build(unit.PYLON, near=self.defend_position.towards(self.structures(unit.NEXUS).closest_to(self.defend_position)))
@@ -239,7 +264,7 @@ class Octopus(sc2.BotAI):
             dist = 6
         for man in self.army:
             if man.distance_to(self.defend_position) > dist:
-                self.do(man.move(self.defend_position.random_on_distance(random.randint(1,4))))
+                self.do(man.move(self.defend_position.random_on_distance(random.randint(1,3))))
             if enemy.exists and not enemy.in_attack_range_of(man).exists:
                 self.do(man.attack(enemy.closest_to(man)))
 
@@ -255,8 +280,8 @@ class Octopus(sc2.BotAI):
             else:
                 min = 999
                 ramp = None
-                if enemy.exists and enemy.closer_than(50,self.start_location).amount > 1:
-                    nex = nex.closest_to(enemy.closest_to(self.start_location))
+                if enemy.exists and enemy.closer_than(50,self.start_location).amount > 0:
+                    nex = nex.closest_to(enemy.closest_to(self.enemy_start_locations[0]))
                 else:
                     nex = nex.furthest_to(self.start_location)
                 p = nex.position.towards(self.second_ramp.bottom_center,7)
@@ -346,7 +371,7 @@ class Octopus(sc2.BotAI):
             gc = 2
         if gates_count < gc \
                 and self.can_afford(unit.GATEWAY) and self.structures(unit.PYLON).ready.exists and\
-                self.already_pending(unit.GATEWAY) < 1:
+                self.already_pending(unit.GATEWAY) < 2:
             if gates_count < 1:
                 pylon = self.main_base_ramp.protoss_wall_buildings[0]
             else:
@@ -608,7 +633,7 @@ class Octopus(sc2.BotAI):
         whole_army = self.army  #.filter(lambda x: x.type_id in [unit.STALKER, unit.ADEPT, unit.IMMORTAL])
         dist = 12# if self.attack else 12
         group_size = 7
-        c = int(whole_army.amount / group_size)
+        c = int(len(whole_army) / group_size)
         chunks = c if c > 0 else 1
         part_army = chunk(whole_army, chunks)
         for army_l in part_army:
@@ -630,9 +655,9 @@ class Octopus(sc2.BotAI):
                     else:
                         target = threats.sorted(lambda x: x.health + x.shield)[0]
                     if target.health_percentage * target.shield_percentage == 1 or target.distance_to(leader) > \
-                            leader.distance_to(closest_enemy) + 4:
+                            leader.distance_to(closest_enemy) + 3:
                         target = closest_enemy
-                    pos = leader.position.towards(closest_enemy.position,-5)
+                    pos = leader.position.towards(closest_enemy.position,-8)
                     if not self.in_pathing_grid(pos):
                         # retreat point, check 4 directions
                         enemy_x = closest_enemy.position.x
@@ -645,27 +670,27 @@ class Octopus(sc2.BotAI):
                         right_legal = True
                         up_legal = True
                         down_legal = True
-                        if abs(delta_x) > abs(delta_y):   # check x direction
+                        if abs(delta_x) > abs(delta_y):  # check x direction
                             if delta_x > 0:  # dont run left
                                 left_legal = False
-                            else:      # dont run right
+                            else:  # dont run right
                                 right_legal = False
-                        else:     # check y dir
-                            if delta_y > 0:    # dont run up
+                        else:  # check y dir
+                            if delta_y > 0:  # dont run up
                                 up_legal = False
-                            else:      # dont run down
+                            else:  # dont run down
                                 down_legal = False
+
                         x_ = x
                         y_ = y
                         counter = 0
                         paths_length = []
-
                         # left
                         if left_legal:
                             while self.in_pathing_grid(Point2((x_,y_))):
                                 counter += 1
                                 x_ -= 1
-                            paths_length.append((counter, (x_,y_)))
+                            paths_length.append((counter,(x_,y_)))
                             counter = 0
                             x_ = x
                         # right
@@ -673,7 +698,7 @@ class Octopus(sc2.BotAI):
                             while self.in_pathing_grid(Point2((x_,y_))):
                                 counter += 1
                                 x_ += 1
-                            paths_length.append((counter, (x_,y_)))
+                            paths_length.append((counter,(x_,y_)))
                             counter = 0
                             x_ = x
                         # up
@@ -681,7 +706,7 @@ class Octopus(sc2.BotAI):
                             while self.in_pathing_grid(Point2((x_,y_))):
                                 counter += 1
                                 y_ -= 1
-                            paths_length.append((counter, (x_,y_)))
+                            paths_length.append((counter,(x_,y_)))
                             counter = 0
                             y_ = y
                         # down
@@ -689,12 +714,13 @@ class Octopus(sc2.BotAI):
                             while self.in_pathing_grid(Point2((x_,y_))):
                                 counter += 1
                                 y_ += 1
-                            paths_length.append((counter, (x_,y_)))
+                            paths_length.append((counter,(x_,y_)))
+
                         max_ = (-2,0)
                         for path in paths_length:
                             if path[0] > max_[0]:
                                 max_ = path
-                        if max_[0] < 3:    # there is nowhere to run - fight.
+                        if max_[0] < 4:  # there is nowhere to run - fight.
                             pos = None
                         else:
                             pos = Point2(max_[1])
@@ -862,7 +888,8 @@ class Octopus(sc2.BotAI):
         if gates_count < 1:
             return
         nexuses = self.structures(unit.NEXUS).ready
-        if nexuses.amount < 2 and (self.build_type == 'macro' or self.proper_nexus_count == 2):
+        if nexuses.amount < 2 and (self.build_type == 'macro' or self.proper_nexus_count == 2) or\
+                (self.build_type == 'defend_rush' and self.after_first_attack or self.time > 360):
             self.proper_nexus_count = 2
             if self.can_afford(unit.NEXUS) and not self.already_pending(unit.NEXUS):
                 await self.expand_now2()
@@ -948,8 +975,8 @@ def botVsComputer(real_time):
                 "Sanglune", "Urzagol"]
     training_maps = ["DefeatZealotswithBlink", "ParaSiteTraining"]
     races = [Race.Protoss, Race.Zerg, Race.Terran]
-    computer_builds = [AIBuild.Rush]
-    # computer_builds = [AIBuild.Macro, AIBuild.Power]
+    # computer_builds = [AIBuild.Rush]
+    computer_builds = [AIBuild.Macro, AIBuild.Power]
     build = random.choice(computer_builds)
     map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)

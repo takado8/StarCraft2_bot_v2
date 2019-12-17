@@ -15,37 +15,37 @@
     <session id="-907730567">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="43" />
+          <entry key="project.closed" value="45" />
           <entry key="project.open.time.0" value="4" />
           <entry key="project.open.time.1" value="2" />
           <entry key="project.open.time.10" value="1" />
           <entry key="project.open.time.5" value="1" />
-          <entry key="project.open.time.6" value="24" />
-          <entry key="project.open.time.7" value="11" />
+          <entry key="project.open.time.6" value="25" />
+          <entry key="project.open.time.7" value="12" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="44" />
+          <entry key="project.opened" value="46" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="14" />
-          <entry key="py" value="28836" />
+          <entry key="py" value="29896" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="14" />
-          <entry key="Python" value="28836" />
+          <entry key="Python" value="29896" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="63" />
+          <entry key="py" value="67" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="63" />
+          <entry key="Python" value="67" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages">
@@ -60,48 +60,33 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="154">
-              <caret line="59" column="60" selection-start-line="59" selection-start-column="60" selection-end-line="59" selection-end-column="60" />
+            <state relative-caret-position="351">
+              <caret line="240" column="12" selection-start-line="240" selection-start-column="8" selection-end-line="240" selection-end-column="12" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
-                <marker date="1576459213021" expanded="true" signature="1244:1253" ph="..." />
-                <marker date="1576459213021" expanded="true" signature="1464:1518" ph="..." />
-                <marker date="1576459213021" expanded="true" signature="4218:12572" ph="..." />
-                <marker date="1576459213021" expanded="true" signature="8214:8806" ph="..." />
-                <marker date="1576459213021" expanded="true" signature="11509:11734" ph="..." />
-                <marker date="1576459213021" expanded="true" signature="11766:11775" ph="..." />
-                <marker date="1576459213021" expanded="true" signature="13071:14355" ph="..." />
-                <marker date="1576459213021" expanded="true" signature="30682:31852" ph="..." />
-                <marker date="1576459213021" expanded="true" signature="38128:38140" ph="..." />
-                <marker date="1576459213021" expanded="true" signature="41700:41705" ph="..." />
+                <marker date="1576546647529" expanded="true" signature="1254:1265" ph="..." />
+                <marker date="1576546647529" expanded="true" signature="1649:1658" ph="..." />
+                <marker date="1576546647529" expanded="true" signature="1649:1736" ph="..." />
+                <marker date="1576546647529" expanded="true" signature="1761:1921" ph="..." />
+                <marker date="1576546647529" expanded="true" signature="4900:13758" ph="..." />
+                <marker date="1576546647529" expanded="true" signature="8896:9488" ph="..." />
+                <marker date="1576546647529" expanded="true" signature="12650:12669" ph="..." />
+                <marker date="1576546647529" expanded="true" signature="12695:12920" ph="..." />
+                <marker date="1576546647529" expanded="true" signature="12952:12961" ph="..." />
+                <marker date="1576546647529" expanded="true" signature="14257:15551" ph="..." />
+                <marker date="1576546647529" expanded="true" signature="31878:33048" ph="..." />
+                <marker date="1576546647529" expanded="true" signature="39303:39315" ph="..." />
+                <marker date="1576546647529" expanded="true" signature="42875:42880" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/position.py">
+        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/units.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="880">
-              <caret line="48" selection-start-line="48" selection-end-line="48" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/game_info.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="207" column="8" selection-start-line="207" selection-start-column="8" selection-end-line="207" selection-end-column="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/main.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="9340">
-              <caret line="483" column="4" selection-start-line="483" selection-start-column="4" selection-end-line="483" selection-end-column="4" />
+            <state relative-caret-position="300">
+              <caret line="25" column="45" selection-start-line="25" selection-start-column="45" selection-end-line="25" selection-end-column="45" />
             </state>
           </provider>
         </entry>
@@ -109,8 +94,35 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/bot_ai.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="25500">
-              <caret line="1313" column="25" selection-start-line="1313" selection-start-column="8" selection-end-line="1313" selection-end-column="25" />
+            <state relative-caret-position="351">
+              <caret line="1288" column="34" selection-start-line="1288" selection-start-column="34" selection-end-line="1288" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/client.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="211">
+              <caret line="298" column="54" selection-start-line="298" selection-start-column="54" selection-end-line="298" selection-end-column="54" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/data.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="171">
+              <caret line="28" selection-start-line="28" selection-end-line="28" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/s2clientprotocol/sc2api_pb2.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-586">
+              <caret line="4435" selection-start-line="4435" selection-end-line="4435" />
             </state>
           </provider>
         </entry>
@@ -302,7 +314,7 @@
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13593005" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.09379968" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -455,20 +467,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="23" column="48" lean-forward="true" selection-start-line="23" selection-start-column="48" selection-end-line="23" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/s2clientprotocol/sc2api_pb2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="474">
-          <caret line="132" selection-start-line="132" selection-end-line="132" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/ids/effect_id.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
@@ -480,13 +478,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="474">
           <caret line="160" column="51" selection-start-line="160" selection-start-column="51" selection-end-line="160" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/units.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="25" column="8" selection-start-line="25" selection-start-column="8" selection-end-line="25" selection-end-column="8" />
         </state>
       </provider>
     </entry>
@@ -532,24 +523,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/position.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="880">
-          <caret line="48" selection-start-line="48" selection-end-line="48" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9340">
+        <state relative-caret-position="474">
           <caret line="483" column="4" selection-start-line="483" selection-start-column="4" selection-end-line="483" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/bot_ai.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="25500">
-          <caret line="1313" column="25" selection-start-line="1313" selection-start-column="8" selection-end-line="1313" selection-end-column="25" />
         </state>
       </provider>
     </entry>
@@ -560,22 +537,67 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/position.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="474">
+          <caret line="48" selection-start-line="48" selection-end-line="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/units.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="25" column="45" selection-start-line="25" selection-start-column="45" selection-end-line="25" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/bot_ai.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="351">
+          <caret line="1288" column="34" selection-start-line="1288" selection-start-column="34" selection-end-line="1288" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/client.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="298" column="54" selection-start-line="298" selection-start-column="54" selection-end-line="298" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/s2clientprotocol/sc2api_pb2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-586">
+          <caret line="4435" selection-start-line="4435" selection-end-line="4435" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="28" selection-start-line="28" selection-end-line="28" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="154">
-          <caret line="59" column="60" selection-start-line="59" selection-start-column="60" selection-end-line="59" selection-end-column="60" />
+        <state relative-caret-position="351">
+          <caret line="240" column="12" selection-start-line="240" selection-start-column="8" selection-end-line="240" selection-end-column="12" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
-            <marker date="1576459213021" expanded="true" signature="1244:1253" ph="..." />
-            <marker date="1576459213021" expanded="true" signature="1464:1518" ph="..." />
-            <marker date="1576459213021" expanded="true" signature="4218:12572" ph="..." />
-            <marker date="1576459213021" expanded="true" signature="8214:8806" ph="..." />
-            <marker date="1576459213021" expanded="true" signature="11509:11734" ph="..." />
-            <marker date="1576459213021" expanded="true" signature="11766:11775" ph="..." />
-            <marker date="1576459213021" expanded="true" signature="13071:14355" ph="..." />
-            <marker date="1576459213021" expanded="true" signature="30682:31852" ph="..." />
-            <marker date="1576459213021" expanded="true" signature="38128:38140" ph="..." />
-            <marker date="1576459213021" expanded="true" signature="41700:41705" ph="..." />
+            <marker date="1576546647529" expanded="true" signature="1254:1265" ph="..." />
+            <marker date="1576546647529" expanded="true" signature="1649:1658" ph="..." />
+            <marker date="1576546647529" expanded="true" signature="1649:1736" ph="..." />
+            <marker date="1576546647529" expanded="true" signature="1761:1921" ph="..." />
+            <marker date="1576546647529" expanded="true" signature="4900:13758" ph="..." />
+            <marker date="1576546647529" expanded="true" signature="8896:9488" ph="..." />
+            <marker date="1576546647529" expanded="true" signature="12650:12669" ph="..." />
+            <marker date="1576546647529" expanded="true" signature="12695:12920" ph="..." />
+            <marker date="1576546647529" expanded="true" signature="12952:12961" ph="..." />
+            <marker date="1576546647529" expanded="true" signature="14257:15551" ph="..." />
+            <marker date="1576546647529" expanded="true" signature="31878:33048" ph="..." />
+            <marker date="1576546647529" expanded="true" signature="39303:39315" ph="..." />
+            <marker date="1576546647529" expanded="true" signature="42875:42880" ph="..." />
           </folding>
         </state>
       </provider>
