@@ -492,39 +492,28 @@ class Octopus(sc2.BotAI):
         else:
             pos = self.structures(unit.PYLON).ready.closer_than(20,self.start_location).furthest_to(
                 self.start_location).position.to2.random_on_distance(7)
+        placement = None
+        i = 0
+        while placement is None:
+            i += 1
+            placement = await self.find_placement(ability.TRAINWARP_ADEPT, near=pos.random_on_distance(i),
+                                                  max_distance=4, placement_step=2, random_alternative=False)
+            if i > 5:
+                print("can't find position for warpin.")
+                return
         for warpgate in self.structures(unit.WARPGATE).ready:
             abilities = await self.get_available_abilities(warpgate)
-            # all the units have the same cooldown anyway so let's just look at ZEALOT
             if ability.WARPGATETRAIN_ZEALOT in abilities:
-
-
                 if self.can_afford(unit.SENTRY) and self.units(unit.STALKER).amount > 7 and \
                         self.structures(unit.CYBERNETICSCORE).ready.exists and self.units(unit.SENTRY).amount < 5:
-                    placement = await self.find_placement(ability.TRAINWARP_ADEPT,pos,placement_step=1)
-                    if placement is None:
-                        # print("can't place")
-                        continue
                     self.do(warpgate.warp_in(unit.SENTRY,placement))
                 elif self.can_afford(unit.STALKER) and self.supply_left > 1:
-                    placement = await self.find_placement(ability.WARPGATETRAIN_STALKER, pos, placement_step=1)
-                    if placement is None:
-                        # print("can't place")
-                        continue
                     self.do(warpgate.warp_in(unit.STALKER, placement))
                 elif self.minerals > 150 and self.supply_left > 1 and \
-                        self.structures(unit.CYBERNETICSCORE).ready.exists and self.units(unit.ADEPT).amount < 5:
-                    placement = await self.find_placement(ability.TRAINWARP_ADEPT, pos, placement_step=1)
-                    if placement is None:
-                        # print("can't place")
-                        continue
+                        self.structures(unit.CYBERNETICSCORE).ready.exists and self.units(unit.ADEPT).amount < 7:
                     self.do(warpgate.warp_in(unit.ADEPT, placement))
-
                 elif self.vespene < 50 and self.minerals > 150 and self.can_afford(unit.ZEALOT) and \
                         self.supply_left > 5 and self.units(unit.ZEALOT).amount < 12:
-                    placement = await self.find_placement(ability.WARPGATETRAIN_ZEALOT, pos, placement_step=1)
-                    if placement is None:
-                        # print("can't place")
-                        continue
                     self.do(warpgate.warp_in(unit.ZEALOT, placement))
 
     async def nexus_buff(self):
@@ -977,7 +966,7 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[2], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=bool(real_time))
     return res, build, races[race_index]
 
