@@ -1,0 +1,136 @@
+from sc2.ids.unit_typeid import UnitTypeId as unit
+from sc2.ids.ability_id import AbilityId as ability
+
+
+class NexusTrainer:
+    def __init__(self, ai):
+        self.ai = ai
+
+    def probes_standard(self):
+        workers = self.ai.workers.amount
+        nex = self.ai.structures(unit.NEXUS).ready.amount
+        if workers < 20 * nex and workers < 55:
+            for nexus in self.ai.structures(unit.NEXUS).ready:
+                if nexus.is_idle and self.ai.can_afford(unit.PROBE):
+                    self.ai.do(nexus.train(unit.PROBE))
+        elif 54 < workers < 60:
+            if self.ai.can_afford(unit.PROBE) and not self.ai.already_pending(unit.PROBE):
+                if self.ai.structures(unit.NEXUS).idle.amount < nex:
+                    return
+                nexus = self.ai.structures(unit.NEXUS).ready.idle.random
+                self.ai.do(nexus.train(unit.PROBE))
+
+
+class GateTrainer:
+    def __init__(self, ai):
+        self.ai = ai
+
+    def zealots(self):
+        if self.ai.minerals > 100 and self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < 3:
+            gateway = self.ai.structures(unit.GATEWAY).ready.idle
+            if gateway.exists:
+                gateway = gateway.random
+                self.ai.do(gateway.train(unit.ZEALOT))
+
+    def standard(self):
+        gateway = self.ai.structures(unit.GATEWAY).ready
+        if self.ai.minerals < 100 or not gateway.exists or not gateway.idle.exists:
+            return
+        if self.ai.can_afford(unit.SENTRY) and self.ai.structures(unit.CYBERNETICSCORE).ready.exists and self.ai.units(
+                unit.SENTRY).amount < 1:
+            u = unit.SENTRY
+        elif self.ai.can_afford(unit.STALKER) and self.ai.structures(unit.CYBERNETICSCORE).ready.exists:
+            u = unit.STALKER
+        # elif self.can_afford(unit.ADEPT) and self.structures(unit.CYBERNETICSCORE).ready.exists and \
+        #         self.army(unit.ADEPT).amount < 2:
+        #     u = unit.ADEPT
+        elif self.ai.supply_left > 1 and self.ai.minerals > 100 and self.ai.units(unit.ZEALOT).amount < 5:
+            u = unit.ZEALOT
+        else:
+            return
+        gateway = gateway.ready.idle.random
+        self.ai.do(gateway.train(u))
+
+
+class StargateTrainer:
+    def __init__(self, ai):
+        self.ai = ai
+
+    def none(self):
+        pass
+
+    def carriers(self):
+        if self.ai.structures(unit.STARGATE).ready.idle.exists and self.ai.structures(unit.FLEETBEACON).ready.exists and \
+                self.ai.can_afford(unit.CARRIER):
+            self.ai.train(unit_type=unit.CARRIER)
+
+
+class WarpgateTrainer:
+    def __init__(self, ai):
+        self.ai = ai
+
+    async def standard(self):
+        if self.ai.structures(unit.ROBOTICSFACILITY).ready.idle.exists and \
+                self.ai.army(unit.IMMORTAL).amount < 4 or self.ai.forge_upg_priority() or not self.ai.structures(unit.WARPGATE).exists:
+            return
+        if self.ai.attack:
+            prisms = self.ai.units(unit.WARPPRISMPHASING)
+            if prisms.exists:
+                pos = prisms.furthest_to(self.ai.start_location).position
+            else:
+                furthest_pylon = self.ai.structures(unit.PYLON).ready.furthest_to(self.ai.start_location.position)
+                pos = furthest_pylon.position.to2.random_on_distance(6)
+        else:
+            pos = self.ai.structures(unit.PYLON).ready.closer_than(20,self.ai.start_location).furthest_to(
+                self.ai.start_location).position.to2.random_on_distance(7)
+        placement = None
+        i = 0
+        while placement is None:
+            i += 1
+            placement = await self.ai.find_placement(ability.TRAINWARP_ADEPT, near=pos.random_on_distance(i),
+                                                  max_distance=4, placement_step=2, random_alternative=False)
+            if i > 5:
+                print("can't find position for warpin.")
+                return
+        for warpgate in self.ai.structures(unit.WARPGATE).ready:
+            abilities = await self.ai.get_available_abilities(warpgate)
+            if ability.WARPGATETRAIN_ZEALOT in abilities:
+                if self.ai.can_afford(unit.SENTRY) and self.ai.units(unit.STALKER).amount > 7 and \
+                        self.ai.structures(unit.CYBERNETICSCORE).ready.exists and self.ai.units(unit.SENTRY).amount < 3:
+                    self.ai.do(warpgate.warp_in(unit.SENTRY,placement))
+                elif self.ai.can_afford(unit.STALKER) and self.ai.supply_left > 1 and self.ai.army(unit.STALKER).amount < 30:
+                    self.ai.do(warpgate.warp_in(unit.STALKER, placement))
+                elif self.ai.minerals > 150 and self.ai.supply_left > 1 and \
+                        self.ai.structures(unit.CYBERNETICSCORE).ready.exists and self.ai.units(unit.ADEPT).amount < 12:
+                    self.ai.do(warpgate.warp_in(unit.ADEPT, placement))
+                elif self.ai.minerals > 400 and self.ai.can_afford(unit.ZEALOT) and \
+                        self.ai.supply_left > 5 and self.ai.units(unit.ZEALOT).amount < 12:
+                    self.ai.do(warpgate.warp_in(unit.ZEALOT, placement))
+
+
+class RoboticsTrainer:
+    def __init__(self, ai):
+        self.ai = ai
+
+    def none(self):
+        pass
+
+    def standard(self):
+        robotics = self.ai.structures(unit.ROBOTICSFACILITY).ready.idle
+        if robotics.exists and \
+                self.ai.units(unit.OBSERVER).amount + self.ai.units(unit.OBSERVERSIEGEMODE).amount < 1 and \
+                self.ai.can_afford(unit.OBSERVER):
+            for factory in robotics:
+                self.ai.do(factory.train(unit.OBSERVER))
+                break
+        elif self.ai.attack and self.ai.units(unit.WARPPRISMPHASING).amount + self.ai.units(unit.WARPPRISM).amount < 1 \
+                and self.ai.can_afford(unit.WARPPRISM) and not self.ai.already_pending(
+            unit.WARPPRISM) and self.ai.supply_left > 2:
+            for factory in self.ai.structures(unit.ROBOTICSFACILITY).ready.idle:
+                self.ai.do(factory.train(unit.WARPPRISM))
+                break
+        elif self.ai.can_afford(unit.IMMORTAL) and self.ai.supply_left > 3 and self.ai.structures(
+                unit.ROBOTICSFACILITY).ready.exists \
+                and self.ai.units(unit.IMMORTAL).amount < 8:
+            for factory in self.ai.structures(unit.ROBOTICSFACILITY).ready.idle:
+                self.ai.do(factory.train(unit.IMMORTAL))
