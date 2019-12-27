@@ -11,8 +11,10 @@ from sc2.ids.upgrade_id import UpgradeId as upgrade
 from sc2.ids.effect_id import EffectId as effect
 from sc2.position import Point2
 from coords import coords as cd
+from player_vs import player_vs_computer
 from strategy.carrier_madness import CarrierMadness
 from strategy.macro import Macro
+
 
 class Octopus(sc2.BotAI):
     enemy_attack = False
@@ -64,7 +66,7 @@ class Octopus(sc2.BotAI):
 
         if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS) or self.minerals > 400:
             self.cybernetics_core_upgrades()
-            self.twilight_upgrades()
+            await self.twilight_upgrades()
             self.forge_upgrades()
             await self.twilight_council_build()
             await self.robotics_build()
@@ -82,22 +84,22 @@ class Octopus(sc2.BotAI):
         await self.nexus_buff()
 
         # counter attack
-        if self.enemy_units().exists and self.enemy_units().closer_than(20,self.defend_position).amount > 2:
+        if self.enemy_units().exists and self.enemy_units().closer_than(40,self.defend_position).amount > 2:
             self.enemy_attack = True
         if self.enemy_attack and self.enemy_units().amount < 5:
             self.enemy_attack = False
             self.after_first_attack = True
             self.attack = True
         # normal attack
-        if self.build_type == 'rush' and self.army.amount > 12 and not self.first_attack:
-            self.first_attack = True
-            self.attack = True
-        # if self.build_type == 'rush' and self.army.amount > 5:
+        # if self.build_type == 'rush' and self.army.amount > 12 and not self.first_attack:
+        #     self.first_attack = True
+        #     self.attack = True
+        # # if self.build_type == 'rush' and self.army.amount > 5:
         #     await self.proxy()
         await self.warp_prism()
 
         # retreat
-        if self.attack and self.army.amount < (6 if self.build_type == 'rush' else 7):
+        if self.attack and self.army.amount < (6 if self.build_type == 'rush' else 18):
             self.attack = False
         # attack
         if self.attack:
@@ -145,8 +147,8 @@ class Octopus(sc2.BotAI):
     def forge_upgrades(self):
         self.strategy.forge_upgrades()
 
-    def twilight_upgrades(self):
-        self.strategy.twilight_upgrades()
+    async def twilight_upgrades(self):
+        await self.strategy.twilight_upgrades()
 
     # ============================================= Trainers
     def train_workers(self):
@@ -195,7 +197,7 @@ class Octopus(sc2.BotAI):
     async def defend(self):
         enemy = self.enemy_units()
         if enemy.exists:
-            dist = 25
+            dist = 40
         else:
             dist = 6
         for man in self.army:
@@ -656,5 +658,5 @@ def botVsComputer(real_time):
 
 if __name__ == '__main__':
     test(real_time=0)
-
+    # player_vs_computer()
 
