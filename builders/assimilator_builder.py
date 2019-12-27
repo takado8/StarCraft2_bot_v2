@@ -3,7 +3,7 @@ from sc2.ids.unit_typeid import UnitTypeId as unit
 
 class AssimilatorBuilder:
     @staticmethod
-    async def max_vespene(ai):
+    def max_vespene(ai):
         if not ai.can_afford(unit.ASSIMILATOR) or ai.structures(unit.NEXUS).amount > 2 \
                 and ai.vespene > ai.minerals:
             return
@@ -18,5 +18,5 @@ class AssimilatorBuilder:
                     ai.do(worker.build(unit.ASSIMILATOR, vaspene))
 
     @staticmethod
-    async def rush(ai):
+    def rush(ai):
         pass

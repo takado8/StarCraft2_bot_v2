@@ -1,5 +1,4 @@
 from sc2.ids.unit_typeid import UnitTypeId as unit
-from sc2.position import Point2
 
 
 class StargateBuilder:
@@ -24,5 +23,5 @@ class StargateBuilder:
             await ai.build(unit.STARGATE,near=ai.get_proper_pylon())
 
     @staticmethod
-    async def rush(ai):
+    async def none(ai):
         pass
