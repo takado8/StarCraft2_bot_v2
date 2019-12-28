@@ -82,6 +82,9 @@ class TwilightUpgrader:
     def __init__(self, ai):
         self.ai = ai
 
+    async def none(self):
+        pass
+
     async def charge(self):
         if upgrade.CHARGE not in self.ai.state.upgrades and self.ai.structures(unit.TWILIGHTCOUNCIL).ready.exists:
             tc = self.ai.structures(unit.TWILIGHTCOUNCIL).ready.idle
@@ -99,3 +102,20 @@ class TwilightUpgrader:
                 abilities = await self.ai.get_available_abilities(tc)
                 if ability.RESEARCH_BLINK in abilities:
                     self.ai.do(tc(ability.RESEARCH_BLINK))
+
+    async def both(self):
+        if self.ai.structures(unit.TWILIGHTCOUNCIL).ready.exists:
+            if upgrade.BLINKTECH not in self.ai.state.upgrades:
+                tc = self.ai.structures(unit.TWILIGHTCOUNCIL).ready.idle
+                if tc.exists:
+                    tc = tc.random
+                    abilities = await self.ai.get_available_abilities(tc)
+                    if ability.RESEARCH_BLINK in abilities:
+                        self.ai.do(tc(ability.RESEARCH_BLINK))
+            elif upgrade.CHARGE not in self.ai.state.upgrades:
+                tc = self.ai.structures(unit.TWILIGHTCOUNCIL).ready.idle
+                if tc.exists:
+                    tc = tc.random
+                    abilities = await self.ai.get_available_abilities(tc)
+                    if ability.RESEARCH_CHARGE in abilities:
+                        self.ai.do(tc(ability.RESEARCH_CHARGE))

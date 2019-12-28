@@ -14,13 +14,13 @@ class Expander:
         if nexuses.amount < 2:
             self.ai.proper_nexus_count = 2
             if self.ai.can_afford(unit.NEXUS) and not self.ai.already_pending(unit.NEXUS):
-                await self.expand_now2()
+                await self._expand_now2()
         elif 3 > nexuses.amount > 1 and self.ai.units(
                 unit.PROBE).amount >= 34 and len(self.ai.army) > 12:
             if self.ai.proper_nexus_count == 2:
                 self.ai.proper_nexus_count = 3
             if self.ai.can_afford(unit.NEXUS) and not self.ai.already_pending(unit.NEXUS):
-                await self.expand_now2()
+                await self._expand_now2()
         elif nexuses.amount > 2:
             totalExcess = 0
             for location,townhall in self.ai.owned_expansions.items():
@@ -37,15 +37,30 @@ class Expander:
             if totalExcess > 2 and not self.ai.already_pending(unit.NEXUS):
                 self.ai.proper_nexus_count = 4
                 if self.ai.can_afford(unit.NEXUS):
-                    await self.expand_now2()
+                    await self._expand_now2()
 
-    async def expand_now2(self):
+    async def two_bases(self):
+        gates_count = self.ai.structures(unit.GATEWAY).amount
+        gates_count += self.ai.structures(unit.WARPGATE).amount
+        if gates_count < 1:
+            return
+        nexuses = self.ai.structures(unit.NEXUS).ready
+        if nexuses.amount < 2:
+            self.ai.proper_nexus_count = 2
+            if self.ai.can_afford(unit.NEXUS) and not self.ai.already_pending(unit.NEXUS):
+                await self._expand_now2()
+
+    async def none(self):
+        pass
+
+
+    async def _expand_now2(self):
         building = unit.NEXUS
-        location = await self.get_next_expansion2()
+        location = await self._get_next_expansion2()
         if location is not None:
             await self.ai.build(building,near=location,max_distance=5,random_alternative=False,placement_step=1)
 
-    async def get_next_expansion2(self):
+    async def _get_next_expansion2(self):
         closest = None
         distance = 99999
 

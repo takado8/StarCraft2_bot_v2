@@ -7,14 +7,16 @@ class PylonBuilder:
         self.ai = ai
 
     async def next_standard(self):
-        if self.ai.structures(unit.PYLON).exists:
+        pylons = self.ai.structures(unit.PYLON)
+        if pylons.exists:
             if self.ai.time < 180:
                 pending = 1
                 left = 4
             else:
                 pending = 2
                 left = 6
-            if self.ai.supply_left < left and self.ai.supply_cap < 200:
+            if self.ai.supply_left < left and self.ai.supply_cap < 200 or (pylons.amount < 2 and
+                                                                           self.ai.structures(unit.GATEWAY).exists):
                 if self.ai.can_afford(unit.PYLON) and self.ai.already_pending(unit.PYLON) < pending:
                     max_dist = 18
                     pl_step = 6
@@ -37,6 +39,13 @@ class PylonBuilder:
         if self.ai.structures(unit.PYLON).amount < 1 and self.ai.can_afford(unit.PYLON) and not self.ai.already_pending(unit.PYLON):
             placement = Point2(self.ai.coords['pylon'])
             await self.ai.build(unit.PYLON, near=placement, placement_step=0, max_distance=0,random_alternative=False)
+
+    async def first_in_upper_wall(self):
+        if self.ai.structures(unit.PYLON).amount < 1 and self.ai.can_afford(unit.PYLON) and not self.ai.already_pending(unit.PYLON):
+            placement = self.ai.main_base_ramp.protoss_wall_pylon
+
+            await self.ai.build(unit.PYLON, near=placement, placement_step=0, max_distance=0,random_alternative=False)
+
 
     async def proxy(self):
         pylons = self.ai.structures(unit.PYLON)

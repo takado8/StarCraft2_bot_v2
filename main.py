@@ -14,13 +14,14 @@ from coords import coords as cd
 from player_vs import player_vs_computer
 from strategy.carrier_madness import CarrierMadness
 from strategy.macro import Macro
+from strategy.stalker_hunt import StalkerHunt
 
 
 class Octopus(sc2.BotAI):
     enemy_attack = False
     second_ramp = None
     builds = ['rush', 'macro', 'defend_rush']
-    build_type = 'macro'
+    build_type = 'rush'
     enemy_main_base_down = False
     first_attack = False
     attack = False
@@ -46,7 +47,8 @@ class Octopus(sc2.BotAI):
         print('start loc: ' + str(self.start_location.position))
         self.coords = cd['map1'][self.start_location.position]
         # self.strategy = CarrierMadness(self)
-        self.strategy = Macro(self)
+        # self.strategy = Macro(self)
+        self.strategy = StalkerHunt(self)
 
     async def on_end(self, game_result: Result):
         print('start pos: ' + str(self.start_location.position))
@@ -59,6 +61,7 @@ class Octopus(sc2.BotAI):
 
         self.train_workers()
         await self.distribute_workers()
+        await self.morph_gates()
 
         await self.pylon_first_build()
         await self.pylon_next_build()
@@ -80,7 +83,6 @@ class Octopus(sc2.BotAI):
             self.gate_train()
             await self.strategy.warpgate_train()
 
-        await self.morph_gates()
         await self.nexus_buff()
 
         # counter attack
@@ -91,15 +93,15 @@ class Octopus(sc2.BotAI):
             self.after_first_attack = True
             self.attack = True
         # normal attack
-        # if self.build_type == 'rush' and self.army.amount > 12 and not self.first_attack:
-        #     self.first_attack = True
-        #     self.attack = True
-        # # if self.build_type == 'rush' and self.army.amount > 5:
-        #     await self.proxy()
+        if self.build_type == 'rush' and not self.first_attack and self.structures(unit.WARPGATE).exists:
+            self.first_attack = True
+            self.attack = True
+        if self.build_type == 'rush' and self.structures(unit.CYBERNETICSCORE).exists:# self.army.amount > 0:
+            await self.proxy()
         await self.warp_prism()
 
         # retreat
-        if self.attack and self.army.amount < (6 if self.build_type == 'rush' else 18):
+        if self.attack and self.army.amount < (2 if self.build_type == 'rush' else 18):
             self.attack = False
         # attack
         if self.attack:
@@ -130,6 +132,9 @@ class Octopus(sc2.BotAI):
 
     async def pylon_next_build(self):
         await self.strategy.pylon_next_build()
+
+    async def proxy(self):
+        await self.strategy.proxy()
 
     async def cybernetics_core_build(self):
         await self.strategy.cybernetics_build()
@@ -238,7 +243,7 @@ class Octopus(sc2.BotAI):
 
     def get_proper_pylon(self):
         properPylons = self.structures().filter(lambda unit_: unit_.type_id == unit.PYLON and unit_.is_ready and
-            unit_.distance_to(self.start_location.position) < 30 and unit_.distance_to(self.defend_position) > 9)
+            unit_.distance_to(self.start_location.position) < 30 and unit_.distance_to(self.defend_position) > 4)
         if properPylons.exists:
             min_neighbours = 99
             pylon = properPylons.random
@@ -249,6 +254,7 @@ class Octopus(sc2.BotAI):
                     pylon = pyl
             return pylon
         else:
+            print('cant find proper pylon')
             return None
 
     async def morph_gates(self):
@@ -532,7 +538,8 @@ class Octopus(sc2.BotAI):
 
     async def attack_formation(self):
         enemy_units = self.enemy_units()
-        enemy = enemy_units.filter(lambda x: x.type_id not in self.units_to_ignore and x.can_attack_ground)
+        en = enemy_units.filter(lambda x: x.type_id not in self.units_to_ignore and x.can_attack_ground)
+        enemy = en
         if enemy.amount > 2:
             if enemy.closer_than(40, self.start_location).amount > 7:
                 await self.defend()
@@ -553,7 +560,7 @@ class Octopus(sc2.BotAI):
 
         # point halfway
         dist = start.distance_to(destination)
-        if dist > 40:
+        if dist > 4:
             point = start.position.towards(destination, dist / 2)
         else:
             point = destination
@@ -569,7 +576,13 @@ class Octopus(sc2.BotAI):
         # if everybody's here, we can go
         _range = 7 if self.army.amount < 24 else 12
         nearest = self.army.closer_than(_range, start.position)
-        if nearest.amount > self.army.amount * 0.70:
+
+        if en.exists and en.closer_than(12, start.position).exists:
+            flag = False
+        else:
+            flag = True
+
+        if nearest.amount > self.army.amount * 0.30 and flag:
             for man in self.army:
                 if enemy is not None and not enemy.in_attack_range_of(man).exists:
                     if man.type_id == unit.STALKER:
@@ -651,7 +664,7 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=bool(real_time))
     return res, build, races[race_index]
 
@@ -659,4 +672,3 @@ def botVsComputer(real_time):
 if __name__ == '__main__':
     test(real_time=0)
     # player_vs_computer()
-

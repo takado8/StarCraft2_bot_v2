@@ -31,6 +31,7 @@ class AssimilatorBuilder:
                     worker = self.ai.select_build_worker(vaspene.position)
                     if worker is None:
                         break
-                    if not self.ai.already_pending(unit.ASSIMILATOR) and not self.ai.structures(unit.ASSIMILATOR).exists or \
-                            (not self.ai.structures(unit.ASSIMILATOR).closer_than(5,vaspene).exists and self.ai.time > 100):
+                    if (not self.ai.already_pending(unit.ASSIMILATOR) and not self.ai.structures(unit.ASSIMILATOR).exists) or \
+                            (self.ai.time > 120 and not self.ai.structures(unit.ASSIMILATOR).closer_than(5,vaspene).exists):
                         self.ai.do(worker.build(unit.ASSIMILATOR,vaspene))
+                        break
