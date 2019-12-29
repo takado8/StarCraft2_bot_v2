@@ -24,24 +24,17 @@ class GateBuilder:
                 return
             await self.ai.build(unit.GATEWAY,near=pylon,placement_step=0,max_distance=0,random_alternative=False)
 
-
-    async def two_in_upper_plus_1(self):
+    async def three_standard(self):
         gates_count = self.ai.structures(unit.GATEWAY).amount
         gates_count += self.ai.structures(unit.WARPGATE).amount
-        gc = 3
+        gc = 3 if self.ai.structures(unit.CYBERNETICSCORE).exists else 1
         if gates_count < gc \
                 and self.ai.can_afford(unit.GATEWAY) and self.ai.structures(unit.PYLON).ready.exists and \
                 self.ai.already_pending(unit.GATEWAY) < 2:
-            if gates_count < 1:
-                pylon = self.ai.main_base_ramp.protoss_wall_buildings[0]
-                if pylon is not None:
-                    await self.ai.build(unit.GATEWAY,near=pylon,placement_step=0,max_distance=0,
-                                        random_alternative=False)
-            else:
-                pylon = self.ai.get_proper_pylon()
-                if pylon is not None:
-                    await self.ai.build(unit.GATEWAY,near=pylon,placement_step=2,max_distance=20,
-                                        random_alternative=True)
+            pylon = self.ai.get_proper_pylon()
+            if pylon is not None:
+                await self.ai.build(unit.GATEWAY,near=pylon,placement_step=2,max_distance=20,
+                                    random_alternative=True)
 
     async def one_in_upper(self):
         gates_count = self.ai.structures(unit.GATEWAY).amount
@@ -55,8 +48,6 @@ class GateBuilder:
             if pylon is not None:
                 await self.ai.build(unit.GATEWAY,near=pylon,placement_step=0,max_distance=0,
                                     random_alternative=False)
-
-
 
     async def macro(self):
         gates_count = self.ai.structures(unit.GATEWAY).amount

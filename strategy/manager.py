@@ -9,6 +9,8 @@ from builders.robotics_builder import RoboticsBuilder
 from builders.expander import Expander
 from upgraders import *
 from trainers import *
+from army.micro import *
+from army.movements import *
 
 
 class Strategy:
@@ -34,6 +36,9 @@ class Strategy:
         self._warpgate_trainer = WarpgateTrainer(ai)
         self._stargate_trainer = StargateTrainer(ai)
         self._robotics_trainer = RoboticsTrainer(ai)
+        # army
+        self._micro = Micro(ai)
+        self._movements = Movements(ai)
 
     # =======================================================  Builders
 
@@ -56,6 +61,9 @@ class Strategy:
         pass
 
     async def pylon_next_build(self):
+        pass
+
+    async def proxy(self):
         pass
 
     async def cybernetics_build(self):
@@ -93,4 +101,12 @@ class Strategy:
         pass
 
     async def warpgate_train(self):
+        pass
+
+    # =======================================================  Army
+
+    async def micro(self):
+        pass
+
+    async def movements(self):
         pass

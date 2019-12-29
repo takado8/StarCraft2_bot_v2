@@ -6,6 +6,9 @@ class PylonBuilder:
     def __init__(self, ai):
         self.ai = ai
 
+    async def none(self):
+        pass
+
     async def next_standard(self):
         pylons = self.ai.structures(unit.PYLON)
         if pylons.exists:
@@ -45,6 +48,35 @@ class PylonBuilder:
             placement = self.ai.main_base_ramp.protoss_wall_pylon
 
             await self.ai.build(unit.PYLON, near=placement, placement_step=0, max_distance=0,random_alternative=False)
+
+    async def first_and_next_standard(self):
+        pylons = self.ai.structures(unit.PYLON)
+        if self.ai.time < 180:
+            pending = 1
+            left = 4
+        else:
+            pending = 2
+            left = 6
+        if self.ai.supply_left < left and self.ai.supply_cap < 200 or (pylons.amount < 2 and
+                                                                       self.ai.structures(unit.GATEWAY).exists):
+            if self.ai.can_afford(unit.PYLON) and self.ai.already_pending(unit.PYLON) < pending:
+                max_dist = 18
+                pl_step = 6
+                if self.ai.time < 180:
+                    placement = await self.ai.find_placement(unit.PYLON,max_distance=18, placement_step=6,
+                        near=self.ai.start_location.position.towards(self.ai.main_base_ramp.top_center,4))
+
+
+                    if pylons.exists and self.ai.structures(unit.PYLON).closest_to(self.ai.main_base_ramp.top_center).distance_to(
+                            placement) < 6:
+                        return
+                elif self.ai.supply_cap < 100:
+                    placement = self.ai.start_location.position
+                else:
+                    placement = self.ai.start_location.position
+                    max_dist = 40
+                    pl_step = 3
+                await self.ai.build(unit.PYLON, near=placement, max_distance=max_dist, placement_step=pl_step)
 
 
     async def proxy(self):

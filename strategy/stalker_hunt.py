@@ -8,7 +8,7 @@ class StalkerHunt(Strategy):
     # =======================================================  Builders
 
     async def gate_build(self):
-        await self._gate_builder.two_in_upper_plus_1()
+        await self._gate_builder.three_standard()
 
     async def stargate_build(self):
         await self._stargate_builder.none()
@@ -23,10 +23,10 @@ class StalkerHunt(Strategy):
         await self._twilight_builder.none()
 
     async def pylon_first_build(self):
-        await self._pylon_builder.first_in_upper_wall()
+        await self._pylon_builder.none()
 
     async def pylon_next_build(self):
-        await self._pylon_builder.next_standard()
+        await self._pylon_builder.first_and_next_standard()
 
     async def proxy(self):
         await self._pylon_builder.proxy()
@@ -67,3 +67,11 @@ class StalkerHunt(Strategy):
 
     async def warpgate_train(self):
         await self._warpgate_trainer.stalkers()
+
+    # =======================================================  Army
+
+    async def micro(self):
+        await self._micro.standard()
+
+    async def movements(self):
+        await self._movements.attack_formation()

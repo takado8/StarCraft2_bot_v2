@@ -93,16 +93,19 @@ class Octopus(sc2.BotAI):
             self.after_first_attack = True
             self.attack = True
         # normal attack
-        if self.build_type == 'rush' and not self.first_attack and self.structures(unit.WARPGATE).exists:
+        if self.build_type == 'rush' and not self.first_attack and upgrade.WARPGATERESEARCH in self.state.upgrades:
             self.first_attack = True
             self.attack = True
-        if self.build_type == 'rush' and self.structures(unit.CYBERNETICSCORE).exists:# self.army.amount > 0:
+        if self.build_type == 'rush' and self.structures(unit.CYBERNETICSCORE).ready.exists:
             await self.proxy()
         await self.warp_prism()
 
         # retreat
-        if self.attack and self.army.amount < (2 if self.build_type == 'rush' else 18):
+        if self.attack and self.army.amount < (4 if self.build_type == 'rush' else 18):
             self.attack = False
+            if self.build_type == 'rush':
+                self.strategy = Macro(self)
+                self.build_type = 'macro'
         # attack
         if self.attack:
             await self.attack_formation()
@@ -168,7 +171,15 @@ class Octopus(sc2.BotAI):
     async def warpgate_train(self):
         await self.strategy.warpgate_train()
 
-    # ===================================================
+    # ============================================= Army
+
+    async def micro_units(self):
+        await self.strategy.micro()
+
+    async def attack_formation(self):
+        await self.strategy.movements()
+
+    # ============================================= none
 
     def forge_upg_priority(self):
         if self.structures(unit.TWILIGHTCOUNCIL).ready.exists:
@@ -314,289 +325,7 @@ class Octopus(sc2.BotAI):
             for shadow in self.units(unit.ADEPTPHASESHIFT):
                 self.do(shadow.move(destination))
 
-    async def micro_units(self):
-        enemy = self.enemy_units()
-        if not enemy.exists:
-            return
 
-        def chunk(lst,n):
-            for i in range(0,len(lst),n):
-                yield lst[i:i + n]
-        # stalkers // mixed
-        whole_army = self.army.exclude_type(unit.CARRIER)
-        dist = 7
-        group_size = 5
-        c = int(len(whole_army) / group_size)
-        chunks = c if c > 0 else 1
-        part_army = chunk(whole_army, chunks)
-        for army_l in part_army:
-            army = Units(army_l, self)
-            if army.exists:
-                # leader = self.leader
-                # if leader is None:
-                if self.destination is not None:
-                    leader = army.closest_to(self.destination)
-                else:
-                    leader = army.random
-                threats = enemy.filter(
-                    lambda unit_: unit_.can_attack_ground and unit_.distance_to(leader) <= dist and
-                                  unit_.type_id not in self.units_to_ignore)
-                if self.attack:
-                    threats.extend(self.enemy_structures().filter(lambda _x: _x.can_attack_ground or _x.type_id in
-                                                                        [unit.NEXUS, unit.HATCHERY, unit.COMMANDCENTER]))
-                if threats.exists:
-                    closest_enemy = threats.closest_to(leader)
-                    priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR,
-                        unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.SIEGETANK, unit.THOR])
-                    if priority.exists:
-                        targets = priority.sorted(lambda x1: x1.health + x1.shield)
-                        if targets[0].health_percentage * targets[0].shield_percentage == 1:
-                            target = priority.closest_to(leader)
-                        else:
-                            target = targets[0]
-                    else:
-                        targets = threats.sorted(lambda x1: x1.health + x1.shield)
-                        if targets[0].health_percentage * targets[0].shield_percentage == 1:
-                            target = closest_enemy
-                        else:
-                            target = targets[0]
-                    if target.distance_to(leader) > leader.distance_to(closest_enemy) + 4:
-                        target = closest_enemy
-                    pos = leader.position.towards(closest_enemy.position,-8)
-                    if not self.in_pathing_grid(pos):
-                        # retreat point, check 4 directions
-                        enemy_x = closest_enemy.position.x
-                        enemy_y = closest_enemy.position.y
-                        x = leader.position.x
-                        y = leader.position.y
-                        delta_x = x - enemy_x
-                        delta_y = y - enemy_y
-                        left_legal = True
-                        right_legal = True
-                        up_legal = True
-                        down_legal = True
-                        if abs(delta_x) > abs(delta_y):  # check x direction
-                            if delta_x > 0:  # dont run left
-                                left_legal = False
-                            else:  # dont run right
-                                right_legal = False
-                        else:  # check y dir
-                            if delta_y > 0:  # dont run up
-                                up_legal = False
-                            else:  # dont run down
-                                down_legal = False
-
-                        x_ = x
-                        y_ = y
-                        counter = 0
-                        paths_length = []
-                        # left
-                        if left_legal:
-                            while self.in_pathing_grid(Point2((x_,y_))):
-                                counter += 1
-                                x_ -= 1
-                            paths_length.append((counter,(x_,y_)))
-                            counter = 0
-                            x_ = x
-                        # right
-                        if right_legal:
-                            while self.in_pathing_grid(Point2((x_,y_))):
-                                counter += 1
-                                x_ += 1
-                            paths_length.append((counter,(x_,y_)))
-                            counter = 0
-                            x_ = x
-                        # up
-                        if up_legal:
-                            while self.in_pathing_grid(Point2((x_,y_))):
-                                counter += 1
-                                y_ -= 1
-                            paths_length.append((counter,(x_,y_)))
-                            counter = 0
-                            y_ = y
-                        # down
-                        if down_legal:
-                            while self.in_pathing_grid(Point2((x_,y_))):
-                                counter += 1
-                                y_ += 1
-                            paths_length.append((counter,(x_,y_)))
-
-                        max_ = (-2,0)
-                        for path in paths_length:
-                            if path[0] > max_[0]:
-                                max_ = path
-                        if max_[0] < 4:  # there is nowhere to run - fight.
-                            pos = None
-                        else:
-                            pos = Point2(max_[1])
-                    # placement = None
-                    # while placement is None:
-                    #     placement = await self.find_placement(unit.PYLON,pos,placement_step=1)
-
-                    for st in army:
-                        if pos is not None and st.weapon_cooldown > 0 and \
-                            closest_enemy.ground_range <= st.ground_range and threats.amount * 2 > army.amount:
-                            if not await self.blink(st, pos):
-                                self.do(st.move(st.position.towards(pos,2)))
-                        else:
-                            if st.distance_to(target) > 6:
-                                if not await self.blink(st,target.position.towards(st,6)):
-                                    self.do(st.attack(target))
-
-        #  Sentry region  #
-        sents = self.army(unit.SENTRY)
-        if sents.exists:
-            # sentry = sents.in_closest_distance_to_group(self.army)
-            m = -1
-            for se in sents:
-                close = sents.closer_than(7, se).amount
-                if close > m:
-                    m = close
-                    sentry = se
-            force_fields = []
-            guardian_shield_on = False
-            for eff in self.state.effects:
-                if eff.id == FakeEffectID.get(unit.FORCEFIELD.value):
-                    force_fields.append(eff)
-                elif not guardian_shield_on and eff.id == effect.GUARDIANSHIELDPERSISTENT:
-                    guardian_shield_on = True
-            threats = self.enemy_units().filter(
-                lambda unit_: unit_.can_attack_ground and unit_.distance_to(sentry) <= 16 and
-                              unit_.type_id not in self.units_to_ignore and unit_.type_id not in self.workers_ids)
-
-            enemy_army_center = None
-            has_energy_amount = sents.filter(lambda x2: x2.energy >= 50).amount
-            points = []
-            if self.build_type == 'macro':
-                thr = 4
-                ff = 7
-            else:
-                thr = 2
-                ff = 1
-            if has_energy_amount > 0 and len(force_fields) < ff and threats.amount > thr:  # and self.time - self.force_field_time > 1:
-                # self.force_field_time = self.time
-                enemy_army_center = threats.center
-                gap = 2
-                if self.build_type == 'defend_rush':
-                    points.append(self.main_base_ramp.protoss_wall_warpin)
-                else:
-                    points.append(enemy_army_center)
-                    points.append(Point2((enemy_army_center.x - gap, enemy_army_center.y)))
-                    points.append(Point2((enemy_army_center.x + gap, enemy_army_center.y)))
-                    points.append(Point2((enemy_army_center.x, enemy_army_center.y - gap)))
-                    points.append(Point2((enemy_army_center.x, enemy_army_center.y + gap)))
-            for se in self.units(unit.SENTRY):
-                abilities = await self.get_available_abilities(se)
-                if threats.amount > thr and not guardian_shield_on and ability.GUARDIANSHIELD_GUARDIANSHIELD in abilities:
-                    self.do(se(ability.GUARDIANSHIELD_GUARDIANSHIELD))
-                    guardian_shield_on = True
-                if ability.FORCEFIELD_FORCEFIELD in abilities and enemy_army_center is not None and len(points) > 0:
-                    self.do(se(ability.FORCEFIELD_FORCEFIELD, points.pop(0)))
-                else:
-                    army_center = self.army.closer_than(9,se)
-                    if army_center.exists:
-                        army_center = army_center.center
-                        if se.distance_to(army_center) > 3:
-                            if not threats.exists:
-                                self.do(se.move(army_center))
-                            else:
-                                self.do(se.move(army_center.towards(threats.closest_to(se),-1)))
-
-        # Carrier
-        for cr in self.army(unit.CARRIER):
-            threats = self.enemy_units().filter(lambda z: z.distance_to(cr) < 12 and z.type_id not in self.units_to_ignore)
-            threats.extend(self.enemy_structures().filter(lambda z: z.can_attack_air))
-            if threats.exists:
-                # target2 = None
-                priority = threats.filter(lambda z: z.can_attack_air).sorted(lambda z: z.air_dps, reverse=True)
-                if priority.exists:
-                    # closest = priority.closest_to(cr)
-                    # if cr.distance_to(closest) < 7:
-                    #     self.do(cr.move(cr.position.towards(closest,-3)))
-                    # else:
-                    if priority.amount > 2:
-                        priority = sorted(priority[:int(len(priority)/2)], key=lambda z: z.health+z.shield)
-                    target2 = priority[0]
-                else:
-                    target2 = threats.sorted(lambda z: z.health + z.shield)[0]
-                if target2 is not None:
-                    self.do(cr.attack(target2))
-
-        # zealot
-        for zl in self.army(unit.ZEALOT):
-            threats = self.enemy_units().filter(lambda x2: x2.distance_to(zl) < 9).sorted(lambda _x: _x.health + _x.shield)
-            if threats.exists:
-                closest = threats.closest_to(zl)
-                if threats[0].health_percentage * threats[0].shield_percentage == 1 or threats[0].distance_to(zl) > \
-                    closest.distance_to(zl) + 4 or not self.in_pathing_grid(threats[0]):
-                    target = closest
-                else:
-                    target = threats[0]
-                if ability.EFFECT_CHARGE in await self.get_available_abilities(zl):
-                    self.do(zl(ability.EFFECT_CHARGE, target))
-                self.do(zl.attack(target))
-
-    async def attack_formation(self):
-        enemy_units = self.enemy_units()
-        en = enemy_units.filter(lambda x: x.type_id not in self.units_to_ignore and x.can_attack_ground)
-        enemy = en
-        if enemy.amount > 2:
-            if enemy.closer_than(40, self.start_location).amount > 7:
-                await self.defend()
-                return
-            if self.destination is not None:
-                destination = enemy.closest_to(self.destination).position
-            else:
-                destination = enemy.closest_to(self.start_location).position
-        elif self.enemy_structures().exists:
-            enemy = self.enemy_structures()
-            destination = enemy.closest_to(self.start_location).position
-        else:
-            enemy = None
-            destination = self.enemy_start_locations[0].position
-
-        start = self.army.closest_to(destination)
-        self.destination = destination
-
-        # point halfway
-        dist = start.distance_to(destination)
-        if dist > 4:
-            point = start.position.towards(destination, dist / 2)
-        else:
-            point = destination
-        position = None
-        i = 0
-        while position is None:
-            i += 1
-            position = await self.find_placement(unit.PYLON, near=point.random_on_distance(i*3), max_distance=15, placement_step=5,
-                                                 random_alternative=False)
-            if i > 8:
-                print("can't find position for army.")
-                return
-        # if everybody's here, we can go
-        _range = 7 if self.army.amount < 24 else 12
-        nearest = self.army.closer_than(_range, start.position)
-
-        if en.exists and en.closer_than(12, start.position).exists:
-            flag = False
-        else:
-            flag = True
-
-        if nearest.amount > self.army.amount * 0.30 and flag:
-            for man in self.army:
-                if enemy is not None and not enemy.in_attack_range_of(man).exists:
-                    if man.type_id == unit.STALKER:
-                        if not await self.blink(man, enemy.closest_to(man).position.towards(man.position, 6)):
-                            self.do(man.attack(enemy.closest_to(man)))
-                    else:
-                        closest_en = enemy.closest_to(man)
-                        self.do(man.attack(closest_en))
-                elif enemy is None:
-                    self.do(man.move(position))
-        else:
-            # center = nearest.center
-            for man in self.army.filter(lambda man_: man_.distance_to(start) > _range/2):
-                self.do(man.move(start))
 
     async def blink(self, stalker, target):
         abilities = await self.get_available_abilities(stalker)
@@ -670,5 +399,5 @@ def botVsComputer(real_time):
 
 
 if __name__ == '__main__':
-    test(real_time=0)
+    test(real_time=1)
     # player_vs_computer()
