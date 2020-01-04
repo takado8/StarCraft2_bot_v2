@@ -1,14 +1,11 @@
 import random
 from sc2 import run_game, maps, Race, Difficulty, Result, AIBuild
 import sc2
-from sc2.constants import FakeEffectID
 from sc2.ids.ability_id import AbilityId as ability
 from sc2.ids.unit_typeid import UnitTypeId as unit
 from sc2.player import Bot, Computer
-from sc2.units import Units
 from sc2.ids.buff_id import BuffId as buff
 from sc2.ids.upgrade_id import UpgradeId as upgrade
-from sc2.ids.effect_id import EffectId as effect
 from sc2.position import Point2
 from coords import coords as cd
 from player_vs import player_vs_computer
@@ -20,8 +17,6 @@ from strategy.stalker_hunt import StalkerHunt
 class Octopus(sc2.BotAI):
     enemy_attack = False
     second_ramp = None
-    builds = ['rush', 'macro', 'defend_rush']
-    build_type = 'rush'
     enemy_main_base_down = False
     first_attack = False
     attack = False
@@ -39,6 +34,7 @@ class Octopus(sc2.BotAI):
     destination = None
     prev_nexus_count = 0
     coords = None
+    change_position = False
 
     strategy = None
 
@@ -93,19 +89,18 @@ class Octopus(sc2.BotAI):
             self.after_first_attack = True
             self.attack = True
         # normal attack
-        if self.build_type == 'rush' and not self.first_attack and upgrade.WARPGATERESEARCH in self.state.upgrades:
+        if self.strategy.type == 'rush' and not self.first_attack and upgrade.WARPGATERESEARCH in self.state.upgrades:
             self.first_attack = True
             self.attack = True
-        if self.build_type == 'rush' and self.structures(unit.CYBERNETICSCORE).ready.exists:
-            await self.proxy()
+
+        await self.proxy()
         await self.warp_prism()
 
         # retreat
-        if self.attack and self.army.amount < (4 if self.build_type == 'rush' else 18):
+        if self.attack and self.army.amount < (4 if self.strategy.type == 'rush' else 18):
             self.attack = False
-            if self.build_type == 'rush':
+            if self.strategy.type == 'rush':
                 self.strategy = Macro(self)
-                self.build_type = 'macro'
         # attack
         if self.attack:
             await self.attack_formation()
@@ -212,45 +207,51 @@ class Octopus(sc2.BotAI):
 
     async def defend(self):
         enemy = self.enemy_units()
-        if enemy.exists:
+        if enemy.amount > 1:
             dist = 40
         else:
             dist = 6
         for man in self.army:
             if man.distance_to(self.defend_position) > dist:
-                self.do(man.move(Point2(self.defend_position).random_on_distance(random.randint(1,3))))
+                self.do(man.attack(Point2(self.defend_position).random_on_distance(random.randint(1,3))))
 
     def assign_defend_position(self):
         nex = self.structures(unit.NEXUS)
         enemy = self.enemy_units()
         # start = self.start_location.position
         # self.defend_position = self.coords['defend_pos']
-        self.defend_position = self.main_base_ramp.top_center.towards(self.main_base_ramp.bottom_center,-6)
 
-        if self.prev_nexus_count != nex.amount or enemy.exists:
-            if nex.amount < 2:
+        if self.prev_nexus_count != nex.amount or enemy.exists or self.change_position:
+            if self.change_position:
+                self.change_position = False
+            else:
+                self.change_position = True
+            self.prev_nexus_count = nex.amount
+            if enemy.exists and enemy.closer_than(50,self.start_location).amount > 0:
+                self.defend_position = nex.closest_to(enemy.closest_to(self.enemy_start_locations[0])).position.towards(self.game_info.map_center,5)
+                print('first')
+            elif nex.amount < 2:
                 self.defend_position = self.main_base_ramp.top_center.towards(self.main_base_ramp.bottom_center, -6)
             elif nex.amount == 2:
-
                 self.defend_position = self.coords['defend_pos']
             else:
-                min1 = 999
-                ramp = None
-                if enemy.exists and enemy.closer_than(50,self.start_location).amount > 0:
-                    nex = nex.closest_to(enemy.closest_to(self.enemy_start_locations[0]))
-                else:
-                    nex = nex.furthest_to(self.start_location)
-                p = nex.position.towards(Point2(self.coords['defend_pos']),7)
-                for rmp in self.game_info.map_ramps:
-                    d = p.distance_to(rmp.top_center)
+                c = 0
+                total_dists = []
+                for nx1 in nex:
+                    for nx2 in nex:
+                        c += nx1.distance_to(nx2)
+                    total_dists.append(c)
+                    c = 0
+                i = 0
+                idx = 0
+                _min = 999
+                for d in total_dists:
+                    if d < _min:
+                        _min = d
+                        idx = i
+                    i += 1
+                self.defend_position = nex[idx].position.towards(self.game_info.map_center,5)
 
-                    if d < min1:
-                        min1 = d
-                        ramp = rmp
-                if min1 < 15:
-                    self.defend_position = ramp.top_center.towards(ramp.bottom_center, -1)
-                else:
-                    self.defend_position = nex.position.towards(self.game_info.map_center,5)
 
     def get_proper_pylon(self):
         properPylons = self.structures().filter(lambda unit_: unit_.type_id == unit.PYLON and unit_.is_ready and
@@ -385,9 +386,9 @@ def botVsComputer(real_time):
     maps_set = ['blink', "zealots", "AcropolisLE", "DiscoBloodbathLE", "ThunderbirdLE", "TritonLE", "Ephemeron",
                 "WintersGateLE", "WorldofSleepersLE"]
     races = [Race.Protoss, Race.Zerg, Race.Terran]
-    # computer_builds = [AIBuild.Rush]
+    computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Air]
-    computer_builds = [AIBuild.Macro, AIBuild.Power]
+    # computer_builds = [AIBuild.Power]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)

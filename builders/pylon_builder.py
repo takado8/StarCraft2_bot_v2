@@ -81,13 +81,13 @@ class PylonBuilder:
 
     async def proxy(self):
         pylons = self.ai.structures(unit.PYLON)
-        if pylons.exists:
+        if pylons.exists and self.ai.structures(unit.CYBERNETICSCORE).ready.exists:
             if pylons.further_than(40, self.ai.start_location.position).amount == 0 and not\
-                    self.ai.already_pending(unit.PYLON):
+                self.ai.already_pending(unit.PYLON):
                 pos = self.ai.game_info.map_center.position.towards(self.ai.enemy_start_locations[0], 25)
                 c = 0
                 placement = None
-                while placement is None and c < 5:
+                while placement is None and c < 10:
                     c += 1
                     placement = await self.ai.find_placement(unit.PYLON, near=pos, max_distance=20, placement_step=2,
                                                      random_alternative=False)

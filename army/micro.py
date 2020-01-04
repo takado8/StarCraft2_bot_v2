@@ -130,10 +130,19 @@ class Micro:
                     #     placement = await self.ai.find_placement(unit.PYLON,pos,placement_step=1)
 
                     for st in army:
+                        if st.shield_percentage < 0.1:
+                            if st.health_percentage < 0.15:
+                                self.ai.do(st.move(pos))
+                                continue
+                            else:
+                                d = 4
+                        else:
+                            d = 2
+
                         if pos is not None and st.weapon_cooldown > 0 and \
                             closest_enemy.ground_range <= st.ground_range and threats.amount * 2 > army.amount:
                             if not await self.ai.blink(st, pos):
-                                self.ai.do(st.move(st.position.towards(pos,2)))
+                                self.ai.do(st.move(st.position.towards(pos,d)))
                         else:
                             if st.distance_to(target) > 6:
                                 if not await self.ai.blink(st,target.position.towards(st,6)):
@@ -163,7 +172,7 @@ class Micro:
             enemy_army_center = None
             has_energy_amount = sents.filter(lambda x2: x2.energy >= 50).amount
             points = []
-            if self.ai.build_type == 'macro':
+            if self.ai.strategy.type == 'macro':
                 thr = 4
                 ff = 7
             else:

@@ -16,6 +16,8 @@ from army.movements import *
 class Strategy:
     def __init__(self, ai):
         self.ai = ai
+        # type
+        self.type = 'strategy type'
         # builders
         self._gate_builder = GateBuilder(ai)
         self._stargate_builder = StargateBuilder(ai)

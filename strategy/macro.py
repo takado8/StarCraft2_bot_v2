@@ -4,6 +4,7 @@ from strategy.manager import Strategy
 class Macro(Strategy):
     def __init__(self, ai):
         super().__init__(ai)
+        self.type = 'macro'
 
     # =======================================================  Builders
     async def gate_build(self):
@@ -63,3 +64,11 @@ class Macro(Strategy):
 
     async def warpgate_train(self):
         await self._warpgate_trainer.standard()
+
+    # =======================================================  Army
+
+    async def micro(self):
+        await self._micro.standard()
+
+    async def movements(self):
+        await self._movements.attack_formation()

@@ -3,6 +3,7 @@ from strategy.manager import Strategy
 
 class CarrierMadness(Strategy):
     def __init__(self, ai):
+        self.type = 'macro'
         super().__init__(ai)
 
     # =======================================================  Builders
@@ -20,7 +21,7 @@ class CarrierMadness(Strategy):
         await self._forge_builder.none()
 
     async def twilight_build(self):
-        await self._twilight_builder.standard()
+        await self._twilight_builder.none()
 
     async def pylon_first_build(self):
         await self._pylon_builder.first_in_lower_wall()
@@ -46,7 +47,7 @@ class CarrierMadness(Strategy):
         self._forge_upgrader.none()
 
     async def twilight_upgrades(self):
-        await self._twilight_upgrader.charge()
+        await self._twilight_upgrader.none()
 
     # =======================================================  Trainers
 
@@ -63,4 +64,12 @@ class CarrierMadness(Strategy):
         self._robotics_trainer.none()
 
     async def warpgate_train(self):
-        await self._warpgate_trainer.standard()
+        await self._warpgate_trainer.stargate_priority()
+
+    # =======================================================  Army
+
+    async def micro(self):
+        await self._micro.standard()
+
+    async def movements(self):
+        await self._movements.attack_formation()

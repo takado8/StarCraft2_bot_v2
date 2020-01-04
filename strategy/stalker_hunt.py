@@ -4,6 +4,7 @@ from strategy.manager import Strategy
 class StalkerHunt(Strategy):
     def __init__(self, ai):
         super().__init__(ai)
+        self.type = 'rush'
 
     # =======================================================  Builders
 
