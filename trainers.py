@@ -211,7 +211,7 @@ class RoboticsTrainer:
                     break
             elif self.ai.can_afford(unit.COLOSSUS) and self.ai.supply_left > 5 and self.ai.structures(
                     unit.ROBOTICSBAY).ready.exists \
-                    and self.ai.units(unit.COLOSSUS).amount < 3:
+                    and self.ai.units(unit.COLOSSUS).amount < 4:
                 for factory in self.ai.structures(unit.ROBOTICSFACILITY).ready.idle:
                     self.ai.do(factory.train(unit.COLOSSUS))
             elif self.ai.can_afford(unit.IMMORTAL) and self.ai.supply_left > 3 and self.ai.structures(

@@ -5,6 +5,7 @@
     <inspection_tool class="PyChainedComparisonsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="ignoreConstantInTheMiddle" value="true" />
     </inspection_tool>
+    <inspection_tool class="PyMethodMayBeStaticInspection" enabled="true" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PyPep8Inspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="ignoredErrors">
         <list>
@@ -17,6 +18,7 @@
           <option value="E722" />
           <option value="E231" />
           <option value="E125" />
+          <option value="E115" />
         </list>
       </option>
     </inspection_tool>
