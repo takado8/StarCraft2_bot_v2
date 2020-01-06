@@ -72,7 +72,7 @@ class StalkerHunt(Strategy):
     # =======================================================  Army
 
     async def micro(self):
-        await self._micro.standard()
+        await self._micro.personal()
 
     async def movements(self):
         await self._movements.attack_formation()

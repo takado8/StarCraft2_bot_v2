@@ -22,7 +22,7 @@ class Octopus(sc2.BotAI):
     attack = False
     after_first_attack = False
     army_ids = [unit.ADEPT, unit.STALKER, unit.ZEALOT, unit.SENTRY, unit.OBSERVER, unit.IMMORTAL, unit.ARCHON,
-                unit.HIGHTEMPLAR, unit.DISRUPTOR, unit.WARPPRISM, unit.VOIDRAY, unit.CARRIER]
+                unit.HIGHTEMPLAR, unit.DISRUPTOR, unit.WARPPRISM, unit.VOIDRAY, unit.CARRIER, unit.COLOSSUS]
     units_to_ignore = [unit.LARVA, unit.EGG]
     workers_ids = [unit.SCV, unit.PROBE, unit.DRONE]
     proper_nexus_count = 1
@@ -35,21 +35,48 @@ class Octopus(sc2.BotAI):
     prev_nexus_count = 0
     coords = None
     change_position = False
-
     strategy = None
+    unit_cost = {unit.STALKER: 175, unit.ZEALOT: 100, unit.ADEPT: 125, unit.PROBE: 50, unit.SENTRY: 150}
+    units_tags = []
+    enemy_tags = []
 
+    # async def on_unit_destroyed(self, unit_tag):
+    #     for ut in self.units_tags:
+    #         if ut[0] == unit_tag:
+    #             # friendly unit died
+
+    # async def on_unit_created(self, _unit):
+    #     self.units_tags.append((_unit.tag, _unit.type_id))
 
     async def on_start(self):
         print('start loc: ' + str(self.start_location.position))
         self.coords = cd['map1'][self.start_location.position]
         # self.strategy = CarrierMadness(self)
-        # self.strategy = Macro(self)
-        self.strategy = StalkerHunt(self)
+        self.strategy = Macro(self)
+        # self.strategy = StalkerHunt(self)
 
     async def on_end(self, game_result: Result):
-        print('start pos: ' + str(self.start_location.position))
-        for gateway in self.structures().exclude_type({unit.NEXUS, unit.ASSIMILATOR}):
-            print(str(gateway.type_id)+' coords: ' + str(gateway.position))
+        lost_cost = self.state.score.lost_minerals_army + self.state.score.lost_vespene_army
+        killed_cost = self.state.score.killed_minerals_army + self.state.score.killed_vespene_army
+        print('score: ' + str(self.state.score.score))
+        total_value_units = self.state.score.total_value_units
+        total_value_enemy = self.state.score.killed_value_units
+        dmg_taken_shields = self.state.score.total_damage_taken_shields
+        dmg_dealt_shields = self.state.score.total_damage_dealt_shields
+
+        dmg_taken_life = self.state.score.total_damage_taken_life
+        dmg_dealt_life = self.state.score.total_damage_dealt_life
+        print('total_value_units: ' + str(total_value_units))
+        print('total_value_enemy: ' + str(total_value_enemy))
+        print('dmg_taken_shields: ' + str(dmg_taken_shields))
+        print('dmg_dealt_shields: ' + str(dmg_dealt_shields))
+        print('dmg_taken_life: ' + str(dmg_taken_life))
+        print('dmg_dealt_life: ' + str(dmg_dealt_life))
+        print('lost_cost: ' + str(lost_cost))
+        print('killed_cost: ' + str(killed_cost))
+        # print('start pos: ' + str(self.start_location.position))
+        # for gateway in self.structures().exclude_type({unit.NEXUS, unit.ASSIMILATOR}):
+        #     print(str(gateway.type_id)+' coords: ' + str(gateway.position))
 
     async def on_step(self, iteration):
         self.assign_defend_position()
@@ -69,6 +96,7 @@ class Octopus(sc2.BotAI):
             self.forge_upgrades()
             await self.twilight_council_build()
             await self.robotics_build()
+            await self.robotics_bay_build()
             await self.stargate_build()
             await self.forge_build()
             await self.cybernetics_core_build()
@@ -121,6 +149,9 @@ class Octopus(sc2.BotAI):
 
     async def robotics_build(self):
         await self.strategy.robotics_build()
+
+    async def robotics_bay_build(self):
+        await self.strategy.robotics_bay_build()
 
     async def twilight_council_build(self):
         await self.strategy.twilight_build()
@@ -221,36 +252,35 @@ class Octopus(sc2.BotAI):
         # start = self.start_location.position
         # self.defend_position = self.coords['defend_pos']
 
-        if self.prev_nexus_count != nex.amount or enemy.exists or self.change_position:
-            if self.change_position:
-                self.change_position = False
-            else:
-                self.change_position = True
-            self.prev_nexus_count = nex.amount
-            if enemy.exists and enemy.closer_than(50,self.start_location).amount > 0:
-                self.defend_position = nex.closest_to(enemy.closest_to(self.enemy_start_locations[0])).position.towards(self.game_info.map_center,5)
-                print('first')
-            elif nex.amount < 2:
-                self.defend_position = self.main_base_ramp.top_center.towards(self.main_base_ramp.bottom_center, -6)
-            elif nex.amount == 2:
-                self.defend_position = self.coords['defend_pos']
-            else:
+        # if self.prev_nexus_count != nex.amount or enemy.exists or self.change_position:
+        if self.change_position:
+            self.change_position = False
+        else:
+            self.change_position = True
+        self.prev_nexus_count = nex.amount
+        if enemy.exists and enemy.closer_than(50,self.start_location).amount > 0:
+            self.defend_position = nex.closest_to(enemy.closest_to(self.enemy_start_locations[0])).position.towards(self.game_info.map_center,5)
+        elif nex.amount < 2:
+            self.defend_position = self.main_base_ramp.top_center.towards(self.main_base_ramp.bottom_center, -6)
+        elif nex.amount == 2:
+            self.defend_position = self.coords['defend_pos']
+        else:
+            c = 0
+            total_dists = []
+            for nx1 in nex:
+                for nx2 in nex:
+                    c += nx1.distance_to(nx2)
+                total_dists.append(c)
                 c = 0
-                total_dists = []
-                for nx1 in nex:
-                    for nx2 in nex:
-                        c += nx1.distance_to(nx2)
-                    total_dists.append(c)
-                    c = 0
-                i = 0
-                idx = 0
-                _min = 999
-                for d in total_dists:
-                    if d < _min:
-                        _min = d
-                        idx = i
-                    i += 1
-                self.defend_position = nex[idx].position.towards(self.game_info.map_center,5)
+            i = 0
+            idx = 0
+            _min = 999
+            for d in total_dists:
+                if d < _min:
+                    _min = d
+                    idx = i
+                i += 1
+            self.defend_position = nex[idx].position.towards(self.game_info.map_center,5)
 
 
     def get_proper_pylon(self):
@@ -327,7 +357,6 @@ class Octopus(sc2.BotAI):
                 self.do(shadow.move(destination))
 
 
-
     async def blink(self, stalker, target):
         abilities = await self.get_available_abilities(stalker)
         if ability.EFFECT_BLINK_STALKER in abilities:
@@ -338,57 +367,22 @@ class Octopus(sc2.BotAI):
 
 
 def test(real_time=0):
-    results = []
-    score_board = {Race.Protoss: {'win': {}, 'loose':{}}, Race.Zerg: {'win': {}, 'loose':{}},Race.Terran:
-        {'win': {}, 'loose':{}}}
-    win = 0
-    loose = 0
     r = 1
     for i in range(r):
         try:
-            result = botVsComputer(real_time)
-            result_str = str(result[0]) + ' ' + str(result[2]) + ' ' + str(result[1])
-            print(result_str)
-            if result[0] == Result.Victory:
-                if result[1] not in score_board[result[2]]['win'].keys():
-                    score_board[result[2]]['win'][result[1]] = 1
-                else:
-                    score_board[result[2]]['win'][result[1]] += 1
-                win += 1
-            else:
-                if result[1] not in score_board[result[2]]['loose'].keys():
-                    score_board[result[2]]['loose'][result[1]] = 1
-                else:
-                    score_board[result[2]]['loose'][result[1]] += 1
-                loose += 1
+            botVsComputer(real_time)
         except Exception as ex:
             print('Error.')
             print(ex)
-
-    print('================= Results ===================')
-    for res in results:
-        print(res)
-    print('=============================================')
-    print('win: ' + str(win) + '/' + str(r))
-    print('vs Protoss:')
-    for key in score_board[Race.Protoss]['win']:
-        print(str(key) + ': ' + str(score_board[Race.Protoss]['win'][key]) + ' / ' + str(score_board[Race.Protoss]['loose'][key]))
-    print('vs Zerg:')
-    for key in score_board[Race.Zerg]['win']:
-        print(str(key) + ': ' + str(score_board[Race.Zerg]['win'][key]) + ' / ' + str(score_board[Race.Zerg]['loose'][key]))
-    print('vs Terran: ')
-    for key in score_board[Race.Terran]['win']:
-        print(str(key) + ': ' + str(score_board[Race.Terran]['win'][key]) + ' / ' + str(score_board[Race.Terran]['loose'][key]))
-    print('=============================================')
 
 
 def botVsComputer(real_time):
     maps_set = ['blink', "zealots", "AcropolisLE", "DiscoBloodbathLE", "ThunderbirdLE", "TritonLE", "Ephemeron",
                 "WintersGateLE", "WorldofSleepersLE"]
     races = [Race.Protoss, Race.Zerg, Race.Terran]
-    computer_builds = [AIBuild.Rush]
+    # computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Air]
-    # computer_builds = [AIBuild.Power]
+    computer_builds = [AIBuild.Power, AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
@@ -400,5 +394,5 @@ def botVsComputer(real_time):
 
 
 if __name__ == '__main__':
-    test(real_time=1)
+    test(real_time=0)
     # player_vs_computer()

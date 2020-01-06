@@ -6,6 +6,7 @@ from builders.twilight_builder import TwilightBuilder
 from builders.pylon_builder import PylonBuilder
 from builders.cybernetics_builder import CyberneticsBuilder
 from builders.robotics_builder import RoboticsBuilder
+from builders.robotics_bay_builder import RoboticsBayBuilder
 from builders.expander import Expander
 from upgraders import *
 from trainers import *
@@ -26,6 +27,7 @@ class Strategy:
         self._pylon_builder = PylonBuilder(ai)
         self._cybernetics_builder = CyberneticsBuilder(ai)
         self._robotics_builder = RoboticsBuilder(ai)
+        self._robotics_bay_builder = RoboticsBayBuilder(ai)
         self._assimilator_builder = AssimilatorBuilder(ai)
         self._expander = Expander(ai)
         # upgraders
@@ -45,70 +47,73 @@ class Strategy:
     # =======================================================  Builders
 
     async def gate_build(self):
-        pass
+        print('gate_build not implemented')
 
     async def stargate_build(self):
-        pass
+        print('stargate_build not implemented')
 
     def assimilator_build(self):
-        pass
+        print('assimilator_build not implemented')
 
     async def forge_build(self):
-        pass
+        print('forge_build not implemented')
 
     async def twilight_build(self):
-        pass
+        print('twilight_build not implemented')
 
     async def pylon_first_build(self):
-        pass
+        print('pylon_first_build not implemented')
 
     async def pylon_next_build(self):
-        pass
+        print('pylon_next_build not implemented')
 
     async def proxy(self):
-        pass
+        print('proxy not implemented')
 
     async def cybernetics_build(self):
-        pass
+        print('cybernetics_build not implemented')
 
     async def robotics_build(self):
-        pass
+        print('robotics_build not implemented')
+
+    async def robotics_bay_build(self):
+        print('robotics_bay_build not implemented')
 
     async def expand(self):
-        pass
+        print('expand not implemented')
 
     # =======================================================  Upgraders
 
     def cybernetics_upgrades(self):
-        pass
+        print('cybernetics upg not implemented')
 
     def forge_upgrades(self):
-        pass
+        print('forge upg not implemented')
 
     async def twilight_upgrades(self):
-        pass
+        print('twilight upg not implemented')
 
     # =======================================================  Trainers
 
     def nexus_train(self):
-        pass
+        print('nexus train not implemented')
 
     def gate_train(self):
-        pass
+        print('gate train not implemented')
 
     def stargate_train(self):
-        pass
+        print('stargate train not implemented')
 
     def robotics_train(self):
-        pass
+        print('robotics train not implemented')
 
     async def warpgate_train(self):
-        pass
+        print('warp train not implemented')
 
     # =======================================================  Army
 
     async def micro(self):
-        pass
+        print('micro not implemented')
 
     async def movements(self):
-        pass
+        print('movements not implemented')
