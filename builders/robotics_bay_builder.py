@@ -10,3 +10,6 @@ class RoboticsBayBuilder:
                 self.ai.structures(unit.ROBOTICSFACILITY).ready.exists and self.ai.can_afford(unit.ROBOTICSBAY) and not\
                 self.ai.already_pending(unit.ROBOTICSBAY):
             await self.ai.build(unit.ROBOTICSBAY, near=self.ai.get_proper_pylon())
+
+    async def none(self):
+        pass

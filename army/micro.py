@@ -245,7 +245,7 @@ class Micro:
         enemy = self.ai.enemy_units()
         if not enemy.exists:
             return
-        whole_army = self.ai.army.exclude_type(unit.CARRIER)
+        whole_army = self.ai.army.exclude_type({unit.CARRIER, unit.TEMPEST, unit.VOIDRAY})
         dist = 9
         for man in whole_army:
             threats = enemy.filter(
@@ -421,20 +421,53 @@ class Micro:
                             else:
                                 self.ai.do(se.move(army_center.towards(threats.closest_to(se),-1)))
 
-        # Carrier
-        for cr in self.ai.army(unit.CARRIER):
-            threats = self.ai.enemy_units().filter(lambda z: z.distance_to(cr) < 12 and z.type_id not in self.ai.units_to_ignore)
+        # voidray
+        for vr in self.ai.army(unit.VOIDRAY):
+            threats = self.ai.enemy_units().filter(lambda z: z.distance_to(vr) < 9 and z.type_id not in self.ai.units_to_ignore)
             threats.extend(self.ai.enemy_structures().filter(lambda z: z.can_attack_air))
             if threats.exists:
                 # target2 = None
                 priority = threats.filter(lambda z: z.can_attack_air).sorted(lambda z: z.air_dps, reverse=True)
+                arm = False
                 if priority.exists:
+                    armored = priority.filter(lambda z: z.is_armored)
+                    if armored.exists:
+                        arm = True
+                        priority = armored
                     # closest = priority.closest_to(cr)
                     # if cr.distance_to(closest) < 7:
                     #     self.ai.do(cr.move(cr.position.towards(closest,-3)))
                     # else:
                     if priority.amount > 2:
                         priority = sorted(priority[:int(len(priority)/2)], key=lambda z: z.health+z.shield)
+                    target2 = priority[0]
+                else:
+                    armored = threats.filter(lambda z: z.is_armored)
+                    if armored.exists:
+                        arm = True
+                        threats = armored
+                    target2 = threats.sorted(lambda z: z.health + z.shield)[0]
+                if target2 is not None:
+                    if arm:
+                        if ability.EFFECT_VOIDRAYPRISMATICALIGNMENT in await self.ai.get_available_abilities(vr):
+                            self.ai.do(vr(ability.EFFECT_VOIDRAYPRISMATICALIGNMENT))
+                    self.ai.do(vr.attack(target2))
+
+        # Carrier
+        for cr in self.ai.army({unit.CARRIER,unit.TEMPEST}):
+            threats = self.ai.enemy_units().filter(
+                lambda z: z.distance_to(cr) < 20 and z.type_id not in self.ai.units_to_ignore)
+            threats.extend(self.ai.enemy_structures().filter(lambda z: z.can_attack_air))
+            if threats.exists:
+                # target2 = None
+                priority = threats.filter(lambda z: z.can_attack_air).sorted(lambda z: z.air_dps,reverse=True)
+                if priority.exists:
+                    # closest = priority.closest_to(cr)
+                    # if cr.distance_to(closest) < 7:
+                    #     self.ai.do(cr.move(cr.position.towards(closest,-3)))
+                    # else:
+                    if priority.amount > 2:
+                        priority = sorted(priority[:int(len(priority) / 2)],key=lambda z: z.health + z.shield)
                     target2 = priority[0]
                 else:
                     target2 = threats.sorted(lambda z: z.health + z.shield)[0]

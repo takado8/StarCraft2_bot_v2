@@ -7,6 +7,8 @@ class StargateBuilder:
 
     async def carrier_madness(self):
         stargates = self.ai.structures(unit.STARGATE)
+        if stargates.idle.exists:
+            return
         beacon = self.ai.structures(unit.FLEETBEACON)
         if self.ai.vespene > 400:
             amount = 6

@@ -50,6 +50,20 @@ class GateBuilder:
                 await self.ai.build(unit.GATEWAY,near=pylon,placement_step=0,max_distance=0,
                                     random_alternative=False)
 
+    async def one_standard(self):
+        gates_count = self.ai.structures(unit.GATEWAY).amount
+        gates_count += self.ai.structures(unit.WARPGATE).amount
+        gc = 1
+        pylon = self.ai.structures(unit.PYLON).ready
+        if gates_count < gc \
+                and self.ai.can_afford(unit.GATEWAY) and pylon.exists and \
+                self.ai.already_pending(unit.GATEWAY) < 1:
+
+            pylon = pylon.first
+            if pylon is not None:
+                await self.ai.build(unit.GATEWAY,near=pylon,placement_step=3,max_distance=12,
+                                    random_alternative=True)
+
     async def macro_wall(self):
         gates_count = self.ai.structures(unit.GATEWAY).amount
         gates_count += self.ai.structures(unit.WARPGATE).amount

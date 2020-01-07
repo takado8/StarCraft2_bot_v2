@@ -22,7 +22,8 @@ class Octopus(sc2.BotAI):
     attack = False
     after_first_attack = False
     army_ids = [unit.ADEPT, unit.STALKER, unit.ZEALOT, unit.SENTRY, unit.OBSERVER, unit.IMMORTAL, unit.ARCHON,
-                unit.HIGHTEMPLAR, unit.DISRUPTOR, unit.WARPPRISM, unit.VOIDRAY, unit.CARRIER, unit.COLOSSUS]
+                unit.HIGHTEMPLAR, unit.DISRUPTOR, unit.WARPPRISM, unit.VOIDRAY, unit.CARRIER, unit.COLOSSUS,
+                unit.TEMPEST]
     units_to_ignore = [unit.LARVA, unit.EGG]
     workers_ids = [unit.SCV, unit.PROBE, unit.DRONE]
     proper_nexus_count = 1
@@ -51,8 +52,8 @@ class Octopus(sc2.BotAI):
     async def on_start(self):
         print('start loc: ' + str(self.start_location.position))
         self.coords = cd['map1'][self.start_location.position]
-        # self.strategy = CarrierMadness(self)
-        self.strategy = Macro(self)
+        self.strategy = CarrierMadness(self)
+        # self.strategy = Macro(self)
         # self.strategy = StalkerHunt(self)
 
     async def on_end(self, game_result: Result):
@@ -125,7 +126,7 @@ class Octopus(sc2.BotAI):
         await self.warp_prism()
 
         # retreat
-        if self.attack and self.army.amount < (4 if self.strategy.type == 'rush' else 18):
+        if self.attack and self.army.amount < (4 if self.strategy.type == 'rush' else 10):
             self.attack = False
             if self.strategy.type == 'rush':
                 self.strategy = Macro(self)
@@ -316,21 +317,39 @@ class Octopus(sc2.BotAI):
                 if target.exists:
                     target = target.random
                 else:
-                    target = self.structures().filter(lambda x: x.type_id == unit.CYBERNETICSCORE
+                    target = self.structures().filter(lambda x: x.type_id == unit.STARGATE
                         and x.is_ready and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
                     if target.exists:
                         target = target.random
                     else:
-                        target = self.structures().filter(lambda x: x.type_id == unit.FORGE and x.is_ready
-                                        and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
+                        target = self.structures().filter(lambda x: x.type_id == unit.CYBERNETICSCORE
+                                        and x.is_ready and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
                         if target.exists:
                             target = target.random
                         else:
-                            target = self.structures().filter(lambda x: (x.type_id == unit.GATEWAY or x.type_id == unit.WARPGATE)
-                                                                   and x.is_ready and not x.is_idle and not x.has_buff(
-                                buff.CHRONOBOOSTENERGYCOST))
+                            target = self.structures().filter(lambda x: x.type_id == unit.FORGE and x.is_ready
+                                    and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
                             if target.exists:
                                 target = target.random
+                            else:
+                                target = self.structures().filter(
+                                    lambda x: (x.type_id == unit.GATEWAY or x.type_id == unit.WARPGATE)
+                                              and x.is_ready and not x.is_idle and not x.has_buff(
+                                        buff.CHRONOBOOSTENERGYCOST))
+                                if target.exists:
+                                    target = target.random
+
+                                else:
+                                    target = self.structures().filter(lambda x: x.type_id == unit.FORGE and x.is_ready
+                                                    and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
+                                    if target.exists:
+                                        target = target.random
+                                    else:
+                                        target = self.structures().filter(lambda x: (x.type_id == unit.GATEWAY or x.type_id == unit.WARPGATE)
+                                                                               and x.is_ready and not x.is_idle and not x.has_buff(
+                                            buff.CHRONOBOOSTENERGYCOST))
+                                        if target.exists:
+                                            target = target.random
                 if target:
                     self.do(nexus(ability.EFFECT_CHRONOBOOSTENERGYCOST, target))
 
@@ -381,8 +400,8 @@ def botVsComputer(real_time):
                 "WintersGateLE", "WorldofSleepersLE"]
     races = [Race.Protoss, Race.Zerg, Race.Terran]
     # computer_builds = [AIBuild.Rush]
-    # computer_builds = [AIBuild.Air]
-    computer_builds = [AIBuild.Power, AIBuild.Macro]
+    computer_builds = [AIBuild.Air]
+    # computer_builds = [AIBuild.Power, AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)

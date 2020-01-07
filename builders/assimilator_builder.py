@@ -6,18 +6,18 @@ class AssimilatorBuilder:
         self.ai = ai
 
     def max_vespene(self):
-        if not self.ai.can_afford(unit.ASSIMILATOR) or self.ai.structures(unit.NEXUS).amount > 2 \
-                and self.ai.vespene > self.ai.minerals:
-            return
-        for nexus in self.ai.structures(unit.NEXUS).ready:
-            vaspenes = self.ai.vespene_geyser.closer_than(10, nexus)
-            for vaspene in vaspenes:
-                worker = self.ai.select_build_worker(vaspene.position)
-                if worker is None:
-                    break
-                if not self.ai.already_pending(unit.ASSIMILATOR) and not self.ai.structures(unit.ASSIMILATOR).exists or \
-                        (not self.ai.structures(unit.ASSIMILATOR).closer_than(5, vaspene).exists):
-                    self.ai.do(worker.build(unit.ASSIMILATOR, vaspene))
+        if self.ai.can_afford(unit.ASSIMILATOR) and self.ai.structures(unit.PYLON).exists and\
+            self.ai.structures(unit.GATEWAY).exists:
+
+            for nexus in self.ai.structures(unit.NEXUS).ready:
+                vaspenes = self.ai.vespene_geyser.closer_than(12, nexus)
+                for vaspene in vaspenes:
+                    if not self.ai.structures(unit.ASSIMILATOR).exists or not self.ai.structures(unit.ASSIMILATOR).closer_than(5, vaspene).exists:
+                        if not self.ai.already_pending(unit.ASSIMILATOR):
+                            worker = self.ai.select_build_worker(vaspene.position)
+                            if worker is None:
+                                break
+                            self.ai.do(worker.build(unit.ASSIMILATOR, vaspene))
 
     def more_vespene(self):
         if self.ai.structures(unit.GATEWAY).exists or self.ai.structures(unit.WARPGATE).exists:

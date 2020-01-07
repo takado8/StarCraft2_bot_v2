@@ -9,6 +9,8 @@ class NexusTrainer:
     def probes_standard(self):
         workers = self.ai.workers.amount
         nex = self.ai.structures(unit.NEXUS).ready.amount
+        if not self.ai.structures(unit.PYLON).exists and workers == 14:
+            return
         if workers < 20 * nex and workers < 55:
             for nexus in self.ai.structures(unit.NEXUS).ready:
                 if nexus.is_idle and self.ai.can_afford(unit.PROBE):
@@ -26,7 +28,7 @@ class GateTrainer:
         self.ai = ai
 
     def zealots(self):
-        if self.ai.minerals > 100 and self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < 3:
+        if self.ai.minerals > 200 and self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < 20:
             gateway = self.ai.structures(unit.GATEWAY).ready.idle
             if gateway.exists:
                 gateway = gateway.random
@@ -67,9 +69,18 @@ class StargateTrainer:
         pass
 
     def carriers(self):
-        if self.ai.structures(unit.STARGATE).ready.idle.exists and self.ai.structures(unit.FLEETBEACON).ready.exists and \
-                self.ai.can_afford(unit.CARRIER):
-            self.ai.train(unit_type=unit.CARRIER)
+        if self.ai.structures(unit.STARGATE).ready.idle.exists:
+            if self.ai.structures(unit.FLEETBEACON).ready.exists:
+                if self.ai.can_afford(unit.CARRIER):
+                    self.ai.train(unit_type=unit.CARRIER)
+                elif self.ai.can_afford(unit.TEMPEST) and self.ai.army(unit.TEMPEST).amount < 4 and\
+                        self.ai.army(unit.TEMPEST).amount * 2 < self.ai.army(unit.CARRIER).amount:
+                    self.ai.train(unit.TEMPEST)
+                elif self.ai.can_afford(unit.VOIDRAY) and self.ai.army(unit.VOIDRAY).amount < 7 and \
+                        self.ai.army(unit.CARRIER).amount > 5:
+                    self.ai.train(unit.VOIDRAY)
+            elif self.ai.can_afford(unit.VOIDRAY):
+                self.ai.train(unit.VOIDRAY)
 
 
 class WarpgateTrainer:

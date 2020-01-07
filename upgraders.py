@@ -61,10 +61,7 @@ class CyberneticsUpgrader:
     def air_dmg(self):
         cyber = self.ai.structures(unit.CYBERNETICSCORE).ready.idle
         if cyber.exists:
-            if upgrade.WARPGATERESEARCH not in self.ai.state.upgrades and not self.ai.already_pending_upgrade(
-                    upgrade.WARPGATERESEARCH) and self.ai.can_afford(upgrade.WARPGATERESEARCH):
-                self.ai.do(cyber.random.research(upgrade.WARPGATERESEARCH))
-            elif upgrade.PROTOSSAIRWEAPONSLEVEL1 not in self.ai.state.upgrades and self.ai.can_afford(
+            if upgrade.PROTOSSAIRWEAPONSLEVEL1 not in self.ai.state.upgrades and self.ai.can_afford(
                     upgrade.PROTOSSAIRWEAPONSLEVEL1) and \
                     not self.ai.already_pending_upgrade(upgrade.PROTOSSAIRWEAPONSLEVEL1):
                 self.ai.do(cyber.random.research(upgrade.PROTOSSAIRWEAPONSLEVEL1))
@@ -76,6 +73,18 @@ class CyberneticsUpgrader:
                     upgrade.PROTOSSAIRWEAPONSLEVEL3) and \
                     not self.ai.already_pending_upgrade(upgrade.PROTOSSAIRWEAPONSLEVEL3):
                 self.ai.do(cyber.random.research(upgrade.PROTOSSAIRWEAPONSLEVEL3))
+            elif upgrade.PROTOSSAIRARMORSLEVEL1 not in self.ai.state.upgrades and self.ai.can_afford(
+                    upgrade.PROTOSSAIRARMORSLEVEL1) and \
+                    not self.ai.already_pending_upgrade(upgrade.PROTOSSAIRARMORSLEVEL1):
+                self.ai.do(cyber.random.research(upgrade.PROTOSSAIRARMORSLEVEL1))
+            elif upgrade.PROTOSSAIRARMORSLEVEL2 not in self.ai.state.upgrades and self.ai.can_afford(
+                    upgrade.PROTOSSAIRARMORSLEVEL2) and \
+                    not self.ai.already_pending_upgrade(upgrade.PROTOSSAIRARMORSLEVEL2):
+                self.ai.do(cyber.random.research(upgrade.PROTOSSAIRARMORSLEVEL2))
+            elif upgrade.PROTOSSAIRARMORSLEVEL3 not in self.ai.state.upgrades and self.ai.can_afford(
+                    upgrade.PROTOSSAIRARMORSLEVEL3) and \
+                    not self.ai.already_pending_upgrade(upgrade.PROTOSSAIRARMORSLEVEL3):
+                self.ai.do(cyber.random.research(upgrade.PROTOSSAIRARMORSLEVEL3))
 
 
 class TwilightUpgrader:
