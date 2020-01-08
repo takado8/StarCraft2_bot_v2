@@ -246,7 +246,7 @@ class Micro:
         enemy = self.ai.enemy_units()
         if not enemy.exists:
             return
-        whole_army = self.ai.army.exclude_type({unit.CARRIER, unit.TEMPEST, unit.VOIDRAY})
+        whole_army = self.ai.army.exclude_type({unit.CARRIER, unit.TEMPEST, unit.VOIDRAY, unit.ZEALOT})
         dist = 9
         for man in whole_army:
             threats = enemy.filter(
@@ -444,7 +444,8 @@ class Micro:
                     target2 = threats.sorted(lambda z: z.health + z.shield)[0]
                 if target2 is not None:
                     if arm:
-                        if ability.EFFECT_VOIDRAYPRISMATICALIGNMENT in await self.ai.get_available_abilities(vr):
+                        if ability.EFFECT_VOIDRAYPRISMATICALIGNMENT in await self.ai.get_available_abilities(vr)\
+                                and target2.distance_to(vr) < 8:
                             self.ai.do(vr(ability.EFFECT_VOIDRAYPRISMATICALIGNMENT))
                     self.ai.do(vr.attack(target2))
 
@@ -487,3 +488,4 @@ class Micro:
                 if ability.EFFECT_CHARGE in await self.ai.get_available_abilities(zl):
                     self.ai.do(zl(ability.EFFECT_CHARGE, target))
                 self.ai.do(zl.attack(target))
+

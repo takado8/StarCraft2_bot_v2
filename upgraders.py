@@ -129,3 +129,15 @@ class TwilightUpgrader:
                     abilities = await self.ai.get_available_abilities(tc)
                     if ability.RESEARCH_CHARGE in abilities:
                         self.ai.do(tc(ability.RESEARCH_CHARGE))
+
+
+class FleetBeaconUpgrader:
+    def __init__(self, ai):
+        self.ai = ai
+
+    async def voidrays(self):
+        fleet = self.ai.structures(unit.FLEETBEACON).ready
+        if fleet.exists:
+            fleet = fleet.random
+            if ability.FLEETBEACONRESEARCH_RESEARCHVOIDRAYSPEEDUPGRADE in await self.ai.get_available_abilities(fleet):
+                self.ai.do(fleet(ability.FLEETBEACONRESEARCH_RESEARCHVOIDRAYSPEEDUPGRADE))

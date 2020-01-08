@@ -1,10 +1,10 @@
 from strategy.manager import Strategy
 
 
-class CarrierMadness(Strategy):
+class ProxyVoid(Strategy):
     def __init__(self, ai):
         super().__init__(ai)
-        self.type = 'macro'
+        self.type = 'rush'
 
     # =======================================================  Builders
 
@@ -12,7 +12,7 @@ class CarrierMadness(Strategy):
         await self._gate_builder.one_standard()
 
     async def stargate_build(self):
-        await self._stargate_builder.carrier_madness()
+        await self._stargate_builder.proxy()
 
     def assimilator_build(self):
         self._assimilator_builder.max_vespene()
@@ -30,7 +30,7 @@ class CarrierMadness(Strategy):
         await self._pylon_builder.first_and_next_standard()
 
     async def proxy(self):
-        pass
+        await self._pylon_builder.proxy()
 
     async def cybernetics_build(self):
         await self._cybernetics_builder.standard()
@@ -42,7 +42,7 @@ class CarrierMadness(Strategy):
         await self._robotics_bay_builder.none()
 
     async def expand(self):
-        await self._expander.standard()
+        await self._expander.void_rays()
 
     # =======================================================  Upgraders
 
@@ -55,6 +55,9 @@ class CarrierMadness(Strategy):
     async def twilight_upgrades(self):
         await self._twilight_upgrader.none()
 
+    async def fleet_beacon_upgrades(self):
+        await self._fleet_beacon_upgrader.voidrays()
+
     # =======================================================  Trainers
 
     def nexus_train(self):
@@ -64,7 +67,7 @@ class CarrierMadness(Strategy):
         self._gate_trainer.zealots()
 
     def stargate_train(self):
-        self._stargate_trainer.carriers()
+        self._stargate_trainer.voidray()
 
     def robotics_train(self):
         self._robotics_trainer.none()

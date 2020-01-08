@@ -82,6 +82,11 @@ class StargateTrainer:
             elif self.ai.can_afford(unit.VOIDRAY):
                 self.ai.train(unit.VOIDRAY)
 
+    def voidray(self):
+        if self.ai.structures(unit.STARGATE).ready.idle.exists:
+            if self.ai.can_afford(unit.VOIDRAY):
+                self.ai.train(unit.VOIDRAY)
+
 
 class WarpgateTrainer:
     def __init__(self, ai):

@@ -61,7 +61,7 @@ class Movements:
         else:
             flag = True
 
-        if nearest.amount > self.ai.army.amount * 0.60 and flag:
+        if nearest.amount > self.ai.army.amount * 0.6 and flag:
             for man in self.ai.army:
                 if enemy is not None and not enemy.in_attack_range_of(man).exists:
                     if man.type_id == unit.STALKER:
@@ -76,3 +76,5 @@ class Movements:
             # center = nearest.center
             for man in self.ai.army.filter(lambda man_: man_.distance_to(start) > _range / 2):
                 self.ai.do(man.move(start))
+
+

@@ -34,6 +34,7 @@ class Strategy:
         self._cybernetics_upgrader = CyberneticsUpgrader(ai)
         self._forge_upgrader = ForgeUpgrader(ai)
         self._twilight_upgrader = TwilightUpgrader(ai)
+        self._fleet_beacon_upgrader = FleetBeaconUpgrader(ai)
         # trainers
         self._nexus_trainer = NexusTrainer(ai)
         self._gate_trainer = GateTrainer(ai)
@@ -92,6 +93,9 @@ class Strategy:
 
     async def twilight_upgrades(self):
         print('twilight upg not implemented')
+
+    async def fleet_beacon_upgrades(self):
+        print('fleet beacon upg not implemented')
 
     # =======================================================  Trainers
 

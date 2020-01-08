@@ -12,6 +12,8 @@ from player_vs import player_vs_computer
 from strategy.carrier_madness import CarrierMadness
 from strategy.macro import Macro
 from strategy.stalker_hunt import StalkerHunt
+from strategy.call_of_void import CallOfTheVoid
+from strategy.proxy_void import ProxyVoid
 
 
 class Octopus(sc2.BotAI):
@@ -40,6 +42,7 @@ class Octopus(sc2.BotAI):
     unit_cost = {unit.STALKER: 175, unit.ZEALOT: 100, unit.ADEPT: 125, unit.PROBE: 50, unit.SENTRY: 150}
     units_tags = []
     enemy_tags = []
+    proxy_worker = None
 
     # async def on_unit_destroyed(self, unit_tag):
     #     for ut in self.units_tags:
@@ -53,8 +56,10 @@ class Octopus(sc2.BotAI):
         print('start loc: ' + str(self.start_location.position))
         self.coords = cd['map1'][self.start_location.position]
         # self.strategy = CarrierMadness(self)
-        self.strategy = Macro(self)
-        # self.strategy = StalkerHunt(self)
+        # self.strategy = CallOfTheVoid(self)
+        # self.strategy = ProxyVoid(self)
+        # self.strategy = Macro(self)
+        self.strategy = StalkerHunt(self)
 
     async def on_end(self, game_result: Result):
         lost_cost = self.state.score.lost_minerals_army + self.state.score.lost_vespene_army
@@ -92,6 +97,7 @@ class Octopus(sc2.BotAI):
         await self.expand()
 
         if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS) or self.minerals > 400:
+            await self.fleet_beacon_upgrades()
             self.cybernetics_core_upgrades()
             await self.twilight_upgrades()
             self.forge_upgrades()
@@ -109,7 +115,6 @@ class Octopus(sc2.BotAI):
             await self.strategy.warpgate_train()
 
             await self.build_batteries()
-
         await self.nexus_buff()
 
         # counter attack
@@ -120,7 +125,9 @@ class Octopus(sc2.BotAI):
             self.after_first_attack = True
             self.attack = True
         # normal attack
-        if self.strategy.type == 'rush' and not self.first_attack and upgrade.WARPGATERESEARCH in self.state.upgrades:
+        if self.strategy.type == 'rush' and not self.first_attack and (self.army(unit.VOIDRAY).amount > 0 or
+                                        upgrade.WARPGATERESEARCH in self.state.upgrades):
+            print('Atta !!!')
             self.first_attack = True
             self.attack = True
 
@@ -128,7 +135,8 @@ class Octopus(sc2.BotAI):
         await self.warp_prism()
 
         # retreat
-        if self.attack and self.army.amount < (4 if self.strategy.type == 'rush' else 10):
+        if self.attack and self.army.amount < (1 if self.strategy.type == 'rush' else 10):
+            print('no attaaa...')
             self.attack = False
             if self.strategy.type == 'rush':
                 self.strategy = Macro(self)
@@ -186,6 +194,9 @@ class Octopus(sc2.BotAI):
 
     async def twilight_upgrades(self):
         await self.strategy.twilight_upgrades()
+
+    async def fleet_beacon_upgrades(self):
+        await self.strategy.fleet_beacon_upgrades()
 
     # ============================================= Trainers
     def train_workers(self):

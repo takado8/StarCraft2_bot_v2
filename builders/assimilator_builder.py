@@ -6,8 +6,7 @@ class AssimilatorBuilder:
         self.ai = ai
 
     def max_vespene(self):
-        if self.ai.can_afford(unit.ASSIMILATOR) and self.ai.structures(unit.PYLON).exists and\
-            self.ai.structures(unit.GATEWAY).exists or self.ai.already_pending(unit.GATEWAY):
+        if self.ai.can_afford(unit.ASSIMILATOR) and self.ai.structures(unit.PYLON).exists:
 
             for nexus in self.ai.structures(unit.NEXUS).ready:
                 vaspenes = self.ai.vespene_geyser.closer_than(12, nexus)

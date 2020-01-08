@@ -1,10 +1,10 @@
 from strategy.manager import Strategy
 
 
-class CarrierMadness(Strategy):
+class CallOfTheVoid(Strategy):
     def __init__(self, ai):
         super().__init__(ai)
-        self.type = 'macro'
+        self.type = 'air'
 
     # =======================================================  Builders
 
@@ -55,6 +55,9 @@ class CarrierMadness(Strategy):
     async def twilight_upgrades(self):
         await self._twilight_upgrader.none()
 
+    async def fleet_beacon_upgrades(self):
+        await self._fleet_beacon_upgrader.voidrays()
+
     # =======================================================  Trainers
 
     def nexus_train(self):
@@ -64,7 +67,7 @@ class CarrierMadness(Strategy):
         self._gate_trainer.zealots()
 
     def stargate_train(self):
-        self._stargate_trainer.carriers()
+        self._stargate_trainer.voidray()
 
     def robotics_train(self):
         self._robotics_trainer.none()
