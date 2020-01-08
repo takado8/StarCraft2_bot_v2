@@ -24,7 +24,7 @@ class Octopus(sc2.BotAI):
     army_ids = [unit.ADEPT, unit.STALKER, unit.ZEALOT, unit.SENTRY, unit.OBSERVER, unit.IMMORTAL, unit.ARCHON,
                 unit.HIGHTEMPLAR, unit.DISRUPTOR, unit.WARPPRISM, unit.VOIDRAY, unit.CARRIER, unit.COLOSSUS,
                 unit.TEMPEST]
-    units_to_ignore = [unit.LARVA, unit.EGG]
+    units_to_ignore = [unit.LARVA, unit.EGG, unit.INTERCEPTOR]
     workers_ids = [unit.SCV, unit.PROBE, unit.DRONE]
     proper_nexus_count = 1
     army = []
@@ -107,6 +107,8 @@ class Octopus(sc2.BotAI):
             self.strategy.stargate_train()
             self.gate_train()
             await self.strategy.warpgate_train()
+
+            await self.build_batteries()
 
         await self.nexus_buff()
 
@@ -207,6 +209,23 @@ class Octopus(sc2.BotAI):
         await self.strategy.movements()
 
     # ============================================= none
+
+    async def build_batteries(self):
+        if self.structures(unit.CYBERNETICSCORE).ready.exists and self.minerals > 400:
+            nexuses = self.structures(unit.NEXUS).further_than(9, self.start_location)
+            amount = nexuses.amount * 3
+            for nex in nexuses:
+                pos = nex.position.towards(self.game_info.map_center, 7)
+                pylon = self.structures(unit.PYLON).closer_than(7, pos)
+                if not pylon.exists and not self.already_pending(unit.PYLON) and self.can_afford(unit.PYLON):
+                    await self.build(unit.PYLON, near=pos)
+                elif pylon.ready.exists:
+                    batteries = self.structures(unit.SHIELDBATTERY)
+                    if not batteries.exists or batteries.closer_than(9, pos).amount < amount:
+                        if self.can_afford(unit.SHIELDBATTERY) and self.already_pending(unit.SHIELDBATTERY) < 2:
+                            await self.build(unit.SHIELDBATTERY, near=pos)
+
+
 
     def forge_upg_priority(self):
         if self.structures(unit.TWILIGHTCOUNCIL).ready.exists:
@@ -407,11 +426,11 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[2], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=bool(real_time))
     return res, build, races[race_index]
 
 
 if __name__ == '__main__':
-    test(real_time=0)
+    test(real_time=1)
     # player_vs_computer()
