@@ -28,7 +28,7 @@ class GateTrainer:
         self.ai = ai
 
     def zealots(self):
-        if self.ai.minerals > 200 and self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < 20:
+        if self.ai.minerals > 250 and self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < 20:
             gateway = self.ai.structures(unit.GATEWAY).ready.idle
             if gateway.exists:
                 gateway = gateway.random

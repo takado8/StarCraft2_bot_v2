@@ -211,9 +211,9 @@ class Octopus(sc2.BotAI):
     # ============================================= none
 
     async def build_batteries(self):
-        if self.structures(unit.CYBERNETICSCORE).ready.exists and self.minerals > 400:
+        if self.structures(unit.CYBERNETICSCORE).ready.exists and self.minerals > 360:
             nexuses = self.structures(unit.NEXUS).further_than(9, self.start_location)
-            amount = nexuses.amount * 3
+            amount = nexuses.amount * 2
             for nex in nexuses:
                 pos = nex.position.towards(self.game_info.map_center, 7)
                 pylon = self.structures(unit.PYLON).closer_than(7, pos)
@@ -426,7 +426,7 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[2], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=bool(real_time))
     return res, build, races[race_index]
 
