@@ -35,7 +35,8 @@ class Micro:
                 else:
                     leader = army.random
                 threats = enemy.filter(
-                    lambda unit_: unit_.can_attack_ground and unit_.distance_to(leader) <= dist and
+                    lambda unit_: (unit_.can_attack_ground or unit_.type_id == unit.DISRUPTOR)
+                                  and unit_.distance_to(leader) <= dist and
                                   unit_.type_id not in self.ai.units_to_ignore)
                 if self.ai.attack:
                     threats.extend(self.ai.enemy_structures().filter(lambda _x: _x.can_attack_ground or _x.type_id in
@@ -420,7 +421,6 @@ class Micro:
                                 self.ai.do(se.move(army_center))
                             else:
                                 self.ai.do(se.move(army_center.towards(threats.closest_to(se),-1)))
-
         # voidray
         for vr in self.ai.army(unit.VOIDRAY):
             threats = self.ai.enemy_units().filter(lambda z: z.distance_to(vr) < 9 and z.type_id
@@ -435,12 +435,6 @@ class Micro:
                     if armored.exists:
                         arm = True
                         priority = armored
-                    # closest = priority.closest_to(cr)
-                    # if cr.distance_to(closest) < 7:
-                    #     self.ai.do(cr.move(cr.position.towards(closest,-3)))
-                    # else:
-                    # if priority.amount > 2:
-                    #     priority = sorted(priority[:int(len(priority)/2)], key=lambda z: z.health+z.shield)
                     target2 = priority[0]
                 else:
                     armored = threats.filter(lambda z: z.is_armored)
@@ -472,21 +466,9 @@ class Micro:
                         while i < len(priority) and priority[i].type_id == id0:
                             i+=1
                         priority = priority[:i]
-
                 if priority:
-                    print('----------------------------------------------------------')
                     priority = sorted(priority,key=lambda z: z.health + z.shield)
-                    unit_of_types = []
-                    for u in priority:
-                        if u.type_id not in unit_of_types:
-                            unit_of_types.append(u)
-                    for u in unit_of_types:
-                        print(str(u.type_id) + ': ' + str(u.health + u.shield))
-
-                    # if priority.amount > 2:
-                    #     priority = sorted(priority[:int(len(priority) / 2)],key=lambda z: z.health + z.shield)
                     target2 = priority[0]
-                    print('priority: ' + str(target2.type_id))
                 else:
                     target2 = threats.sorted(lambda z: z.health + z.shield)[0]
                 if target2 is not None:

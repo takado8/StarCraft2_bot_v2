@@ -7,7 +7,8 @@ class Movements:
 
     async def attack_formation(self):
         enemy_units = self.ai.enemy_units()
-        en = enemy_units.filter(lambda x: x.type_id not in self.ai.units_to_ignore and x.can_attack_ground)
+        en = enemy_units.filter(lambda x: x.type_id not in self.ai.units_to_ignore and (x.can_attack_ground or
+                                                                                        x.can_attack_air))
         enemy = en
         if enemy.amount > 2:
             if enemy.closer_than(40,self.ai.start_location).amount > 7:
@@ -19,17 +20,25 @@ class Movements:
                 destination = enemy.closest_to(self.ai.start_location).position
         elif self.ai.enemy_structures().exists:
             enemy = self.ai.enemy_structures()
-            destination = enemy.closest_to(self.ai.start_location).position
+            if self.ai.destination is not None:
+                destination = enemy.closest_to(self.ai.destination).position
+            else:
+                destination = enemy.closest_to(self.ai.start_location).position
+            # destination = enemy.closest_to(self.ai.start_location).position
         else:
             enemy = None
             destination = self.ai.enemy_start_locations[0].position
 
-        start = self.ai.army.closest_to(destination)
+        if self.ai.leader_tag is None or self.ai.army.find_by_tag(self.ai.leader_tag) is None:
+            self.ai.leader_tag = self.ai.army.closest_to(destination).tag
+
+
+        start = self.ai.army.find_by_tag(self.ai.leader_tag)#self.ai.army.closest_to(destination)
         self.ai.destination = destination
 
         # point halfway
         dist = start.distance_to(destination)
-        if dist > 4:
+        if dist > 12:
             point = start.position.towards(destination,dist / 2)
         else:
             point = destination

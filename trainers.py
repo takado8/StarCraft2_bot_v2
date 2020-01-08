@@ -121,6 +121,13 @@ class WarpgateTrainer:
             if self.ai.structures(unit.ROBOTICSFACILITY).ready.idle.exists and \
                     self.ai.army(unit.IMMORTAL).amount < 5 or self.ai.forge_upg_priority() or not self.ai.structures(unit.WARPGATE).exists:
                 return
+        immortals = self.ai.army(unit.IMMORTAL).amount
+        if immortals < 2:
+            amount = 7
+        elif immortals < 4:
+            amount = 13
+        else:
+            amount = 23
         if self.ai.attack:
             prisms = self.ai.units(unit.WARPPRISMPHASING)
             if prisms.exists:
@@ -140,19 +147,20 @@ class WarpgateTrainer:
             if i > 5:
                 print("can't find position for warpin.")
                 return
+
         for warpgate in self.ai.structures(unit.WARPGATE).ready:
             abilities = await self.ai.get_available_abilities(warpgate)
             if ability.WARPGATETRAIN_ZEALOT in abilities:
                 if self.ai.can_afford(unit.SENTRY) and self.ai.units(unit.STALKER).amount > 7 and \
                         self.ai.structures(unit.CYBERNETICSCORE).ready.exists and self.ai.units(unit.SENTRY).amount < 5:
                     self.ai.do(warpgate.warp_in(unit.SENTRY,placement))
-                elif self.ai.can_afford(unit.STALKER) and self.ai.supply_left > 1 and self.ai.army(unit.STALKER).amount < 24:
+                elif self.ai.can_afford(unit.STALKER) and self.ai.supply_left > 1 and self.ai.army(unit.STALKER).amount < amount:
                     self.ai.do(warpgate.warp_in(unit.STALKER, placement))
                 elif self.ai.minerals > 150 and self.ai.supply_left > 1 and \
-                        self.ai.structures(unit.CYBERNETICSCORE).ready.exists and self.ai.units(unit.ADEPT).amount < 12:
+                        self.ai.structures(unit.CYBERNETICSCORE).ready.exists and self.ai.units(unit.ADEPT).amount < amount:
                     self.ai.do(warpgate.warp_in(unit.ADEPT, placement))
                 elif self.ai.minerals > 150 and \
-                        self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < 12:
+                        self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < amount:
                     self.ai.do(warpgate.warp_in(unit.ZEALOT, placement))
 
     async def stargate_priority(self):
