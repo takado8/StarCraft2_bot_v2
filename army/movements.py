@@ -74,7 +74,7 @@ class Movements:
                     self.ai.do(man.attack(position))
         else:
             # center = nearest.center
-            for man in self.ai.army.filter(lambda man_: man_.distance_to(start) > _range / 2):
+            for man in self.ai.army.filter(lambda man_: man_.distance_to(start) > _range):
                 self.ai.do(man.move(start))
 
 

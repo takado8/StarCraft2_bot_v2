@@ -1,7 +1,7 @@
 from strategy.manager import Strategy
 
 
-class Macro(Strategy):
+class Simple(Strategy):
     def __init__(self, ai):
         super().__init__(ai)
         self.type = 'macro'
@@ -9,16 +9,16 @@ class Macro(Strategy):
 
     # =======================================================  Builders
     async def gate_build(self):
-        await self._gate_builder.macro_colossus()
+        await self._gate_builder.macro()
 
-    async def assimilator_build(self):
-        await self._assimilator_builder.max_vespene()
+    def assimilator_build(self):
+        self._assimilator_builder.standard()
 
     async def stargate_build(self):
         await self._stargate_builder.none()
 
     async def forge_build(self):
-        await self._forge_builder.none()
+        await self._forge_builder.single()
 
     async def twilight_build(self):
         await self._twilight_builder.standard()
@@ -39,13 +39,13 @@ class Macro(Strategy):
         await self._cybernetics_builder.standard()
 
     async def robotics_build(self):
-        await self._robotics_builder.macro()
+        await self._robotics_builder.none()
 
     async def robotics_bay_build(self):
-        await self._robotics_bay_builder.standard()
+        await self._robotics_bay_builder.none()
 
     async def expand(self):
-        await self._expander.two_bases()
+        await self._expander.standard()
 
     # =======================================================  Upgraders
 
@@ -53,10 +53,13 @@ class Macro(Strategy):
         self._cybernetics_upgrader.standard()
 
     def forge_upgrades(self):
-        self._forge_upgrader.none()
+        self._forge_upgrader.standard()
 
     async def twilight_upgrades(self):
         await self._twilight_upgrader.both()
+
+    async def fleet_beacon_upgrades(self):
+        pass
 
     # =======================================================  Trainers
 

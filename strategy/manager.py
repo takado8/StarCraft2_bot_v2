@@ -3,6 +3,7 @@ from builders.stargate_builder import StargateBuilder
 from builders.assimilator_builder import AssimilatorBuilder
 from builders.forge_builder import ForgeBuilder
 from builders.twilight_builder import TwilightBuilder
+from builders.templar_builder import TemplarArchivesBuilder
 from builders.pylon_builder import PylonBuilder
 from builders.cybernetics_builder import CyberneticsBuilder
 from builders.robotics_builder import RoboticsBuilder
@@ -24,6 +25,7 @@ class Strategy:
         self._stargate_builder = StargateBuilder(ai)
         self._forge_builder = ForgeBuilder(ai)
         self._twilight_builder = TwilightBuilder(ai)
+        self._templar_archives_builder = TemplarArchivesBuilder(ai)
         self._pylon_builder = PylonBuilder(ai)
         self._cybernetics_builder = CyberneticsBuilder(ai)
         self._robotics_builder = RoboticsBuilder(ai)
@@ -61,6 +63,9 @@ class Strategy:
 
     async def twilight_build(self):
         print('twilight_build not implemented')
+
+    async def templar_archives_build(self):
+        print('templar_archives_build not implemented')
 
     async def pylon_first_build(self):
         print('pylon_first_build not implemented')

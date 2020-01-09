@@ -14,6 +14,7 @@ from strategy.macro import Macro
 from strategy.stalker_hunt import StalkerHunt
 from strategy.call_of_void import CallOfTheVoid
 from strategy.proxy_void import ProxyVoid
+from strategy.simple import Simple
 
 
 class Octopus(sc2.BotAI):
@@ -24,8 +25,7 @@ class Octopus(sc2.BotAI):
     attack = False
     after_first_attack = False
     army_ids = [unit.ADEPT, unit.STALKER, unit.ZEALOT, unit.SENTRY, unit.OBSERVER, unit.IMMORTAL, unit.ARCHON,
-                unit.HIGHTEMPLAR, unit.DISRUPTOR, unit.WARPPRISM, unit.VOIDRAY, unit.CARRIER, unit.COLOSSUS,
-                unit.TEMPEST]
+                 unit.DISRUPTOR, unit.WARPPRISM, unit.VOIDRAY, unit.CARRIER, unit.COLOSSUS, unit.TEMPEST]
     units_to_ignore = [unit.LARVA, unit.EGG, unit.INTERCEPTOR]
     workers_ids = [unit.SCV, unit.PROBE, unit.DRONE]
     proper_nexus_count = 1
@@ -59,7 +59,8 @@ class Octopus(sc2.BotAI):
         # self.strategy = CallOfTheVoid(self)
         # self.strategy = ProxyVoid(self)
         # self.strategy = Macro(self)
-        self.strategy = StalkerHunt(self)
+        # self.strategy = StalkerHunt(self)
+        self.strategy = Simple(self)
 
     async def on_end(self, game_result: Result):
         lost_cost = self.state.score.lost_minerals_army + self.state.score.lost_vespene_army
@@ -102,6 +103,7 @@ class Octopus(sc2.BotAI):
             await self.twilight_upgrades()
             self.forge_upgrades()
             await self.twilight_council_build()
+            await self.templar_archives_build()
             await self.robotics_build()
             await self.robotics_bay_build()
             await self.stargate_build()
@@ -114,14 +116,15 @@ class Octopus(sc2.BotAI):
             self.gate_train()
             await self.strategy.warpgate_train()
 
-            await self.build_batteries()
+            # await self.build_batteries()
         await self.nexus_buff()
 
         # counter attack
         if self.enemy_units().exists and self.enemy_units().closer_than(40,self.defend_position).amount > 2:
-            self.enemy_attack = True
-        if self.enemy_attack and self.enemy_units().amount < 5:
-            self.enemy_attack = False
+            print('Attaaa !!')
+            # self.enemy_attack = True
+        # if self.enemy_attack and self.enemy_units().amount < 5:
+        #     self.enemy_attack = False
             self.after_first_attack = True
             self.attack = True
         # normal attack
@@ -135,7 +138,7 @@ class Octopus(sc2.BotAI):
         await self.warp_prism()
 
         # retreat
-        if self.attack and self.army.amount < (1 if self.strategy.type == 'rush' else 10):
+        if self.attack and self.army.amount < (1 if self.strategy.type == 'rush' else 15):
             print('no attaaa...')
             self.attack = False
             if self.strategy.type == 'rush':
@@ -146,7 +149,7 @@ class Octopus(sc2.BotAI):
         else:
             await self.defend()
         await self.micro_units()
-
+        await self.morph_Archons()
 
     # ============================================= Builders
     async def gate_build(self):
@@ -166,6 +169,9 @@ class Octopus(sc2.BotAI):
 
     async def twilight_council_build(self):
         await self.strategy.twilight_build()
+
+    async def templar_archives_build(self):
+        await self.strategy.templar_archives_build()
 
     async def pylon_first_build(self):
         await self.strategy.pylon_first_build()
@@ -221,6 +227,30 @@ class Octopus(sc2.BotAI):
 
     # ============================================= none
 
+    async def morph_Archons(self):
+        if self.units(unit.HIGHTEMPLAR).amount > 1:
+            hts = self.units(unit.HIGHTEMPLAR).sorted(lambda u: u.energy)
+            ht2 = hts[0]
+            ht1 = hts[1]
+            if ht2 and ht1:
+                if ht1.distance_to(ht2) > 2:
+                    self.do(ht1.hold_position())
+                    self.do(ht2.move(ht1))
+                else:
+                    # print('morphing!')
+                    from s2clientprotocol import raw_pb2 as raw_pb
+                    from s2clientprotocol import sc2api_pb2 as sc_pb
+                    command = raw_pb.ActionRawUnitCommand(
+                        ability_id=ability.MORPH_ARCHON.value,
+                        unit_tags=[ht1.tag,ht2.tag],
+                        queue_command=False
+                    )
+                    action = raw_pb.ActionRaw(unit_command=command)
+                    await self._client._execute(action=sc_pb.RequestAction(
+                        actions=[sc_pb.Action(action_raw=action)]
+                    ))
+
+
     async def build_batteries(self):
         if self.structures(unit.CYBERNETICSCORE).ready.exists and self.minerals > 360:
             nexuses = self.structures(unit.NEXUS).further_than(9, self.start_location)
@@ -270,12 +300,15 @@ class Octopus(sc2.BotAI):
     async def defend(self):
         enemy = self.enemy_units()
         if enemy.amount > 1:
-            dist = 40
+            dist = 20
         else:
             dist = 6
         for man in self.army:
+            position = Point2(self.defend_position).towards(self.game_info.map_center, 2) if\
+                man.type_id == unit.ZEALOT else Point2(self.defend_position)
+
             if man.distance_to(self.defend_position) > dist:
-                self.do(man.attack(Point2(self.defend_position).random_on_distance(random.randint(1,3))))
+                self.do(man.attack(position.random_on_distance(random.randint(1,2))))
 
     def assign_defend_position(self):
         nex = self.structures(unit.NEXUS)
@@ -296,22 +329,24 @@ class Octopus(sc2.BotAI):
         elif nex.amount == 2:
             self.defend_position = self.coords['defend_pos']
         else:
-            c = 0
-            total_dists = []
-            for nx1 in nex:
-                for nx2 in nex:
-                    c += nx1.distance_to(nx2)
-                total_dists.append(c)
-                c = 0
-            i = 0
-            idx = 0
-            _min = 999
-            for d in total_dists:
-                if d < _min:
-                    _min = d
-                    idx = i
-                i += 1
-            self.defend_position = nex[idx].position.towards(self.game_info.map_center,5)
+            self.defend_position = nex.closest_to(self.enemy_start_locations[0]).position.towards(self.game_info.map_center,5)
+
+            # c = 0
+            # total_dists = []
+            # for nx1 in nex:
+            #     for nx2 in nex:
+            #         c += nx1.distance_to(nx2)
+            #     total_dists.append(c)
+            #     c = 0
+            # i = 0
+            # idx = 0
+            # _min = 999
+            # for d in total_dists:
+            #     if d < _min:
+            #         _min = d
+            #         idx = i
+            #     i += 1
+            # self.defend_position = nex[idx].position.towards(self.game_info.map_center,5)
 
 
     def get_proper_pylon(self):
@@ -437,7 +472,7 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[2], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=bool(real_time))
     return res, build, races[race_index]
 

@@ -22,3 +22,13 @@ class ForgeBuilder:
                     placement = self.ai.get_proper_pylon()
                     if placement:
                         await self.ai.build(unit.FORGE,near=placement,placement_step=2)
+
+    async def single(self):
+        if self.ai.time > 160:
+            if self.ai.structures(unit.FORGE).amount < 1 and not self.ai.already_pending(
+                    unit.FORGE) and self.ai.can_afford(
+                    unit.FORGE):
+                if self.ai.structures(unit.PYLON).ready.exists:
+                    placement = self.ai.get_proper_pylon()
+                    if placement:
+                        await self.ai.build(unit.FORGE,near=placement,placement_step=2)

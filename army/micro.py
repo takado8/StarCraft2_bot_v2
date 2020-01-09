@@ -19,7 +19,7 @@ class Micro:
             for i in range(0,len(lst),n):
                 yield lst[i:i + n]
         # stalkers // mixed
-        whole_army = self.ai.army.exclude_type(unit.CARRIER)
+        whole_army = self.ai.army.exclude_type(unit.ZEALOT)
         dist = 7
         group_size = 5
         c = int(len(whole_army) / group_size)

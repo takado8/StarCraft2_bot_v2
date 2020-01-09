@@ -73,9 +73,8 @@ class PylonBuilder:
             #     placement = self.ai.start_location.position
             #     max_dist = 40
             #     pl_step = 3
-                await self.ai.build(unit.PYLON,max_distance=40, placement_step=4,
-                        near=self.ai.start_location.position.towards(self.ai.main_base_ramp.top_center,6))
-
+                await self.ai.build(unit.PYLON,max_distance=40, placement_step=5,
+                        near=self.ai.start_location.position.towards(self.ai.main_base_ramp.top_center,5))
 
     async def proxy(self):
         pylons = self.ai.structures(unit.PYLON)

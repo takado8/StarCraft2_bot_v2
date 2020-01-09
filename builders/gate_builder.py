@@ -114,7 +114,7 @@ class GateBuilder:
             if pylon is None:
                 return
             await self.ai.build(unit.GATEWAY,near=pylon,placement_step=2)
-        elif 3 < gates_count < (7 if self.ai.minerals > 400 else 6) and self.ai.can_afford(unit.GATEWAY) and self.ai.structures(
+        elif 3 < gates_count < (12 if self.ai.minerals > 400 else 6) and self.ai.can_afford(unit.GATEWAY) and self.ai.structures(
                 unit.NEXUS).ready.amount > 1 and \
                 self.ai.already_pending(unit.GATEWAY) < 1:
             pylon = self.ai.get_proper_pylon()
