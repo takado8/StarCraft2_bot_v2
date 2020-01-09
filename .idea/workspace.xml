@@ -2,20 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8c31ee0e-5715-4e85-a78f-7d7c2ebf81b0" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/builders/templar_builder.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/strategy/simple.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/army/micro.py" beforeDir="false" afterPath="$PROJECT_DIR$/army/micro.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/army/movements.py" beforeDir="false" afterPath="$PROJECT_DIR$/army/movements.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/builders/assimilator_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/builders/assimilator_builder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/builders/forge_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/builders/forge_builder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/builders/gate_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/builders/gate_builder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/builders/pylon_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/builders/pylon_builder.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategy/macro.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategy/macro.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategy/manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategy/manager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trainers.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/upgraders.py" beforeDir="false" afterPath="$PROJECT_DIR$/upgraders.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -43,13 +31,13 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="45" />
-          <entry key="py" value="52175" />
+          <entry key="py" value="52193" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="45" />
-          <entry key="Python" value="52175" />
+          <entry key="Python" value="52193" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -75,10 +63,10 @@
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="66">
-              <caret line="480" column="20" selection-start-line="480" selection-start-column="20" selection-end-line="480" selection-end-column="20" />
+              <caret line="474" column="29" selection-start-line="474" selection-start-column="29" selection-end-line="474" selection-end-column="29" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
-                <marker date="1578607077055" expanded="true" signature="1595:1625" ph="..." />
+                <marker date="1578608746679" expanded="true" signature="1595:1625" ph="..." />
               </folding>
             </state>
           </provider>
@@ -108,8 +96,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/trainers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="66">
-              <caret line="168" column="90" selection-start-line="168" selection-start-column="88" selection-end-line="168" selection-end-column="90" />
+            <state relative-caret-position="340">
+              <caret line="157" column="47" selection-start-line="157" selection-start-column="47" selection-end-line="157" selection-end-column="47" />
               <folding>
                 <element signature="e#3844#5268#0" />
                 <element signature="e#10646#12557#0" />
@@ -235,9 +223,9 @@
         <option value="$PROJECT_DIR$/upgraders.py" />
         <option value="$PROJECT_DIR$/builders/forge_builder.py" />
         <option value="$PROJECT_DIR$/strategy/simple.py" />
-        <option value="$PROJECT_DIR$/trainers.py" />
         <option value="$PROJECT_DIR$/builders/gate_builder.py" />
         <option value="$PROJECT_DIR$/builders/pylon_builder.py" />
+        <option value="$PROJECT_DIR$/trainers.py" />
         <option value="$PROJECT_DIR$/main.py" />
       </list>
     </option>
@@ -774,17 +762,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trainers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="66">
-          <caret line="168" column="90" selection-start-line="168" selection-start-column="88" selection-end-line="168" selection-end-column="90" />
-          <folding>
-            <element signature="e#3844#5268#0" />
-            <element signature="e#10646#12557#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/builders/pylon_builder.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="40">
@@ -819,13 +796,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/trainers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="157" column="47" selection-start-line="157" selection-start-column="47" selection-end-line="157" selection-end-column="47" />
+          <folding>
+            <element signature="e#3844#5268#0" />
+            <element signature="e#10646#12557#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="66">
-          <caret line="480" column="20" selection-start-line="480" selection-start-column="20" selection-end-line="480" selection-end-column="20" />
+          <caret line="474" column="29" selection-start-line="474" selection-start-column="29" selection-end-line="474" selection-end-column="29" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
-            <marker date="1578607077055" expanded="true" signature="1595:1625" ph="..." />
+            <marker date="1578608746679" expanded="true" signature="1595:1625" ph="..." />
           </folding>
         </state>
       </provider>

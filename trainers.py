@@ -150,12 +150,12 @@ class WarpgateTrainer:
         archons = self.ai.army(unit.ARCHON).amount
         if archons == 0:
             archons = 1
-        amount = 4 * archons
+        amount = 3 * archons
         for warpgate in self.ai.structures(unit.WARPGATE).ready:
             abilities = await self.ai.get_available_abilities(warpgate)
             if ability.WARPGATETRAIN_ZEALOT in abilities:
                 if self.ai.can_afford(unit.HIGHTEMPLAR) and self.ai.supply_left > 1 and self.ai.army(
-                        unit.ARCHON).amount < 5 and self.ai.structures(unit.TEMPLARARCHIVE).ready.exists:
+                        unit.ARCHON).amount < 7 and self.ai.structures(unit.TEMPLARARCHIVE).ready.exists:
                     self.ai.do(warpgate.warp_in(unit.HIGHTEMPLAR,placement))
                 elif self.ai.can_afford(unit.SENTRY) and self.ai.units(unit.STALKER).amount > 7 and \
                         self.ai.structures(unit.CYBERNETICSCORE).ready.exists and self.ai.units(unit.SENTRY).amount < 5:

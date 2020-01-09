@@ -234,8 +234,8 @@ class Octopus(sc2.BotAI):
             ht1 = hts[1]
             if ht2 and ht1:
                 if ht1.distance_to(ht2) > 2:
-                    self.do(ht1.hold_position())
-                    self.do(ht2.move(ht1))
+                    self.do(ht1.move(self.main_base_ramp.bottom_center))
+                    self.do(ht2.move(self.main_base_ramp.bottom_center))
                 else:
                     # print('morphing!')
                     from s2clientprotocol import raw_pb2 as raw_pb
@@ -472,7 +472,7 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=bool(real_time))
     return res, build, races[race_index]
 
