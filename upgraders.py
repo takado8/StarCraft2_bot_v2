@@ -118,13 +118,6 @@ class TwilightUpgrader:
 
     async def both(self):
         if self.ai.structures(unit.TWILIGHTCOUNCIL).ready.exists:
-            if upgrade.BLINKTECH not in self.ai.state.upgrades:
-                tc = self.ai.structures(unit.TWILIGHTCOUNCIL).ready.idle
-                if tc.exists:
-                    tc = tc.random
-                    abilities = await self.ai.get_available_abilities(tc)
-                    if ability.RESEARCH_BLINK in abilities:
-                        self.ai.do(tc(ability.RESEARCH_BLINK))
             if upgrade.CHARGE not in self.ai.state.upgrades:
                 tc = self.ai.structures(unit.TWILIGHTCOUNCIL).ready.idle
                 if tc.exists:
@@ -132,6 +125,13 @@ class TwilightUpgrader:
                     abilities = await self.ai.get_available_abilities(tc)
                     if ability.RESEARCH_CHARGE in abilities:
                         self.ai.do(tc(ability.RESEARCH_CHARGE))
+            elif upgrade.BLINKTECH not in self.ai.state.upgrades:
+                tc = self.ai.structures(unit.TWILIGHTCOUNCIL).ready.idle
+                if tc.exists:
+                    tc = tc.random
+                    abilities = await self.ai.get_available_abilities(tc)
+                    if ability.RESEARCH_BLINK in abilities:
+                        self.ai.do(tc(ability.RESEARCH_BLINK))
 
 
 class FleetBeaconUpgrader:

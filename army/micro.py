@@ -20,7 +20,7 @@ class Micro:
                 yield lst[i:i + n]
         # stalkers // mixed
         whole_army = self.ai.army.exclude_type(unit.ZEALOT)
-        dist = 7
+        dist = 9
         group_size = 5
         c = int(len(whole_army) / group_size)
         chunks = c if c > 0 else 1
@@ -381,7 +381,7 @@ class Micro:
                 elif not guardian_shield_on and eff.id == effect.GUARDIANSHIELDPERSISTENT:
                     guardian_shield_on = True
             threats = self.ai.enemy_units().filter(
-                lambda unit_: unit_.can_attack_ground and unit_.distance_to(sentry) <= 16 and
+                lambda unit_: unit_.can_attack_ground and unit_.distance_to(sentry) <= 10 and
                               unit_.type_id not in self.ai.units_to_ignore and unit_.type_id not in self.ai.workers_ids)
 
             enemy_army_center = None

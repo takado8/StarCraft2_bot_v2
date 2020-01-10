@@ -1,7 +1,7 @@
 from strategy.manager import Strategy
 
 
-class Simple(Strategy):
+class Bio(Strategy):
     def __init__(self, ai):
         super().__init__(ai)
         self.type = 'macro'
@@ -39,7 +39,7 @@ class Simple(Strategy):
         await self._cybernetics_builder.standard()
 
     async def robotics_build(self):
-        await self._robotics_builder.none()
+        await self._robotics_builder.macro()
 
     async def robotics_bay_build(self):
         await self._robotics_bay_builder.none()

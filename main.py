@@ -14,7 +14,7 @@ from strategy.macro import Macro
 from strategy.stalker_hunt import StalkerHunt
 from strategy.call_of_void import CallOfTheVoid
 from strategy.proxy_void import ProxyVoid
-from strategy.simple import Simple
+from strategy.bio import Bio
 
 
 class Octopus(sc2.BotAI):
@@ -43,6 +43,9 @@ class Octopus(sc2.BotAI):
     units_tags = []
     enemy_tags = []
     proxy_worker = None
+    observer_scouting_index = 0
+    observer_scounting_points = []
+    # observer_released = False
 
     # async def on_unit_destroyed(self, unit_tag):
     #     for ut in self.units_tags:
@@ -60,7 +63,7 @@ class Octopus(sc2.BotAI):
         # self.strategy = ProxyVoid(self)
         # self.strategy = Macro(self)
         # self.strategy = StalkerHunt(self)
-        self.strategy = Simple(self)
+        self.strategy = Bio(self)
 
     async def on_end(self, game_result: Result):
         lost_cost = self.state.score.lost_minerals_army + self.state.score.lost_vespene_army
@@ -227,6 +230,28 @@ class Octopus(sc2.BotAI):
 
     # ============================================= none
 
+    def scan(self):
+        phxs = self.units(unit.PHOENIX).filter(lambda z: z.is_hallucination)
+        if phxs.amount < 1:
+            snts = self.army(unit.SENTRY).filter(lambda z: z.energy >= 75)
+            if snts.exists:
+                se = snts.random
+                self.do(se(ability.HALLUCINATION_PHOENIX))
+        else:
+            if len(self.observer_scounting_points) == 0:
+                for exp in self.expansion_locations:
+                    if not self.structures().closer_than(12,exp).exists:
+                        self.observer_scounting_points.append(exp)
+                self.observer_scounting_points = sorted(self.observer_scounting_points,
+                                                        key=lambda x: self.enemy_start_locations[0].distance_to(x))
+
+            for px in phxs.idle:
+                self.do(px.move(self.observer_scounting_points[self.observer_scouting_index]))
+                self.observer_scouting_index += 1
+                if self.observer_scouting_index == len(self.observer_scounting_points):
+                    self.observer_scouting_index = 0
+
+
     async def morph_Archons(self):
         if self.units(unit.HIGHTEMPLAR).amount > 1:
             hts = self.units(unit.HIGHTEMPLAR).sorted(lambda u: u.energy)
@@ -234,8 +259,12 @@ class Octopus(sc2.BotAI):
             ht1 = hts[1]
             if ht2 and ht1:
                 if ht1.distance_to(ht2) > 2:
-                    self.do(ht1.move(self.main_base_ramp.bottom_center))
-                    self.do(ht2.move(self.main_base_ramp.bottom_center))
+                    if ht1.distance_to(self.main_base_ramp.bottom_center) > 30:
+                        self.do(ht1.move(ht2))
+                        self.do(ht2.move(ht1))
+                    else:
+                        self.do(ht1.move(self.main_base_ramp.bottom_center))
+                        self.do(ht2.move(self.main_base_ramp.bottom_center))
                 else:
                     # print('morphing!')
                     from s2clientprotocol import raw_pb2 as raw_pb
@@ -306,7 +335,6 @@ class Octopus(sc2.BotAI):
         for man in self.army:
             position = Point2(self.defend_position).towards(self.game_info.map_center, 2) if\
                 man.type_id == unit.ZEALOT else Point2(self.defend_position)
-
             if man.distance_to(self.defend_position) > dist:
                 self.do(man.attack(position.random_on_distance(random.randint(1,2))))
 

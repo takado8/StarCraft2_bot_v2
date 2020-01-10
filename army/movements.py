@@ -10,10 +10,18 @@ class Movements:
         en = enemy_units.filter(lambda x: x.type_id not in self.ai.units_to_ignore and (x.can_attack_ground or
                                                                                         x.can_attack_air))
         enemy = en
+        if self.ai.army.closer_than(12,self.ai.enemy_start_locations[0]).amount > 20 and self.ai.enemy_structures.amount == 0:
+            if not self.ai.enemy_main_base_down:
+                self.ai.enemy_main_base_down = True
+            self.ai.scan()
+            if enemy_units.exists:
+                for man in self.ai.army.exclude_type(unit.OBSERVER):
+                    self.ai.do(man.attack(enemy_units.closest_to(man)))
+            return
         if enemy.amount > 2:
-            if enemy.closer_than(40,self.ai.start_location).amount > 7:
-                await self.ai.defend()
-                return
+            # if enemy.closer_than(40,self.ai.start_location).amount > 7:
+            #     await self.ai.defend()
+            #     return
             if self.ai.destination is not None:
                 destination = enemy.closest_to(self.ai.destination).position
             else:
@@ -33,7 +41,7 @@ class Movements:
             self.ai.leader_tag = self.ai.army.closest_to(destination).tag
 
 
-        start = self.ai.army.find_by_tag(self.ai.leader_tag)#self.ai.army.closest_to(destination)
+        start = self.ai.army.find_by_tag(self.ai.leader_tag)     # self.ai.army.closest_to(destination)
         self.ai.destination = destination
 
         # point halfway
@@ -53,7 +61,7 @@ class Movements:
                 print("can't find position for army.")
                 return
         # if everybody's here, we can go
-        _range = 7 if self.ai.army.amount < 24 else 12
+        _range = 7 if self.ai.army.amount < 20 else 12
         nearest = self.ai.army.closer_than(_range,start.position)
 
         if en.exists and en.closer_than(12,start.position).exists:
@@ -74,7 +82,5 @@ class Movements:
                     self.ai.do(man.attack(position))
         else:
             # center = nearest.center
-            for man in self.ai.army.filter(lambda man_: man_.distance_to(start) > _range):
+            for man in self.ai.army.filter(lambda man_: man_.distance_to(start) > _range / 2):
                 self.ai.do(man.move(start))
-
-

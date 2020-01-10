@@ -157,8 +157,8 @@ class WarpgateTrainer:
                 if self.ai.can_afford(unit.HIGHTEMPLAR) and self.ai.supply_left > 1 and self.ai.army(
                         unit.ARCHON).amount < 7 and self.ai.structures(unit.TEMPLARARCHIVE).ready.exists:
                     self.ai.do(warpgate.warp_in(unit.HIGHTEMPLAR,placement))
-                elif self.ai.can_afford(unit.SENTRY) and self.ai.units(unit.STALKER).amount > 7 and \
-                        self.ai.structures(unit.CYBERNETICSCORE).ready.exists and self.ai.units(unit.SENTRY).amount < 5:
+                elif self.ai.can_afford(unit.SENTRY) and self.ai.units(unit.STALKER).amount > 5 and \
+                        self.ai.structures(unit.CYBERNETICSCORE).ready.exists and self.ai.units(unit.SENTRY).amount < 3:
                     self.ai.do(warpgate.warp_in(unit.SENTRY,placement))
                 elif self.ai.can_afford(unit.STALKER) and self.ai.supply_left > 1 and self.ai.army(unit.STALKER).amount < amount:
                     self.ai.do(warpgate.warp_in(unit.STALKER, placement))
@@ -218,6 +218,7 @@ class RoboticsTrainer:
     def standard(self):
         robotics = self.ai.structures(unit.ROBOTICSFACILITY).ready.idle
         if robotics.exists:
+            immortals = self.ai.units(unit.IMMORTAL)
             if self.ai.structures(unit.ROBOTICSBAY).ready.exists \
                     and self.ai.units(unit.COLOSSUS).amount < 3:
                 immortals_amm = 3
@@ -228,9 +229,9 @@ class RoboticsTrainer:
                 for factory in robotics:
                     self.ai.do(factory.train(unit.OBSERVER))
                     break
-            elif self.ai.attack and self.ai.units(unit.WARPPRISMPHASING).amount + self.ai.units(unit.WARPPRISM).amount < 1 \
+            elif self.ai.units(unit.WARPPRISMPHASING).amount + self.ai.units(unit.WARPPRISM).amount < 1 \
                     and self.ai.can_afford(unit.WARPPRISM) and not self.ai.already_pending(
-                unit.WARPPRISM) and self.ai.supply_left > 2:
+                unit.WARPPRISM) and self.ai.supply_left > 2 and (immortals.amount > 1 or self.ai.attack):
                 for factory in self.ai.structures(unit.ROBOTICSFACILITY).ready.idle:
                     self.ai.do(factory.train(unit.WARPPRISM))
                     break
@@ -241,6 +242,6 @@ class RoboticsTrainer:
                     self.ai.do(factory.train(unit.COLOSSUS))
             elif self.ai.can_afford(unit.IMMORTAL) and self.ai.supply_left > 3 and self.ai.structures(
                     unit.ROBOTICSFACILITY).ready.exists \
-                    and self.ai.units(unit.IMMORTAL).amount < immortals_amm:
+                    and immortals.amount < immortals_amm:
                 for factory in self.ai.structures(unit.ROBOTICSFACILITY).ready.idle:
                     self.ai.do(factory.train(unit.IMMORTAL))
