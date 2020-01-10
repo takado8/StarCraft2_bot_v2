@@ -20,7 +20,7 @@ class Micro:
                 yield lst[i:i + n]
         # stalkers // mixed
         whole_army = self.ai.army.exclude_type(unit.ZEALOT)
-        dist = 9
+        dist = 7
         group_size = 5
         c = int(len(whole_army) / group_size)
         chunks = c if c > 0 else 1
@@ -167,7 +167,7 @@ class Micro:
                 elif not guardian_shield_on and eff.id == effect.GUARDIANSHIELDPERSISTENT:
                     guardian_shield_on = True
             threats = self.ai.enemy_units().filter(
-                lambda unit_: unit_.can_attack_ground and unit_.distance_to(sentry) <= 16 and
+                lambda unit_: unit_.can_attack_ground and unit_.distance_to(sentry) <= 9 and
                               unit_.type_id not in self.ai.units_to_ignore and unit_.type_id not in self.ai.workers_ids)
 
             enemy_army_center = None
@@ -228,9 +228,51 @@ class Micro:
                 if target2 is not None:
                     self.ai.do(cr.attack(target2))
 
+            # high templar
+        for ht in whole_army(unit.HIGHTEMPLAR):
+            # if enemy.exists:
+            _enemy = enemy.closer_than(9,ht)
+            if _enemy.amount > 5:
+                # if low energy, go behind army, else to front
+                army = whole_army.closer_than(7,ht)
+                if ht.energy < 50 or ht.is_idle:
+                    en = _enemy.closest_to(ht)
+                    place = army.furthest_to(en).position.towards(en,-7)
+                    if ht.distance_to(place) > 3:
+                        self.ai.do(ht.move(place))
+                # Cast spells   ---> look for group of enemy
+                spell_target = _enemy.filter(
+                    lambda unit_: not unit_.is_structure and unit_.type_id not in self.ai.workers and
+                    unit_.type_id not in self.ai.units_to_ignore)
+                target = None
+                if spell_target.amount > 5:
+                    abilities = await self.ai.get_available_abilities(ht)
+                    # medivacs = spell_target.filter(lambda x: x.type_id == unit.MEDIVAC)
+                    if ability.PSISTORM_PSISTORM in abilities and \
+                            self.ai.time - self.ai.psi_storm_wait > 1.4:
+                        maxNeighbours = 0
+                        for en in spell_target:
+                            neighbours = _enemy.filter(lambda u: u.distance_to(en) <= 1.5)
+                            if neighbours.amount > maxNeighbours:
+                                maxNeighbours = neighbours.amount
+                                target = en
+                        if target is not None and self.ai.army.closer_than(1.7,target).amount < 3:
+                            print("Casting Psi Storm on " + str(maxNeighbours + 1) + " units.")
+                            self.ai.do(ht(ability.PSISTORM_PSISTORM,target.position))
+                            self.ai.psi_storm_wait = self.ai.time
+
+                    elif ability.FEEDBACK_FEEDBACK in abilities:
+                        spell_target = spell_target.filter(lambda z: z.energy > 100).exclude_type({unit.OVERSEER})
+                        if spell_target.exists:
+                            spell_target = spell_target.sorted(lambda z: z.energy,reverse=True)
+                            target = spell_target[0]
+                            print("Casting Feedback on " + target.name + " with " + str(target.energy) + " energy.")
+                            self.ai.do(ht(ability.FEEDBACK_FEEDBACK,target))
+                            break
+
         # zealot
         for zl in self.ai.army(unit.ZEALOT):
-            threats = self.ai.enemy_units().filter(lambda x2: x2.distance_to(zl) < 9).sorted(lambda _x: _x.health + _x.shield)
+            threats = self.ai.enemy_units().filter(lambda x2: x2.distance_to(zl) < 7).sorted(lambda _x: _x.health + _x.shield)
             if threats.exists:
                 closest = threats.closest_to(zl)
                 if threats[0].health_percentage * threats[0].shield_percentage == 1 or threats[0].distance_to(zl) > \

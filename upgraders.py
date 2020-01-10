@@ -134,6 +134,24 @@ class TwilightUpgrader:
                         self.ai.do(tc(ability.RESEARCH_BLINK))
 
 
+class TemplarArchiveUpgrader:
+    def __init__(self, ai):
+        self.ai = ai
+
+    async def none(self):
+        pass
+
+    async def storm(self):
+        if upgrade.PSISTORMTECH not in self.ai.state.upgrades:
+            tc = self.ai.structures(unit.TEMPLARARCHIVE).ready.idle
+            if tc.exists:
+                tc = tc.random
+                abilities = await self.ai.get_available_abilities(tc)
+                if ability.RESEARCH_PSISTORM in abilities:
+                    self.ai.do(tc(ability.RESEARCH_PSISTORM))
+
+
+
 class FleetBeaconUpgrader:
     def __init__(self, ai):
         self.ai = ai

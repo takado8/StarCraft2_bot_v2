@@ -1,6 +1,7 @@
 import random
 from sc2 import run_game, maps, Race, Difficulty, Result, AIBuild
 import sc2
+import time
 from sc2.ids.ability_id import AbilityId as ability
 from sc2.ids.unit_typeid import UnitTypeId as unit
 from sc2.player import Bot, Computer
@@ -25,7 +26,7 @@ class Octopus(sc2.BotAI):
     attack = False
     after_first_attack = False
     army_ids = [unit.ADEPT, unit.STALKER, unit.ZEALOT, unit.SENTRY, unit.OBSERVER, unit.IMMORTAL, unit.ARCHON,
-                 unit.DISRUPTOR, unit.WARPPRISM, unit.VOIDRAY, unit.CARRIER, unit.COLOSSUS, unit.TEMPEST]
+                 unit.HIGHTEMPLAR,unit.DISRUPTOR, unit.WARPPRISM, unit.VOIDRAY, unit.CARRIER, unit.COLOSSUS, unit.TEMPEST]
     units_to_ignore = [unit.LARVA, unit.EGG, unit.INTERCEPTOR]
     workers_ids = [unit.SCV, unit.PROBE, unit.DRONE]
     proper_nexus_count = 1
@@ -45,8 +46,9 @@ class Octopus(sc2.BotAI):
     proxy_worker = None
     observer_scouting_index = 0
     observer_scounting_points = []
+    psi_storm_wait = 0
     # observer_released = False
-
+    slow = True
     # async def on_unit_destroyed(self, unit_tag):
     #     for ut in self.units_tags:
     #         if ut[0] == unit_tag:
@@ -62,8 +64,8 @@ class Octopus(sc2.BotAI):
         # self.strategy = CallOfTheVoid(self)
         # self.strategy = ProxyVoid(self)
         # self.strategy = Macro(self)
-        # self.strategy = StalkerHunt(self)
-        self.strategy = Bio(self)
+        self.strategy = StalkerHunt(self)
+        # self.strategy = Bio(self)
 
     async def on_end(self, game_result: Result):
         lost_cost = self.state.score.lost_minerals_army + self.state.score.lost_vespene_army
@@ -91,7 +93,10 @@ class Octopus(sc2.BotAI):
     async def on_step(self, iteration):
         self.assign_defend_position()
         self.army = self.units().filter(lambda x: x.type_id in self.army_ids)
-
+        await self.morph_Archons()
+        # if self.slow:
+        #     time.sleep(0.1)
+        # self.speed()
         self.train_workers()
         await self.distribute_workers()
         await self.morph_gates()
@@ -101,6 +106,7 @@ class Octopus(sc2.BotAI):
         await self.expand()
 
         if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS) or self.minerals > 400:
+            await self.templar_archives_upgrades()
             await self.fleet_beacon_upgrades()
             self.cybernetics_core_upgrades()
             await self.twilight_upgrades()
@@ -152,7 +158,6 @@ class Octopus(sc2.BotAI):
         else:
             await self.defend()
         await self.micro_units()
-        await self.morph_Archons()
 
     # ============================================= Builders
     async def gate_build(self):
@@ -204,6 +209,9 @@ class Octopus(sc2.BotAI):
     async def twilight_upgrades(self):
         await self.strategy.twilight_upgrades()
 
+    async def templar_archives_upgrades(self):
+        await self.strategy.templar_archives_upgrades()
+
     async def fleet_beacon_upgrades(self):
         await self.strategy.fleet_beacon_upgrades()
 
@@ -251,13 +259,28 @@ class Octopus(sc2.BotAI):
                 if self.observer_scouting_index == len(self.observer_scounting_points):
                     self.observer_scouting_index = 0
 
+    def speed(self):
+        for msg in self.state.chat:
+            if str(msg.message) == ' ':
+                if self.slow:
+                    self.slow = False
+                else:
+                    self.slow = True
+                # self.state.chat.remove(msg)
 
     async def morph_Archons(self):
-        if self.units(unit.HIGHTEMPLAR).amount > 1:
+        # archons = self.army(unit.ARCHON)
+        # ht_amount = int(archons.amount / 2)
+        # ht_thresh = ht_amount + 1
+        ht_thresh = 1
+        if self.units(unit.HIGHTEMPLAR).amount > ht_thresh:
             hts = self.units(unit.HIGHTEMPLAR).sorted(lambda u: u.energy)
             ht2 = hts[0]
             ht1 = hts[1]
             if ht2 and ht1:
+                for ht in self.army(unit.HIGHTEMPLAR):
+                    if ht.tag == ht1.tag or ht.tag==ht2.tag:
+                        self.army.remove(ht)
                 if ht1.distance_to(ht2) > 2:
                     if ht1.distance_to(self.main_base_ramp.bottom_center) > 30:
                         self.do(ht1.move(ht2))
@@ -426,7 +449,7 @@ class Octopus(sc2.BotAI):
                                 target = target.random
                             else:
                                 target = self.structures().filter(
-                                    lambda x: (x.type_id == unit.GATEWAY or x.type_id == unit.WARPGATE)
+                                    lambda x: (x.type_id == unit.ROBOTICSFACILITY)
                                               and x.is_ready and not x.is_idle and not x.has_buff(
                                         buff.CHRONOBOOSTENERGYCOST))
                                 if target.exists:
@@ -437,12 +460,12 @@ class Octopus(sc2.BotAI):
                                                     and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
                                     if target.exists:
                                         target = target.random
-                                    else:
-                                        target = self.structures().filter(lambda x: (x.type_id == unit.GATEWAY or x.type_id == unit.WARPGATE)
-                                                                               and x.is_ready and not x.is_idle and not x.has_buff(
-                                            buff.CHRONOBOOSTENERGYCOST))
-                                        if target.exists:
-                                            target = target.random
+                                # else:
+                                #     target = self.structures().filter(lambda x: (x.type_id == unit.GATEWAY or x.type_id == unit.WARPGATE)
+                                #                                            and x.is_ready and not x.is_idle and not x.has_buff(
+                                #         buff.CHRONOBOOSTENERGYCOST))
+                                #     if target.exists:
+                                #         target = target.random
                 if target:
                     self.do(nexus(ability.EFFECT_CHRONOBOOSTENERGYCOST, target))
 
@@ -492,19 +515,19 @@ def botVsComputer(real_time):
     maps_set = ['blink', "zealots", "AcropolisLE", "DiscoBloodbathLE", "ThunderbirdLE", "TritonLE", "Ephemeron",
                 "WintersGateLE", "WorldofSleepersLE"]
     races = [Race.Protoss, Race.Zerg, Race.Terran]
-    # computer_builds = [AIBuild.Rush]
+    computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Air]
-    computer_builds = [AIBuild.Power, AIBuild.Macro]
+    # computer_builds = [AIBuild.Power, AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=bool(real_time))
     return res, build, races[race_index]
 
 
 if __name__ == '__main__':
-    test(real_time=0)
+    test(real_time=1)
     # player_vs_computer()

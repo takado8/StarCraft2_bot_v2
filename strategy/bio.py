@@ -58,6 +58,9 @@ class Bio(Strategy):
     async def twilight_upgrades(self):
         await self._twilight_upgrader.both()
 
+    async def templar_archives_upgrades(self):
+        await self._templar_archives_upgrader.none()
+
     async def fleet_beacon_upgrades(self):
         pass
 
