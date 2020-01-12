@@ -93,7 +93,7 @@ class Expander:
 
     async def _expand_now2(self):
         building = unit.NEXUS
-        location = await self._get_next_expansion2()
+        location = await self.ai.get_next_expansion()#await self._get_next_expansion2()
         if location is not None:
             await self.ai.build(building,near=location,max_distance=5,random_alternative=False,placement_step=1)
 

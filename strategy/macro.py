@@ -12,7 +12,7 @@ class Macro(Strategy):
         await self._gate_builder.macro_colossus()
 
     def assimilator_build(self):
-        self._assimilator_builder.max_vespene()
+        self._assimilator_builder.standard()
 
     async def stargate_build(self):
         await self._stargate_builder.none()
@@ -45,7 +45,7 @@ class Macro(Strategy):
         await self._robotics_bay_builder.standard()
 
     async def expand(self):
-        await self._expander.two_bases()
+        await self._expander.standard()
 
     # =======================================================  Upgraders
 

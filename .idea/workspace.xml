@@ -4,17 +4,13 @@
     <list default="true" id="8c31ee0e-5715-4e85-a78f-7d7c2ebf81b0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/army/micro.py" beforeDir="false" afterPath="$PROJECT_DIR$/army/micro.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/army/movements.py" beforeDir="false" afterPath="$PROJECT_DIR$/army/movements.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/builders/assimilator_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/builders/assimilator_builder.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/builders/expander.py" beforeDir="false" afterPath="$PROJECT_DIR$/builders/expander.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/builders/gate_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/builders/gate_builder.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/builders/pylon_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/builders/pylon_builder.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/builders/robotics_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/builders/robotics_builder.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/strategy/bio.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategy/bio.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/strategy/macro.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategy/macro.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategy/stalker_hunt.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategy/stalker_hunt.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trainers.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainers.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -26,7 +22,7 @@
     <session id="-907730567">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="94" />
+          <entry key="project.closed" value="95" />
           <entry key="project.open.time.0" value="4" />
           <entry key="project.open.time.1" value="2" />
           <entry key="project.open.time.10" value="1" />
@@ -42,23 +38,23 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="48" />
-          <entry key="py" value="54429" />
+          <entry key="py" value="54535" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="48" />
-          <entry key="Python" value="54429" />
+          <entry key="Python" value="54535" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="266" />
+          <entry key="py" value="272" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="266" />
+          <entry key="Python" value="272" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages">
@@ -70,39 +66,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="167">
-              <caret line="67" column="26" selection-start-line="67" selection-start-column="26" selection-end-line="67" selection-end-column="26" />
+            <state relative-caret-position="200">
+              <caret line="521" column="29" selection-start-line="521" selection-start-column="29" selection-end-line="521" selection-end-column="29" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
-                <marker date="1578795119604" expanded="true" signature="1618:1785" ph="..." />
-                <marker date="1578795119604" expanded="true" signature="9801:10056" ph="..." />
+                <marker date="1578803433418" expanded="true" signature="1618:1785" ph="..." />
+                <marker date="1578803433418" expanded="true" signature="9739:9994" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/builders/expander.py">
+        <entry file="file://$PROJECT_DIR$/strategy/macro.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="84" column="31" selection-start-line="84" selection-start-column="31" selection-end-line="84" selection-end-column="31" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/builders/pylon_builder.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="139">
-              <caret line="11" column="34" selection-start-line="11" selection-start-column="34" selection-end-line="11" selection-end-column="34" />
-              <folding>
-                <element signature="e#238#1046#0" />
-                <element signature="e#1813#2112#0" />
-                <element signature="e#2163#2473#0" />
-              </folding>
+            <state relative-caret-position="160">
+              <caret line="14" column="41" lean-forward="true" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="41" />
             </state>
           </provider>
         </entry>
@@ -136,6 +118,28 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/army/micro.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="160">
+              <caret line="322" column="123" selection-start-line="322" selection-start-column="123" selection-end-line="322" selection-end-column="123" />
+              <folding>
+                <element signature="e#0#38#0" expanded="true" />
+                <marker date="1578798950803" expanded="true" signature="15157:15166" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/builders/pylon_builder.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-144">
+              <caret line="52" column="83" selection-start-line="52" selection-start-column="83" selection-end-line="52" selection-end-column="83" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/army/movements.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="84">
@@ -144,15 +148,33 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/strategy/bio.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="32" column="40" selection-start-line="32" selection-start-column="40" selection-end-line="32" selection-end-column="40" />
+            <state relative-caret-position="134">
+              <caret line="14" column="39" selection-start-line="14" selection-start-column="34" selection-end-line="14" selection-end-column="42" />
               <folding>
-                <marker date="1578795192497" expanded="true" signature="1662:1716" ph="..." />
-                <marker date="1578795192497" expanded="true" signature="1759:1778" ph="..." />
+                <marker date="1578803242003" expanded="true" signature="1658:1712" ph="..." />
+                <marker date="1578803242003" expanded="true" signature="1755:1774" ph="..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/builders/assimilator_builder.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="720">
+              <caret line="36" column="8" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/builders/expander.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="146">
+              <caret line="95" column="52" selection-start-line="95" selection-start-column="52" selection-end-line="95" selection-end-column="52" />
             </state>
           </provider>
         </entry>
@@ -238,22 +260,22 @@
         <option value="$PROJECT_DIR$/strategy/simple.py" />
         <option value="$PROJECT_DIR$/upgraders.py" />
         <option value="$PROJECT_DIR$/strategy/manager.py" />
-        <option value="$PROJECT_DIR$/builders/robotics_builder.py" />
         <option value="$PROJECT_DIR$/strategy/stalker_hunt.py" />
-        <option value="$PROJECT_DIR$/strategy/macro.py" />
-        <option value="$PROJECT_DIR$/army/micro.py" />
-        <option value="$PROJECT_DIR$/builders/assimilator_builder.py" />
-        <option value="$PROJECT_DIR$/builders/pylon_builder.py" />
         <option value="$PROJECT_DIR$/builders/gate_builder.py" />
-        <option value="$PROJECT_DIR$/builders/expander.py" />
         <option value="$PROJECT_DIR$/trainers.py" />
-        <option value="$PROJECT_DIR$/main.py" />
-        <option value="$PROJECT_DIR$/strategy/bio.py" />
         <option value="$PROJECT_DIR$/army/movements.py" />
+        <option value="$PROJECT_DIR$/builders/robotics_builder.py" />
+        <option value="$PROJECT_DIR$/army/micro.py" />
+        <option value="$PROJECT_DIR$/builders/pylon_builder.py" />
+        <option value="$PROJECT_DIR$/builders/expander.py" />
+        <option value="$PROJECT_DIR$/strategy/macro.py" />
+        <option value="$PROJECT_DIR$/builders/assimilator_builder.py" />
+        <option value="$PROJECT_DIR$/strategy/bio.py" />
+        <option value="$PROJECT_DIR$/main.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="282" />
     <option name="y" value="192" />
     <option name="width" value="1215" />
@@ -400,7 +422,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.6708185" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.44128114" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.25622776" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39679715" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -735,25 +757,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/strategy/macro.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="314">
-          <caret line="87" column="31" lean-forward="true" selection-start-line="87" selection-start-column="31" selection-end-line="87" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/builders/pylon_builder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="139">
-          <caret line="11" column="34" selection-start-line="11" selection-start-column="34" selection-end-line="11" selection-end-column="34" />
-          <folding>
-            <element signature="e#238#1046#0" />
-            <element signature="e#1813#2112#0" />
-            <element signature="e#2163#2473#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/builders/gate_builder.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
@@ -763,43 +766,6 @@
             <element signature="e#1662#2249#0" />
             <element signature="e#2293#2865#0" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/builders/expander.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="84" column="31" selection-start-line="84" selection-start-column="31" selection-end-line="84" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/builders/assimilator_builder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="43" column="55" selection-start-line="43" selection-start-column="55" selection-end-line="43" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/army/micro.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="410" column="23" selection-start-line="410" selection-start-column="23" selection-end-line="410" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#38#0" expanded="true" />
-            <element signature="e#487#14914#0" />
-            <element signature="e#23042#25488#0" />
-            <element signature="e#25564#26266#0" />
-            <element signature="e#26306#38779#0" />
-            <element signature="e#38823#48638#0" />
-            <marker date="1578789603984" expanded="true" signature="15157:15166" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/builders/robotics_builder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="12" column="61" selection-start-line="12" selection-start-column="61" selection-end-line="12" selection-end-column="61" />
         </state>
       </provider>
     </entry>
@@ -815,15 +781,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
+    <entry file="file://$PROJECT_DIR$/builders/robotics_builder.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="167">
-          <caret line="67" column="26" selection-start-line="67" selection-start-column="26" selection-end-line="67" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <marker date="1578795119604" expanded="true" signature="1618:1785" ph="..." />
-            <marker date="1578795119604" expanded="true" signature="9801:10056" ph="..." />
-          </folding>
+        <state relative-caret-position="234">
+          <caret line="21" column="61" selection-start-line="21" selection-start-column="61" selection-end-line="21" selection-end-column="61" />
         </state>
       </provider>
     </entry>
@@ -834,13 +795,64 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/army/micro.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="322" column="123" selection-start-line="322" selection-start-column="123" selection-end-line="322" selection-end-column="123" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+            <marker date="1578798950803" expanded="true" signature="15157:15166" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/builders/pylon_builder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-144">
+          <caret line="52" column="83" selection-start-line="52" selection-start-column="83" selection-end-line="52" selection-end-column="83" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/builders/expander.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="95" column="52" selection-start-line="95" selection-start-column="52" selection-end-line="95" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/strategy/macro.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="14" column="41" lean-forward="true" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/strategy/bio.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="32" column="40" selection-start-line="32" selection-start-column="40" selection-end-line="32" selection-end-column="40" />
+        <state relative-caret-position="134">
+          <caret line="14" column="39" selection-start-line="14" selection-start-column="34" selection-end-line="14" selection-end-column="42" />
           <folding>
-            <marker date="1578795192497" expanded="true" signature="1662:1716" ph="..." />
-            <marker date="1578795192497" expanded="true" signature="1759:1778" ph="..." />
+            <marker date="1578803242003" expanded="true" signature="1658:1712" ph="..." />
+            <marker date="1578803242003" expanded="true" signature="1755:1774" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/builders/assimilator_builder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="720">
+          <caret line="36" column="8" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="521" column="29" selection-start-line="521" selection-start-column="29" selection-end-line="521" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+            <marker date="1578803433418" expanded="true" signature="1618:1785" ph="..." />
+            <marker date="1578803433418" expanded="true" signature="9739:9994" ph="..." />
           </folding>
         </state>
       </provider>

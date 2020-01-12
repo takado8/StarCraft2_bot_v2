@@ -8,7 +8,7 @@ class AssimilatorBuilder:
     def max_vespene(self):
         if self.ai.can_afford(unit.ASSIMILATOR) and self.ai.structures(unit.PYLON).exists:
 
-            for nexus in self.ai.structures(unit.NEXUS).ready:
+            for nexus in self.ai.structures(unit.NEXUS):
                 vaspenes = self.ai.vespene_geyser.closer_than(12, nexus)
                 for vaspene in vaspenes:
                     if not self.ai.structures(unit.ASSIMILATOR).exists or not self.ai.structures(unit.ASSIMILATOR).closer_than(5, vaspene).exists:
@@ -41,7 +41,7 @@ class AssimilatorBuilder:
                     self.ai.structures(unit.ASSIMILATOR).amount > 1 or self.ai.structures(unit.NEXUS).amount > 1 \
                     and self.ai.vespene > self.ai.minerals:
                 return
-            for nexus in self.ai.structures(unit.NEXUS):
+            for nexus in self.ai.structures(unit.NEXUS).ready:
                 vaspenes = self.ai.vespene_geyser.closer_than(10,nexus)
                 for vaspene in vaspenes:
                     worker = self.ai.select_build_worker(vaspene.position)

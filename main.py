@@ -138,16 +138,15 @@ class Octopus(sc2.BotAI):
 
             self.attack = True
         # normal attack
-        if self.strategy.type == 'rush' and not self.first_attack and (self.army(unit.VOIDRAY).amount > 0 or
-                                        upgrade.WARPGATERESEARCH in self.state.upgrades):
-            self.first_attack = True
-            self.attack = True
+        # if not self.first_attack and (self.army(unit.COLOSSUS).amount > 1): # or upgrade.WARPGATERESEARCH in self.state.upgrades):
+        #     self.first_attack = True
+        #     self.attack = True
 
         await self.proxy()
         await self.warp_prism()
 
         # retreat
-        if self.attack and self.army.amount < (1 if self.strategy.type == 'rush' else 16):
+        if self.attack and self.army.amount < (1 if self.strategy.type == 'rush' else 11):
             self.attack = False
             if self.strategy.type == 'rush':
                 self.strategy = Macro(self)
@@ -520,7 +519,7 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[1], difficulty=Difficulty.CheatMoney, ai_build=build)
+        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=bool(real_time))
     return res, build, races[race_index]
 # CheatMoney   VeryHard
