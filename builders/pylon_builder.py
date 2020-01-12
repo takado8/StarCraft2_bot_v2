@@ -17,26 +17,14 @@ class PylonBuilder:
                 left = 4
             else:
                 pending = 2
-                left = 6
+                left = 8
             if self.ai.supply_left < left and self.ai.supply_cap < 200 or (pylons.amount < 2 and
                                                                            self.ai.structures(unit.GATEWAY).exists):
                 if self.ai.can_afford(unit.PYLON) and self.ai.already_pending(unit.PYLON) < pending:
-                    max_dist = 18
-                    pl_step = 6
-                    if self.ai.time < 180:
-                        placement = await self.ai.find_placement(unit.PYLON, near=self.ai.start_location.position,
-                                                              max_distance=18,
-                                                              placement_step=6)
-                        if self.ai.structures(unit.PYLON).closest_to(self.ai.main_base_ramp.top_center).distance_to(
-                                placement) < 6:
-                            return
-                    elif self.ai.supply_cap < 100:
-                        placement = self.ai.start_location.position
-                    else:
-                        placement = self.ai.start_location.position
-                        max_dist = 40
-                        pl_step = 3
-                    await self.ai.build(unit.PYLON, near=placement, max_distance=max_dist, placement_step=pl_step)
+                    max_dist = 40
+                    pl_step = 5
+
+                    await self.ai.build(unit.PYLON, near=self.ai.start_location.position.towards(self.ai.main_base_ramp.top_center,5), max_distance=max_dist, placement_step=pl_step)
 
     async def first_in_lower_wall(self):
         if self.ai.structures(unit.PYLON).amount < 1 and self.ai.can_afford(unit.PYLON) and not self.ai.already_pending(unit.PYLON):
@@ -56,23 +44,10 @@ class PylonBuilder:
             left = 4
         else:
             pending = 2
-            left = 6
+            left = 8
         if self.ai.supply_left < left and self.ai.supply_cap < 200 or (pylons.amount < 2 and
                                                                        self.ai.structures(unit.GATEWAY).exists):
             if self.ai.can_afford(unit.PYLON) and self.ai.already_pending(unit.PYLON) < pending:
-                # if self.ai.time < 180:
-                # placement = await self.ai.find_placement(unit.PYLON,max_distance=24, placement_step=6,
-                #     near=self.ai.start_location.position.towards(self.ai.main_base_ramp.top_center,6))
-
-                # if pylons.exists and self.ai.structures(unit.PYLON).closest_to(self.ai.main_base_ramp.top_center).distance_to(
-                #         placement) < 6:
-                #     return
-            # elif self.ai.supply_cap < 100:
-            #     placement = self.ai.start_location.position
-            # else:
-            #     placement = self.ai.start_location.position
-            #     max_dist = 40
-            #     pl_step = 3
                 await self.ai.build(unit.PYLON,max_distance=40, placement_step=5,
                         near=self.ai.start_location.position.towards(self.ai.main_base_ramp.top_center,5))
 

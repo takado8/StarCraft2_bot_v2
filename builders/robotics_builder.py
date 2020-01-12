@@ -10,7 +10,7 @@ class RoboticsBuilder:
         pass
 
     async def macro(self):
-        if self.ai.forge_upg_priority() or self.ai.time < 360:
+        if self.ai.forge_upg_priority() or self.ai.time < 180:
             return
         if self.ai.structures(unit.ROBOTICSFACILITY).amount < 1 and self.ai.can_afford(unit.ROBOTICSFACILITY)\
                 and not self.ai.already_pending(unit.ROBOTICSFACILITY):

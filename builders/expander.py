@@ -72,7 +72,6 @@ class Expander:
                 if self.ai.can_afford(unit.NEXUS):
                     await self._expand_now2()
 
-
     async def two_bases(self):
         gates_count = self.ai.structures(unit.GATEWAY).amount
         gates_count += self.ai.structures(unit.WARPGATE).amount
@@ -82,6 +81,10 @@ class Expander:
         if nexuses.amount < 2:
             self.ai.proper_nexus_count = 2
             if self.ai.can_afford(unit.NEXUS) and not self.ai.already_pending(unit.NEXUS):
+                await self._expand_now2()
+        elif nexuses.amount < 3:
+            if self.ai.first_attack:
+                self.ai.proper_nexus_count = 3
                 await self._expand_now2()
 
     async def none(self):

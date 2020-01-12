@@ -41,7 +41,7 @@ class AssimilatorBuilder:
                     self.ai.structures(unit.ASSIMILATOR).amount > 1 or self.ai.structures(unit.NEXUS).amount > 1 \
                     and self.ai.vespene > self.ai.minerals:
                 return
-            for nexus in self.ai.structures(unit.NEXUS).ready:
+            for nexus in self.ai.structures(unit.NEXUS):
                 vaspenes = self.ai.vespene_geyser.closer_than(10,nexus)
                 for vaspene in vaspenes:
                     worker = self.ai.select_build_worker(vaspene.position)

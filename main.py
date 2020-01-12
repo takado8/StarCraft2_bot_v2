@@ -64,8 +64,8 @@ class Octopus(sc2.BotAI):
         # self.strategy = CallOfTheVoid(self)
         # self.strategy = ProxyVoid(self)
         # self.strategy = Macro(self)
-        self.strategy = StalkerHunt(self)
-        # self.strategy = Bio(self)
+        # self.strategy = StalkerHunt(self)
+        self.strategy = Bio(self)
 
     async def on_end(self, game_result: Result):
         lost_cost = self.state.score.lost_minerals_army + self.state.score.lost_vespene_army
@@ -130,16 +130,16 @@ class Octopus(sc2.BotAI):
 
         # counter attack
         if self.enemy_units().exists and self.enemy_units().closer_than(40,self.defend_position).amount > 2:
-            print('Attaaa !!')
             # self.enemy_attack = True
         # if self.enemy_attack and self.enemy_units().amount < 5:
         #     self.enemy_attack = False
             self.after_first_attack = True
+            self.first_attack = True
+
             self.attack = True
         # normal attack
         if self.strategy.type == 'rush' and not self.first_attack and (self.army(unit.VOIDRAY).amount > 0 or
                                         upgrade.WARPGATERESEARCH in self.state.upgrades):
-            print('Atta !!!')
             self.first_attack = True
             self.attack = True
 
@@ -147,8 +147,7 @@ class Octopus(sc2.BotAI):
         await self.warp_prism()
 
         # retreat
-        if self.attack and self.army.amount < (1 if self.strategy.type == 'rush' else 15):
-            print('no attaaa...')
+        if self.attack and self.army.amount < (1 if self.strategy.type == 'rush' else 16):
             self.attack = False
             if self.strategy.type == 'rush':
                 self.strategy = Macro(self)
@@ -317,8 +316,6 @@ class Octopus(sc2.BotAI):
                     if not batteries.exists or batteries.closer_than(9, pos).amount < amount:
                         if self.can_afford(unit.SHIELDBATTERY) and self.already_pending(unit.SHIELDBATTERY) < 2:
                             await self.build(unit.SHIELDBATTERY, near=pos)
-
-
 
     def forge_upg_priority(self):
         if self.structures(unit.TWILIGHTCOUNCIL).ready.exists:
@@ -515,19 +512,20 @@ def botVsComputer(real_time):
     maps_set = ['blink', "zealots", "AcropolisLE", "DiscoBloodbathLE", "ThunderbirdLE", "TritonLE", "Ephemeron",
                 "WintersGateLE", "WorldofSleepersLE"]
     races = [Race.Protoss, Race.Zerg, Race.Terran]
-    computer_builds = [AIBuild.Rush]
+    # computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Air]
-    # computer_builds = [AIBuild.Power, AIBuild.Macro]
+    computer_builds = [AIBuild.Power, AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[1], difficulty=Difficulty.CheatMoney, ai_build=build)
     ], realtime=bool(real_time))
     return res, build, races[race_index]
+# CheatMoney   VeryHard
 
 
 if __name__ == '__main__':
-    test(real_time=1)
+    test(real_time=0)
     # player_vs_computer()

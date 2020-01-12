@@ -12,7 +12,7 @@ class Bio(Strategy):
         await self._gate_builder.macro()
 
     def assimilator_build(self):
-        self._assimilator_builder.standard()
+        self._assimilator_builder.max_vespene()
 
     async def stargate_build(self):
         await self._stargate_builder.none()
@@ -45,7 +45,7 @@ class Bio(Strategy):
         await self._robotics_bay_builder.none()
 
     async def expand(self):
-        await self._expander.standard()
+        await self._expander.two_bases()
 
     # =======================================================  Upgraders
 
@@ -56,7 +56,7 @@ class Bio(Strategy):
         self._forge_upgrader.standard()
 
     async def twilight_upgrades(self):
-        await self._twilight_upgrader.both()
+        await self._twilight_upgrader.charge()
 
     async def templar_archives_upgrades(self):
         await self._templar_archives_upgrader.none()
@@ -79,12 +79,12 @@ class Bio(Strategy):
         self._robotics_trainer.standard()
 
     async def warpgate_train(self):
-        await self._warpgate_trainer.standard()
+        await self._warpgate_trainer.bio()
 
     # =======================================================  Army
 
     async def micro(self):
-        await self._micro.standard()
+        await self._micro.new()
 
     async def movements(self):
-        await self._movements.attack_formation()
+        await self._movements.attack_formation_new()

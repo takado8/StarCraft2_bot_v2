@@ -69,10 +69,16 @@ class StalkerHunt(Strategy):
     async def warpgate_train(self):
         await self._warpgate_trainer.stalkers()
 
+    async def templar_archives_upgrades(self):
+        pass
+
+    async def fleet_beacon_upgrades(self):
+        pass
+
     # =======================================================  Army
 
     async def micro(self):
-        await self._micro.personal()
+        await self._micro.personal_new()
 
     async def movements(self):
-        await self._movements.attack_formation()
+        await self._movements.attack_formation_old()

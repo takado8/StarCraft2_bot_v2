@@ -11,14 +11,14 @@ class Macro(Strategy):
     async def gate_build(self):
         await self._gate_builder.macro_colossus()
 
-    async def assimilator_build(self):
-        await self._assimilator_builder.max_vespene()
+    def assimilator_build(self):
+        self._assimilator_builder.max_vespene()
 
     async def stargate_build(self):
         await self._stargate_builder.none()
 
     async def forge_build(self):
-        await self._forge_builder.none()
+        await self._forge_builder.single()
 
     async def twilight_build(self):
         await self._twilight_builder.standard()
@@ -53,10 +53,17 @@ class Macro(Strategy):
         self._cybernetics_upgrader.standard()
 
     def forge_upgrades(self):
-        self._forge_upgrader.none()
+        self._forge_upgrader.standard()
 
     async def twilight_upgrades(self):
-        await self._twilight_upgrader.both()
+        await self._twilight_upgrader.charge()
+
+    async def templar_archives_upgrades(self):
+        pass
+
+    async def fleet_beacon_upgrades(self):
+        pass
+
 
     # =======================================================  Trainers
 
@@ -78,7 +85,7 @@ class Macro(Strategy):
     # =======================================================  Army
 
     async def micro(self):
-        await self._micro.standard()
+        await self._micro.new()
 
     async def movements(self):
-        await self._movements.attack_formation()
+        await self._movements.attack_formation_new()
