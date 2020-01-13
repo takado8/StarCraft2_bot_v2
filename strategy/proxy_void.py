@@ -78,7 +78,20 @@ class ProxyVoid(Strategy):
     # =======================================================  Army
 
     async def micro(self):
-        await self._micro.personal()
+        await self._micro.personal_new()
 
     async def movements(self):
-        await self._movements.attack_formation()
+        await self._movements.voidrays_rush()
+
+
+    # ======================================================= Conditions
+
+    def attack_condition(self):
+        return self._condition_attack.rush_voidray()
+
+    def counter_attack_condition(self):
+        return self._condition_attack.counter_attack()
+
+    def retreat_condition(self):
+        return self._condition_retreat.rush()
+

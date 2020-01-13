@@ -13,6 +13,7 @@ from upgraders import *
 from trainers import *
 from army.micro import *
 from army.movements import *
+from conditions import *
 
 
 class Strategy:
@@ -47,17 +48,20 @@ class Strategy:
         # army
         self._micro = Micro(ai)
         self._movements = Movements(ai)
+        # Conditions
+        self._condition_attack = ConditionAttack(ai)
+        self._condition_retreat = ConditionRetreat(ai)
 
     # =======================================================  Builders
 
     async def gate_build(self):
-        print('gate_build not implemented')
+        raise NotImplementedError
 
     async def stargate_build(self):
         print('stargate_build not implemented')
 
     def assimilator_build(self):
-        print('assimilator_build not implemented')
+        raise NotImplementedError
 
     async def forge_build(self):
         print('forge_build not implemented')
@@ -72,7 +76,7 @@ class Strategy:
         print('pylon_first_build not implemented')
 
     async def pylon_next_build(self):
-        print('pylon_next_build not implemented')
+        raise NotImplementedError
 
     async def proxy(self):
         print('proxy not implemented')
@@ -109,10 +113,10 @@ class Strategy:
     # =======================================================  Trainers
 
     def nexus_train(self):
-        print('nexus train not implemented')
+        raise NotImplementedError
 
     def gate_train(self):
-        print('gate train not implemented')
+        raise NotImplementedError
 
     def stargate_train(self):
         print('stargate train not implemented')
@@ -121,12 +125,24 @@ class Strategy:
         print('robotics train not implemented')
 
     async def warpgate_train(self):
-        print('warp train not implemented')
+        raise NotImplementedError
 
     # =======================================================  Army
 
     async def micro(self):
-        print('micro not implemented')
+        raise NotImplementedError
 
     async def movements(self):
-        print('movements not implemented')
+        raise NotImplementedError
+
+# ======================================================= Conditions
+
+    def attack_condition(self):
+        raise NotImplementedError
+
+    def counter_attack_condition(self):
+        raise NotImplementedError
+
+    def retreat_condition(self):
+        raise NotImplementedError
+

@@ -63,19 +63,20 @@ class Octopus(sc2.BotAI):
         # self.strategy = CarrierMadness(self)
         # self.strategy = CallOfTheVoid(self)
         # self.strategy = ProxyVoid(self)
-        # self.strategy = Macro(self)
+        self.strategy = Macro(self)
         # self.strategy = StalkerHunt(self)
-        self.strategy = Bio(self)
+        # self.strategy = Bio(self)
 
     async def on_end(self, game_result: Result):
         lost_cost = self.state.score.lost_minerals_army + self.state.score.lost_vespene_army
         killed_cost = self.state.score.killed_minerals_army + self.state.score.killed_vespene_army
-        print('score: ' + str(self.state.score.score))
+        # print('score: ' + str(self.state.score.score))
         total_value_units = self.state.score.total_value_units
         total_value_enemy = self.state.score.killed_value_units
         dmg_taken_shields = self.state.score.total_damage_taken_shields
         dmg_dealt_shields = self.state.score.total_damage_dealt_shields
-
+        ff = self.state.score.friendly_fire_minerals_army
+        print('ff: ' + str(ff))
         dmg_taken_life = self.state.score.total_damage_taken_life
         dmg_dealt_life = self.state.score.total_damage_dealt_life
         print('total_value_units: ' + str(total_value_units))
@@ -94,9 +95,7 @@ class Octopus(sc2.BotAI):
         self.assign_defend_position()
         self.army = self.units().filter(lambda x: x.type_id in self.army_ids)
         await self.morph_Archons()
-        # if self.slow:
-        #     time.sleep(0.1)
-        # self.speed()
+
         self.train_workers()
         await self.distribute_workers()
         await self.morph_gates()
@@ -124,36 +123,36 @@ class Octopus(sc2.BotAI):
             self.strategy.stargate_train()
             self.gate_train()
             await self.strategy.warpgate_train()
-
-            # await self.build_batteries()
         await self.nexus_buff()
 
         # counter attack
-        if self.enemy_units().exists and self.enemy_units().closer_than(40,self.defend_position).amount > 2:
+        if self.counter_attack_condition():
             # self.enemy_attack = True
         # if self.enemy_attack and self.enemy_units().amount < 5:
         #     self.enemy_attack = False
             self.after_first_attack = True
             self.first_attack = True
-
             self.attack = True
         # normal attack
-        # if not self.first_attack and (self.army(unit.COLOSSUS).amount > 1): # or upgrade.WARPGATERESEARCH in self.state.upgrades):
-        #     self.first_attack = True
-        #     self.attack = True
+        if self.attack_condition():
+            print('attaa!')
+            self.first_attack = True
+            self.attack = True
 
         await self.proxy()
         await self.warp_prism()
 
         # retreat
-        if self.attack and self.army.amount < (1 if self.strategy.type == 'rush' else 11):
+        if self.retreat_condition():
             self.attack = False
-            if self.strategy.type == 'rush':
-                self.strategy = Macro(self)
+            print('retreat')
+
         # attack
+
         if self.attack:
             await self.attack_formation()
         else:
+            pass
             await self.defend()
         await self.micro_units()
 
@@ -234,6 +233,17 @@ class Octopus(sc2.BotAI):
     async def attack_formation(self):
         await self.strategy.movements()
 
+    # ======================================================= Conditions
+
+    def attack_condition(self):
+        return self.strategy.attack_condition()
+
+    def counter_attack_condition(self):
+        return self.strategy.counter_attack_condition()
+
+    def retreat_condition(self):
+        return self.strategy.retreat_condition()
+
     # ============================================= none
 
     def scan(self):
@@ -299,7 +309,6 @@ class Octopus(sc2.BotAI):
                     await self._client._execute(action=sc_pb.RequestAction(
                         actions=[sc_pb.Action(action_raw=action)]
                     ))
-
 
     async def build_batteries(self):
         if self.structures(unit.CYBERNETICSCORE).ready.exists and self.minerals > 360:
@@ -425,22 +434,26 @@ class Octopus(sc2.BotAI):
             abilities = await self.get_available_abilities(nexus)
             if ability.EFFECT_CHRONOBOOSTENERGYCOST in abilities:
                 target = self.structures().filter(lambda x: x.type_id == unit.NEXUS
-                               and x.is_ready and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
+                                                            and x.is_ready and not x.is_idle and not x.has_buff(
+                    buff.CHRONOBOOSTENERGYCOST))
                 if target.exists:
                     target = target.random
                 else:
                     target = self.structures().filter(lambda x: x.type_id == unit.STARGATE
-                        and x.is_ready and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
+                                                                and x.is_ready and not x.is_idle and not x.has_buff(
+                        buff.CHRONOBOOSTENERGYCOST))
                     if target.exists:
                         target = target.random
                     else:
                         target = self.structures().filter(lambda x: x.type_id == unit.CYBERNETICSCORE
-                                        and x.is_ready and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
+                                                                    and x.is_ready and not x.is_idle and not x.has_buff(
+                            buff.CHRONOBOOSTENERGYCOST))
                         if target.exists:
                             target = target.random
                         else:
                             target = self.structures().filter(lambda x: x.type_id == unit.FORGE and x.is_ready
-                                    and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
+                                                                        and not x.is_idle and not x.has_buff(
+                                buff.CHRONOBOOSTENERGYCOST))
                             if target.exists:
                                 target = target.random
                             else:
@@ -451,11 +464,55 @@ class Octopus(sc2.BotAI):
                                 if target.exists:
                                     target = target.random
 
-                                else:
-                                    target = self.structures().filter(lambda x: x.type_id == unit.FORGE and x.is_ready
-                                                    and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
-                                    if target.exists:
-                                        target = target.random
+                                # else:
+                                #     target = self.structures().filter(lambda x: (x.type_id == unit.GATEWAY or x.type_id == unit.WARPGATE)
+                                #                                            and x.is_ready and not x.is_idle and not x.has_buff(
+                                #         buff.CHRONOBOOSTENERGYCOST))
+                                #     if target.exists:
+                                #         target = target.random
+                if target:
+                    self.do(nexus(ability.EFFECT_CHRONOBOOSTENERGYCOST,target))
+
+    async def nexus_buff2(self):
+        if not self.structures(unit.NEXUS).exists:
+            return
+        for nexus in self.structures(unit.NEXUS).ready:
+            abilities = await self.get_available_abilities(nexus)
+            if ability.EFFECT_CHRONOBOOSTENERGYCOST in abilities:
+                target = self.structures().filter(lambda x: x.type_id == unit.NEXUS
+                               and x.is_ready and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
+                if target.exists:
+                    target = target.random
+                else:
+                    target = self.structures().filter(lambda x: x.type_id == unit.STARGATE
+                        and x.is_ready and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
+                    if target.exists:
+                        target = target.random
+                    else:
+                        # target = self.structures().filter(lambda x: x.type_id == unit.CYBERNETICSCORE
+                        #                 and x.is_ready and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
+                        # if target.exists:
+                        #     target = target.random
+                        # else:
+                        target = self.structures().filter(
+                            lambda x: (x.type_id == unit.ROBOTICSFACILITY)
+                                      and x.is_ready and not x.is_idle and not x.has_buff(
+                                buff.CHRONOBOOSTENERGYCOST))
+                        if target.exists:
+                            target = target.random
+
+                        else:
+                            target = self.structures().filter(lambda x: x.type_id == unit.FORGE and x.is_ready
+                                                                        and not x.is_idle and not x.has_buff(
+                                buff.CHRONOBOOSTENERGYCOST))
+                            if target.exists:
+                                target = target.random
+                            else:
+                                target = self.structures().filter(lambda x: (x.type_id == unit.GATEWAY or
+                                                x.type_id == unit.WARPGATE) and x.is_ready
+                                                and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
+                                if target.exists:
+                                    target = target.random
                                 # else:
                                 #     target = self.structures().filter(lambda x: (x.type_id == unit.GATEWAY or x.type_id == unit.WARPGATE)
                                 #                                            and x.is_ready and not x.is_idle and not x.has_buff(
@@ -519,7 +576,7 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[1], difficulty=Difficulty.CheatMoney, ai_build=build)
     ], realtime=bool(real_time))
     return res, build, races[race_index]
 # CheatMoney   VeryHard

@@ -4,6 +4,7 @@ from sc2.ids.unit_typeid import UnitTypeId as unit
 from sc2.position import Point2
 from sc2.ids.effect_id import EffectId as effect
 from sc2.units import Units
+from sc2 import Race
 
 
 class Micro:
@@ -328,13 +329,21 @@ class Micro:
                         unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.SIEGETANK, unit.THOR])
                     if priority.exists:
                         targets = priority.sorted(lambda x1: x1.health + x1.shield)
-                        if targets[0].health_percentage * targets[0].shield_percentage == 1:
+                        if self.ai.enemy_race == Race.Protoss:
+                            a = targets[0].shield_percentage
+                        else:
+                            a = 1
+                        if targets[0].health_percentage * a == 1:
                             target = priority.closest_to(leader)
                         else:
                             target = targets[0]
                     else:
                         targets = threats.sorted(lambda x1: x1.health + x1.shield)
-                        if targets[0].health_percentage * targets[0].shield_percentage == 1:
+                        if self.ai.enemy_race == Race.Protoss:
+                            a = targets[0].shield_percentage
+                        else:
+                            a = 1
+                        if targets[0].health_percentage * a == 1:
                             target = closest_enemy
                         else:
                             target = targets[0]
@@ -353,8 +362,8 @@ class Micro:
                             pos = pos.random_on_distance(j)
                             j+=1
                     for st in army:
-                        if st.shield_percentage < 0.2:
-                            if st.health_percentage < 0.2:
+                        if st.shield_percentage < 0.25:
+                            if st.health_percentage < 0.35:
                                 self.ai.do(st.move(pos))
                                 continue
                             else:
@@ -776,13 +785,21 @@ class Micro:
                     unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.SIEGETANK, unit.THOR])
                 if priority.exists:
                     targets = priority.sorted(lambda x1: x1.health + x1.shield)
-                    if targets[0].health_percentage * targets[0].shield_percentage == 1:
+                    if self.ai.enemy_race == Race.Protoss:
+                        a = targets[0].shield_percentage
+                    else:
+                        a = 1
+                    if targets[0].health_percentage * a == 1:
                         target = priority.closest_to(man)
                     else:
                         target = targets[0]
                 else:
                     targets = threats.sorted(lambda x1: x1.health + x1.shield)
-                    if targets[0].health_percentage * targets[0].shield_percentage == 1:
+                    if self.ai.enemy_race == Race.Protoss:
+                        a = targets[0].shield_percentage
+                    else:
+                        a = 1
+                    if targets[0].health_percentage * a == 1:
                         target = closest_enemy
                     else:
                         target = targets[0]
@@ -796,12 +813,11 @@ class Micro:
                     j=1
                     while not self.__in_grid(pos) and j < 9:
                         pos = pos.random_on_distance(j)
-
-
+                        j+=1
 
                 # for st in army:
-                if man.shield_percentage < 0.25:
-                    if man.health_percentage < 0.20:
+                if man.shield_percentage < 0.4:
+                    if man.health_percentage < 0.33:
                         self.ai.do(man.move(pos))
                         continue
                     else:
@@ -886,6 +902,7 @@ class Micro:
                 priority = threats.filter(lambda z: z.can_attack_air).sorted(lambda z: z.air_dps, reverse=True)
                 arm = False
                 if priority.exists:
+
                     armored = priority.filter(lambda z: z.is_armored)
                     if armored.exists:
                         arm = True

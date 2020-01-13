@@ -12,7 +12,7 @@ class StalkerHunt(Strategy):
         await self._gate_builder.three_standard()
 
     async def stargate_build(self):
-        await self._stargate_builder.none()
+        pass
 
     def assimilator_build(self):
         self._assimilator_builder.standard()
@@ -31,9 +31,16 @@ class StalkerHunt(Strategy):
 
     async def proxy(self):
         await self._pylon_builder.proxy()
+        await self._gate_builder.proxy()
+
+    async def templar_archives_build(self):
+        await self._templar_archives_builder.none()
 
     async def cybernetics_build(self):
         await self._cybernetics_builder.standard()
+
+    async def robotics_bay_build(self):
+        await self._robotics_bay_builder.none()
 
     async def robotics_build(self):
         await self._robotics_builder.none()
@@ -81,4 +88,16 @@ class StalkerHunt(Strategy):
         await self._micro.personal_new()
 
     async def movements(self):
-        await self._movements.attack_formation_old()
+        await self._movements.attack_formation_brand_new_newest_thee_most_new_shit_in_whole_wide_world()
+
+    # ======================================================= Conditions
+
+    def attack_condition(self):
+        return self._condition_attack.rush()
+
+    def counter_attack_condition(self):
+        return self._condition_attack.counter_attack()
+
+    def retreat_condition(self):
+        return self._condition_retreat.rush()
+
