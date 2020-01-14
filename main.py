@@ -584,5 +584,5 @@ def botVsComputer(real_time):
 
 
 if __name__ == '__main__':
-    test(real_time=1)
+    test(real_time=0)
     # player_vs_computer()

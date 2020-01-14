@@ -56,4 +56,4 @@ class AssimilatorBuilder:
                             (self.ai.time > 120 and not self.ai.structures(unit.ASSIMILATOR).closer_than(5,
                                                                                                          vaspene).exists):
                         self.ai.do(worker.build(unit.ASSIMILATOR,vaspene))
-                        break
+                        return

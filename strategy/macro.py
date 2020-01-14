@@ -12,7 +12,7 @@ class Macro(Strategy):
         await self._gate_builder.macro_colossus()
 
     def assimilator_build(self):
-        self._assimilator_builder.more_vespene()
+        self._assimilator_builder.standard()
 
     async def stargate_build(self):
         await self._stargate_builder.none()
@@ -39,7 +39,7 @@ class Macro(Strategy):
         await self._cybernetics_builder.standard()
 
     async def robotics_build(self):
-        await self._robotics_builder.double()
+        await self._robotics_builder.macro()
 
     async def robotics_bay_build(self):
         await self._robotics_bay_builder.standard()

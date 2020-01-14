@@ -290,11 +290,11 @@ class RoboticsTrainer:
                     and self.ai.units(unit.COLOSSUS).amount < 3:
                 for factory in self.ai.structures(unit.ROBOTICSFACILITY).ready.idle:
                     self.ai.do(factory.train(unit.COLOSSUS))
-            elif self.ai.can_afford(unit.DISRUPTOR) and self.ai.supply_left > 3 and self.ai.structures(
-                    unit.ROBOTICSBAY).ready.exists \
-                    and self.ai.units(unit.DISRUPTOR).amount < 3:
-                for factory in self.ai.structures(unit.ROBOTICSFACILITY).ready.idle:
-                    self.ai.do(factory.train(unit.DISRUPTOR))
+            # elif self.ai.can_afford(unit.DISRUPTOR) and self.ai.supply_left > 3 and self.ai.structures(
+            #         unit.ROBOTICSBAY).ready.exists \
+            #         and self.ai.units(unit.DISRUPTOR).amount < 3:
+            #     for factory in self.ai.structures(unit.ROBOTICSFACILITY).ready.idle:
+            #         self.ai.do(factory.train(unit.DISRUPTOR))
             elif self.ai.can_afford(unit.IMMORTAL) and self.ai.supply_left > 3 and self.ai.structures(
                     unit.ROBOTICSFACILITY).ready.exists \
                     and immortals.amount < immortals_amm:
