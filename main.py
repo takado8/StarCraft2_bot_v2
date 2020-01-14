@@ -47,6 +47,7 @@ class Octopus(sc2.BotAI):
     observer_scouting_index = 0
     observer_scounting_points = []
     psi_storm_wait = 0
+    nova_wait = 0
     # observer_released = False
     slow = True
     # async def on_unit_destroyed(self, unit_tag):
@@ -583,5 +584,5 @@ def botVsComputer(real_time):
 
 
 if __name__ == '__main__':
-    test(real_time=0)
+    test(real_time=1)
     # player_vs_computer()

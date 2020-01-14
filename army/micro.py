@@ -322,7 +322,6 @@ class Micro:
                                   unit_.type_id not in self.ai.units_to_ignore)
                 if self.ai.attack:
                     threats.extend(self.ai.enemy_structures().filter(lambda _x: _x.can_attack_ground or _x.can_attack_air))
-                                                  # or _x.type_id in [unit.NEXUS, unit.HATCHERY, unit.COMMANDCENTER]))
                 if threats.exists:
                     closest_enemy = threats.closest_to(leader)
                     priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR,
@@ -505,13 +504,74 @@ class Micro:
                             self.ai.do(ht(ability.FEEDBACK_FEEDBACK,target))
                             break
 
+        # Disruptor
+        zealots = self.ai.army(unit.ZEALOT)
+        disruptors = self.ai.army(unit.DISRUPTOR)
+        for dr in disruptors:
+            # Cast spells   ---> look for group of enemy
+            abilities = await self.ai.get_available_abilities(dr)
+            if self.ai.time - self.ai.nova_wait >= 1 and ability.EFFECT_PURIFICATIONNOVA in abilities:  #
+                spell_target = enemy.filter(
+                    lambda unit_: not unit_.is_structure and unit_.distance_to(dr) < 12
+                                  and unit_.type_id not in self.ai.units_to_ignore and unit_.type_id not in self.ai.workers_ids
+                                  and not unit_.is_flying)
+                target = None
+                if spell_target.amount > 2:
+                    tanks = spell_target.filter(lambda x: x.type_id == unit.SIEGETANKSIEGED or x.type_id == unit.THOR)
+                    if tanks.amount > 1:
+                        spell_target = tanks
+
+                    maxNeighbours = 0
+                    for en in spell_target:
+                        neighbours = enemy.filter(lambda unit_: not unit_.is_flying and not
+                        unit_.is_structure and unit_.distance_to(en) <= 1.5)
+                        if neighbours.amount > maxNeighbours:
+                            maxNeighbours = neighbours.amount
+                            target = en
+                    if target is not None and self.ai.army.closer_than(2.4,target).amount < 3:
+                        dist = await self.ai._client.query_pathing(dr.position,target.position)
+                        if dist is not None and dist <= 13:
+                            print("Casting Purification nova on " + str(maxNeighbours + 1) + " units.")
+                            self.ai.nova_wait = self.ai.time
+                            self.ai.do(dr(ability.EFFECT_PURIFICATIONNOVA,target.position))
+            else:
+                threat = enemy.closer_than(7,dr)
+                if threat.exists:
+                    self.ai.do(dr.move(dr.position.towards(threat.closest_to(dr), -5)))
+        # Disruptor purification nova
+        if self.ai.time - self.ai.nova_wait > 0.4:
+            for nova in self.ai.units(unit.DISRUPTORPHASED):
+                spell_target = enemy.filter(lambda unit_: not unit_.is_structure and unit_.distance_to(nova) < 9
+                        and unit_.type_id not in self.ai.units_to_ignore and not unit_.is_flying and unit_.type_id
+                                                          not in self.ai.workers_ids)
+                target = None
+                if spell_target.amount > 0:
+                    tanks = spell_target.filter(lambda x: x.type_id == unit.SIEGETANKSIEGED)
+                    if tanks.amount > 0:
+                        spell_target = tanks
+                    maxNeighbours = 0
+                    for en in spell_target:
+                        neighbours = enemy.filter(lambda unit_: not unit_.is_structure and unit_.distance_to(nova) <= 1.5
+                            and unit_.type_id not in self.ai.units_to_ignore and not unit_.is_flying and unit_.type_id
+                                                                not in self.ai.workers_ids)
+                        if neighbours.amount > maxNeighbours:
+                            maxNeighbours = neighbours.amount
+                            target = en
+                    if target is not None:
+                        # if self.ai.army.closer_than(3,target).amount < 2:
+                        print("Steering Purification nova to " + str(maxNeighbours + 1) + " units.")
+                        self.ai.do(nova.move(target.position.towards(nova, -2)))
         # zealot
-        for zl in self.ai.army(unit.ZEALOT):
+        for zl in zealots:
             threats = self.ai.enemy_units().filter(lambda x2: x2.distance_to(zl) < 7).sorted(lambda _x: _x.health + _x.shield)
             if threats.exists:
                 closest = threats.closest_to(zl)
-                if threats[0].health_percentage * threats[0].shield_percentage == 1 or threats[0].distance_to(zl) > \
-                    closest.distance_to(zl) + 4 or not self.ai.in_pathing_grid(threats[0]):
+                if self.ai.enemy_race == Race.Protoss:
+                    a = threats[0].shield_percentage
+                else:
+                    a = 1
+                dist = await self.ai._client.query_pathing(zl.position,threats[0].position)
+                if threats[0].health_percentage * a == 1 or dist is None or dist > closest.distance_to(zl) + 5:
                     target = closest
                 else:
                     target = threats[0]

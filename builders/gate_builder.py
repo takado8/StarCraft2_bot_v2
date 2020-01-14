@@ -146,7 +146,7 @@ class GateBuilder:
             if pylon is not None:
                 await self.ai.build(unit.GATEWAY,near=pylon,placement_step=2,max_distance=20,
                                     random_alternative=True)
-        elif 1 < gates_count < 4 and self.ai.can_afford(unit.GATEWAY) and self.ai.time > 360 and \
+        elif 1 < gates_count < 4 and self.ai.can_afford(unit.GATEWAY) and self.ai.time > 280 and \
                 self.ai.already_pending(unit.GATEWAY) < 1 and self.ai.structures(unit.ROBOTICSFACILITY).exists:
             pylon = self.ai.get_proper_pylon()
             if pylon is None:

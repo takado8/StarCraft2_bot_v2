@@ -8,14 +8,14 @@ class NexusTrainer:
 
     def probes_standard(self):
         workers = self.ai.workers.amount
-        nex = self.ai.structures(unit.NEXUS).ready.amount
+        nex = self.ai.structures(unit.NEXUS).amount
         if not self.ai.structures(unit.PYLON).exists and workers == 14:
             return
         if workers < 20 * nex and workers < 55:
             for nexus in self.ai.structures(unit.NEXUS).ready:
                 if nexus.is_idle and self.ai.can_afford(unit.PROBE):
                     self.ai.do(nexus.train(unit.PROBE))
-        elif 54 < workers < 60:
+        elif 54 < workers < 74:
             if self.ai.can_afford(unit.PROBE) and not self.ai.already_pending(unit.PROBE):
                 if self.ai.structures(unit.NEXUS).idle.amount < nex:
                     return
@@ -284,11 +284,17 @@ class RoboticsTrainer:
                 for factory in self.ai.structures(unit.ROBOTICSFACILITY).ready.idle:
                     self.ai.do(factory.train(unit.WARPPRISM))
                     break
+
             elif self.ai.can_afford(unit.COLOSSUS) and self.ai.supply_left > 5 and self.ai.structures(
                     unit.ROBOTICSBAY).ready.exists \
                     and self.ai.units(unit.COLOSSUS).amount < 3:
                 for factory in self.ai.structures(unit.ROBOTICSFACILITY).ready.idle:
                     self.ai.do(factory.train(unit.COLOSSUS))
+            elif self.ai.can_afford(unit.DISRUPTOR) and self.ai.supply_left > 3 and self.ai.structures(
+                    unit.ROBOTICSBAY).ready.exists \
+                    and self.ai.units(unit.DISRUPTOR).amount < 3:
+                for factory in self.ai.structures(unit.ROBOTICSFACILITY).ready.idle:
+                    self.ai.do(factory.train(unit.DISRUPTOR))
             elif self.ai.can_afford(unit.IMMORTAL) and self.ai.supply_left > 3 and self.ai.structures(
                     unit.ROBOTICSFACILITY).ready.exists \
                     and immortals.amount < immortals_amm:
