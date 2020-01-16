@@ -214,7 +214,7 @@ class WarpgateTrainer:
                 #         self.ai.structures(unit.CYBERNETICSCORE).ready.exists and self.ai.units(unit.ADEPT).amount < 7:
                 #     self.ai.do(warpgate.warp_in(unit.ADEPT, placement))
                 elif self.ai.minerals > 150 and \
-                        self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < 33:
+                        self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < 23:
                     self.ai.do(warpgate.warp_in(unit.ZEALOT, placement))
 
 

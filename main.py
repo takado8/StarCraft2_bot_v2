@@ -1,4 +1,5 @@
 import random
+from typing import Optional
 from sc2 import run_game, maps, Race, Difficulty, Result, AIBuild
 import sc2
 import time
@@ -7,8 +8,10 @@ from sc2.ids.unit_typeid import UnitTypeId as unit
 from sc2.player import Bot, Computer
 from sc2.ids.buff_id import BuffId as buff
 from sc2.ids.upgrade_id import UpgradeId as upgrade
-from sc2.position import Point2
+from sc2.position import Point2, Point3
 from coords import coords as cd
+from sc2.unit import Unit
+from typing import Union
 from player_vs import player_vs_computer
 from strategy.carrier_madness import CarrierMadness
 from strategy.macro import Macro
@@ -25,6 +28,8 @@ class Octopus(sc2.BotAI):
     first_attack = False
     attack = False
     after_first_attack = False
+    bases_ids = [unit.NEXUS, unit.COMMANDCENTER, unit.COMMANDCENTERFLYING, unit.ORBITALCOMMAND, unit.ORBITALCOMMANDFLYING,
+                 unit.PLANETARYFORTRESS, unit.HIVE, unit.HATCHERY, unit.LAIR]
     army_ids = [unit.ADEPT, unit.STALKER, unit.ZEALOT, unit.SENTRY, unit.OBSERVER, unit.IMMORTAL, unit.ARCHON,
                  unit.HIGHTEMPLAR,unit.DISRUPTOR, unit.WARPPRISM, unit.VOIDRAY, unit.CARRIER, unit.COLOSSUS, unit.TEMPEST]
     units_to_ignore = [unit.LARVA, unit.EGG, unit.INTERCEPTOR]
@@ -50,6 +55,17 @@ class Octopus(sc2.BotAI):
     nova_wait = 0
     # observer_released = False
     slow = True
+
+    # linear function coefficients for bulid spot validation
+    coe_a1 = None
+    coe_a2 = None
+    coe_b1 = None
+    coe_b2 = None
+    n = None
+    g1 = None
+    g2 = None
+    r = None
+    linear_func = None
     # async def on_unit_destroyed(self, unit_tag):
     #     for ut in self.units_tags:
     #         if ut[0] == unit_tag:
@@ -58,15 +74,91 @@ class Octopus(sc2.BotAI):
     # async def on_unit_created(self, _unit):
     #     self.units_tags.append((_unit.tag, _unit.type_id))
 
+    def is_valid_location(self, x, y):
+        condition1 = self.in_circle(x,y)
+        if not condition1:
+            return True  # outside of circle is a valid location for sure
+        condition2 = self.linear_func(x,y,self.coe_a1, self.coe_b1)
+        if not condition2:
+            return True
+        condition3 = self.linear_func(x,y,self.coe_a2, self.coe_b2)
+        if not condition3:
+            return True
+        return False
+
+    def in_circle(self, x, y):
+        return (x - self.n.x)**2 + (y - self.n.y)**2 < self.r**2
+
+    @staticmethod
+    def line_less_than(x, y, a, b):
+        return y < a * x + b
+
+    @staticmethod
+    def line_bigger_than(x,y,a,b):
+        return y > a * x + b
+
+    async def build(self, building: unit, near: Union[Unit, Point2, Point3], max_distance: int = 20,
+        build_worker: Optional[Unit] = None, random_alternative: bool = True, placement_step: int = 3,) -> bool:
+        assert isinstance(near, (Unit, Point2, Point3))
+        if isinstance(near, Unit):
+            near = near.position
+        near = near.to2
+        if not self.can_afford(building):
+            return False
+        p = await self.find_placement(building, near, max_distance, random_alternative, placement_step)
+        if p is None:
+            return False
+        # validate
+        if self.is_valid_location(p.x,p.y):
+            # print("valid location: " + str(p))
+            builder = build_worker or self.select_build_worker(p)
+            if builder is None:
+                return False
+            self.do(builder.build(building, p), subtract_cost=True)
+            return True
+        else:
+            print("not valid location for " + str(building)+" :  " + str(p))
+
+
     async def on_start(self):
-        print('start loc: ' + str(self.start_location.position))
+        print('start location: ' + str(self.start_location.position))
         self.coords = cd['map1'][self.start_location.position]
+        # compute coefficients for build spots validation
+        self.n = self.structures(unit.NEXUS).closest_to(self.start_location).position
+        vespenes = self.vespene_geyser.closer_than(9,self.n)
+        self.g1 = vespenes.pop(0).position
+        self.g2 = vespenes.pop(0).position
+
+        delta1 = (self.g1.x - self.n.x)
+        if delta1 != 0:
+            self.coe_a1 = (self.g1.y - self.n.y) / delta1
+            self.coe_b1 = self.n.y - self.coe_a1 * self.n.x
+
+        delta2 = (self.g2.x - self.n.x)
+        if delta2 != 0:
+            self.coe_a2 = (self.g2.y - self.n.y)/ delta2
+            self.coe_b2 = self.n.y - self.coe_a2 * self.n.x
+
+        max_ = 0
+        minerals = self.mineral_field.closer_than(9, self.n)
+        minerals.append(self.g1)
+        minerals.append(self.g2)
+        for field in minerals:
+            d = self.n.distance_to(field)
+            if d > max_:
+                max_ = d
+        self.r = int(max_)
+        if self.start_location.position.y < self.enemy_start_locations[0].position.y:
+            self.linear_func = self.line_less_than
+        else:
+            self.linear_func = self.line_bigger_than
+
         # self.strategy = CarrierMadness(self)
         # self.strategy = CallOfTheVoid(self)
         # self.strategy = ProxyVoid(self)
-        self.strategy = Macro(self)
+        # self.strategy = Macro(self)
         # self.strategy = StalkerHunt(self)
-        # self.strategy = Bio(self)
+        self.strategy = Bio(self)
 
     async def on_end(self, game_result: Result):
         lost_cost = self.state.score.lost_minerals_army + self.state.score.lost_vespene_army
@@ -93,10 +185,10 @@ class Octopus(sc2.BotAI):
         #     print(str(gateway.type_id)+' coords: ' + str(gateway.position))
 
     async def on_step(self, iteration):
+        self.set_game_step()
         self.assign_defend_position()
         self.army = self.units().filter(lambda x: x.type_id in self.army_ids)
         await self.morph_Archons()
-
         self.train_workers()
         await self.distribute_workers()
         await self.morph_gates()
@@ -149,13 +241,13 @@ class Octopus(sc2.BotAI):
             print('retreat')
 
         # attack
+        await self.micro_units()
 
         if self.attack:
             await self.attack_formation()
         else:
             pass
             await self.defend()
-        await self.micro_units()
 
     # ============================================= Builders
     async def gate_build(self):
@@ -247,6 +339,13 @@ class Octopus(sc2.BotAI):
 
     # ============================================= none
 
+    def set_game_step(self):
+        """It sets the interval of frames that it will take to make the actions, depending of the game situation"""
+        if self.enemy_units().exists:
+            self._client.game_step = 4
+        else:
+            self._client.game_step = 16
+
     def scan(self):
         phxs = self.units(unit.PHOENIX).filter(lambda z: z.is_hallucination)
         if phxs.amount < 1:
@@ -278,10 +377,10 @@ class Octopus(sc2.BotAI):
                 # self.state.chat.remove(msg)
 
     async def morph_Archons(self):
-        # archons = self.army(unit.ARCHON)
-        # ht_amount = int(archons.amount / 2)
-        # ht_thresh = ht_amount + 1
-        ht_thresh = 1
+        archons = self.army(unit.ARCHON)
+        ht_amount = int(archons.amount / 2)
+        ht_thresh = ht_amount + 1
+        # ht_thresh = 1
         if self.units(unit.HIGHTEMPLAR).amount > ht_thresh:
             hts = self.units(unit.HIGHTEMPLAR).sorted(lambda u: u.energy)
             ht2 = hts[0]

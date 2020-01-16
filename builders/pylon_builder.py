@@ -39,18 +39,21 @@ class PylonBuilder:
 
     async def first_and_next_standard(self):
         pylons = self.ai.structures(unit.PYLON)
-        if self.ai.time < 180:
-            pending = 1
-            left = 4
-            step = 9
-        else:
+        if self.ai.supply_cap < 100:
+            max_d = 20
             pending = 2
+            left = 5
+            step = 7
+        else:
+            max_d = 27
+
+            pending = 3
             left = 8
             step = 5
         if self.ai.supply_left < left and self.ai.supply_cap < 200 or (pylons.amount < 2 and
                                                                        self.ai.structures(unit.GATEWAY).exists):
             if self.ai.can_afford(unit.PYLON) and self.ai.already_pending(unit.PYLON) < pending:
-                await self.ai.build(unit.PYLON,max_distance=40, placement_step=step,
+                await self.ai.build(unit.PYLON,max_distance=max_d, placement_step=step,
                         near=self.ai.start_location.position.towards(self.ai.main_base_ramp.top_center,5))
 
     async def proxy(self):

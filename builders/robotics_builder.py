@@ -25,4 +25,4 @@ class RoboticsBuilder:
                 and not self.ai.already_pending(unit.ROBOTICSFACILITY):
             pylon = self.ai.get_proper_pylon()
             if pylon:
-                await self.ai.build(unit.ROBOTICSFACILITY,near=pylon,random_alternative=True,placement_step=2)
+                await self.ai.build(unit.ROBOTICSFACILITY,near=pylon,random_alternative=True,placement_step=3)

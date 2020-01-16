@@ -9,8 +9,9 @@ class Movements:
         enemy_units = self.ai.enemy_units()
         enemy = enemy_units.filter(lambda x: x.type_id not in self.ai.units_to_ignore and (x.can_attack_ground or
                                                                                         x.can_attack_air))
-
-        if self.ai.enemy_main_base_down or self.ai.army.closer_than(12,self.ai.enemy_start_locations[0]).amount > 20 and self.ai.enemy_structures.amount == 0:
+        enemy.extend(self.ai.enemy_structures().filter(lambda b: b.type_id in self.ai.bases_ids))
+        if self.ai.enemy_main_base_down or self.ai.army.closer_than(20,self.ai.enemy_start_locations[0]).amount > 20 and self.ai.enemy_structures().closer_than(17,
+                self.ai.enemy_start_locations[0]).amount == 0:
             if not self.ai.enemy_main_base_down:
                 self.ai.enemy_main_base_down = True
             self.ai.scan()
@@ -23,16 +24,16 @@ class Movements:
             # if enemy.closer_than(40,self.ai.start_location).amount > 7:
             #     await self.ai.defend()
             #     return
-            if self.ai.destination is not None:
-                destination = enemy.closest_to(self.ai.destination).position
-            else:
-                destination = enemy.closest_to(self.ai.start_location).position
+            # if self.ai.destination is not None:
+            #     destination = enemy.closest_to(self.ai.destination).position
+            # else:
+            destination = enemy.closest_to(self.ai.start_location).position
         elif self.ai.enemy_structures().exists:
             enemy = self.ai.enemy_structures()
-            if self.ai.destination is not None:
-                destination = enemy.closest_to(self.ai.destination).position
-            else:
-                destination = enemy.closest_to(self.ai.start_location).position
+            # if self.ai.destination is not None:
+            #     destination = enemy.closest_to(self.ai.destination).position
+            # else:
+            destination = enemy.closest_to(self.ai.start_location).position
             # destination = enemy.closest_to(self.ai.start_location).position
         else:
             enemy = None
@@ -55,14 +56,13 @@ class Movements:
         while position is None:
             i += 1
             position = await self.ai.find_placement(unit.PYLON,near=point.random_on_distance(i * 3),max_distance=15,
-                                                 placement_step=5,
-                                                 random_alternative=False)
+                                                                        placement_step=5, random_alternative=False)
             if i > 8:
                 print("can't find position for army.")
                 return
         # if everybody's here, we can go
         army = self.ai.army
-        _range = 9 if army.amount < 24 else 13
+        _range = 7 if army.amount < 24 else 9
         nearest = []
         i = 3
         pos = leader.position
@@ -71,7 +71,7 @@ class Movements:
             i += 1
             j = 1
             while not self.ai.in_pathing_grid(pos) and j < 3:
-                print('func j: ' + str(j))
+                # print('func j: ' + str(j))
                 pos = pos.random_on_distance(j)
                 j += 1
         for man in army:
@@ -84,8 +84,8 @@ class Movements:
                         self.ai.do(man.attack(enemy.closest_to(h.closest_to(man))))
             else:   # away. join army
                 self.ai.do(man.attack(pos))
-        if len(nearest) > len(self.ai.army) * 0.75:
-            if enemy and enemy.closer_than(8, leader).exists:
+        if len(nearest) > len(self.ai.army) * 0.70:
+            if enemy and enemy.closer_than(11, leader).exists:
                 return
             for man in army:
                 self.ai.do(man.attack(position))
@@ -156,7 +156,7 @@ class Movements:
             i += 1
             j = 1
             while not self.ai.in_pathing_grid(pos) and j < 3:
-                print('func j: ' + str(j))
+                # print('func j: ' + str(j))
                 pos = pos.random_on_distance(j)
                 j += 1
         for man in army:

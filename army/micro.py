@@ -321,7 +321,8 @@ class Micro:
                                   and unit_.distance_to(leader) <= dist and
                                   unit_.type_id not in self.ai.units_to_ignore)
                 if self.ai.attack:
-                    threats.extend(self.ai.enemy_structures().filter(lambda _x: _x.can_attack_ground or _x.can_attack_air))
+                    threats.extend(self.ai.enemy_structures().filter(lambda _x: _x.can_attack_ground or _x.can_attack_air or
+                                                                     _x.type_id in self.ai.bases_ids))
                 if threats.exists:
                     closest_enemy = threats.closest_to(leader)
                     priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR,
@@ -352,12 +353,12 @@ class Micro:
                     i = 3
                     pos = leader.position.towards(closest_enemy.position,-i)
                     while not self.__in_grid(pos) and i < 12:
-                        print('func i: ' + str(i))
+                        # print('func i: ' + str(i))
                         pos = leader.position.towards(closest_enemy.position,-i)
                         i += 1
                         j = 1
                         while not self.__in_grid(pos) and j < 9:
-                            print('func j: ' + str(j))
+                            # print('func j: ' + str(j))
                             pos = pos.random_on_distance(j)
                             j+=1
                     for st in army:
@@ -374,10 +375,8 @@ class Micro:
                             closest_enemy.ground_range <= st.ground_range and threats.amount * 2 > army.amount:
                             if not await self.ai.blink(st, pos):
                                 self.ai.do(st.move(st.position.towards(pos,d)))
-                        else:
-                            if st.distance_to(target) > 6:
-                                if not await self.ai.blink(st,target.position.towards(st,6)):
-                                    self.ai.do(st.attack(target))
+                        elif not st.is_attacking:
+                            self.ai.do(st.attack(target))
 
         #  Sentry region  #
         sents = self.ai.army(unit.SENTRY)
@@ -445,7 +444,7 @@ class Micro:
         # Carrier
         for cr in self.ai.army(unit.CARRIER):
             threats = self.ai.enemy_units().filter(lambda z: z.distance_to(cr) < 12 and z.type_id not in self.ai.units_to_ignore)
-            threats.extend(self.ai.enemy_structures().filter(lambda z: z.can_attack_air))
+            threats.extend(self.ai.enemy_structures().filter(lambda z: z.can_attack_air or z.type_id in self.ai.bases_ids))
             if threats.exists:
                 # target2 = None
                 priority = threats.filter(lambda z: z.can_attack_air).sorted(lambda z: z.air_dps, reverse=True)
@@ -562,7 +561,7 @@ class Micro:
                         print("Steering Purification nova to " + str(maxNeighbours + 1) + " units.")
                         self.ai.do(nova.move(target.position.towards(nova, -2)))
         # zealot
-        for zl in zealots:
+        for zl in zealots.filter(lambda z: not z.is_attacking):
             threats = self.ai.enemy_units().filter(lambda x2: x2.distance_to(zl) < 7).sorted(lambda _x: _x.health + _x.shield)
             if threats.exists:
                 closest = threats.closest_to(zl)
@@ -571,13 +570,15 @@ class Micro:
                 else:
                     a = 1
                 dist = await self.ai._client.query_pathing(zl.position,threats[0].position)
-                if threats[0].health_percentage * a == 1 or dist is None or dist > closest.distance_to(zl) + 5:
+                if threats[0].health_percentage * a == 1 or dist is None or dist > closest.distance_to(zl) + 4:
                     target = closest
                 else:
                     target = threats[0]
-                if ability.EFFECT_CHARGE in await self.ai.get_available_abilities(zl):
-                    self.ai.do(zl(ability.EFFECT_CHARGE, target))
-                self.ai.do(zl.attack(target))
+                if not zl.is_attacking:
+                    if ability.EFFECT_CHARGE in await self.ai.get_available_abilities(zl):
+                        self.ai.do(zl(ability.EFFECT_CHARGE, target))
+                    else:
+                        self.ai.do(zl.attack(target))
 
     async def personal(self):
         enemy = self.ai.enemy_units()

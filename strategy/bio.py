@@ -59,7 +59,7 @@ class Bio(Strategy):
         await self._twilight_upgrader.charge()
 
     async def templar_archives_upgrades(self):
-        await self._templar_archives_upgrader.none()
+        await self._templar_archives_upgrader.storm()
 
     async def fleet_beacon_upgrades(self):
         pass

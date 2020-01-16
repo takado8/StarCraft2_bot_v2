@@ -47,7 +47,7 @@ class GateBuilder:
                 self.ai.already_pending(unit.GATEWAY) < 2:
             pylon = self.ai.get_proper_pylon()
             if pylon is not None:
-                await self.ai.build(unit.GATEWAY,near=pylon,placement_step=2,max_distance=20,
+                await self.ai.build(unit.GATEWAY,near=pylon,placement_step=3,max_distance=20,
                                     random_alternative=True)
 
     async def one_in_upper(self):
@@ -101,14 +101,14 @@ class GateBuilder:
             pylon = self.ai.get_proper_pylon()
             if pylon is None:
                 return
-            await self.ai.build(unit.GATEWAY,near=pylon,placement_step=2)
+            await self.ai.build(unit.GATEWAY,near=pylon,placement_step=3)
         elif 3 < gates_count < (9 if self.ai.minerals > 400 else 6) and self.ai.can_afford(unit.GATEWAY) and self.ai.structures(
                 unit.NEXUS).ready.amount > 1 and \
                 self.ai.already_pending(unit.GATEWAY) < 1:
             pylon = self.ai.get_proper_pylon()
             if pylon is None:
                 return
-            await self.ai.build(unit.GATEWAY,near=pylon,placement_step=2)
+            await self.ai.build(unit.GATEWAY,near=pylon,placement_step=3)
 
     async def macro(self):
         gates_count = self.ai.structures(unit.GATEWAY).amount
@@ -119,21 +119,21 @@ class GateBuilder:
                 self.ai.already_pending(unit.GATEWAY) < 1:
             pylon = self.ai.get_proper_pylon()
             if pylon is not None:
-                await self.ai.build(unit.GATEWAY,near=pylon,placement_step=2,max_distance=20,
+                await self.ai.build(unit.GATEWAY,near=pylon,placement_step=3,max_distance=20,
                                     random_alternative=True)
         elif 1 < gates_count < 4 and self.ai.can_afford(unit.GATEWAY) and self.ai.time > 180 and \
                 self.ai.already_pending(unit.GATEWAY) < 1:
             pylon = self.ai.get_proper_pylon()
             if pylon is None:
                 return
-            await self.ai.build(unit.GATEWAY,near=pylon,placement_step=2)
+            await self.ai.build(unit.GATEWAY,near=pylon,placement_step=3)
         elif 3 < gates_count < (12 if self.ai.minerals > 400 else 6) and self.ai.can_afford(unit.GATEWAY) and self.ai.structures(
                 unit.NEXUS).ready.amount > 1 and \
                 self.ai.already_pending(unit.GATEWAY) < 1:
             pylon = self.ai.get_proper_pylon()
             if pylon is None:
                 return
-            await self.ai.build(unit.GATEWAY,near=pylon,placement_step=2)
+            await self.ai.build(unit.GATEWAY,near=pylon,placement_step=3)
 
     async def macro_colossus(self):
         gates_count = self.ai.structures(unit.GATEWAY).amount
@@ -144,18 +144,18 @@ class GateBuilder:
                 self.ai.already_pending(unit.GATEWAY) < 1:
             pylon = self.ai.get_proper_pylon()
             if pylon is not None:
-                await self.ai.build(unit.GATEWAY,near=pylon,placement_step=2,max_distance=20,
+                await self.ai.build(unit.GATEWAY,near=pylon,placement_step=3,max_distance=20,
                                     random_alternative=True)
         elif 1 < gates_count < 4 and self.ai.can_afford(unit.GATEWAY) and self.ai.time > 280 and \
                 self.ai.already_pending(unit.GATEWAY) < 1 and self.ai.structures(unit.ROBOTICSFACILITY).exists:
             pylon = self.ai.get_proper_pylon()
             if pylon is None:
                 return
-            await self.ai.build(unit.GATEWAY,near=pylon,placement_step=2)
+            await self.ai.build(unit.GATEWAY,near=pylon,placement_step=3)
         elif 3 < gates_count < (12 if self.ai.minerals > 400 else 7) and self.ai.can_afford(unit.GATEWAY) and self.ai.structures(
                 unit.NEXUS).ready.amount > 1 and \
                 self.ai.already_pending(unit.GATEWAY) < 1:
             pylon = self.ai.get_proper_pylon()
             if pylon is None:
                 return
-            await self.ai.build(unit.GATEWAY,near=pylon,placement_step=2, max_distance=40)
+            await self.ai.build(unit.GATEWAY,near=pylon,placement_step=3, max_distance=40)

@@ -14,7 +14,7 @@ class TwilightBuilder:
                     and not self.ai.already_pending(unit.TWILIGHTCOUNCIL) and self.ai.can_afford(unit.TWILIGHTCOUNCIL):
                 pylon = self.ai.get_proper_pylon()
                 await self.ai.build(unit.TWILIGHTCOUNCIL,near=pylon.position,
-                                 random_alternative=True,placement_step=2)
+                                 random_alternative=True,placement_step=3)
 
     async def early(self):
         if self.ai.structures(unit.CYBERNETICSCORE).ready.exists:
@@ -22,4 +22,4 @@ class TwilightBuilder:
                     and not self.ai.already_pending(unit.TWILIGHTCOUNCIL) and self.ai.can_afford(unit.TWILIGHTCOUNCIL):
                 pylon = self.ai.get_proper_pylon()
                 await self.ai.build(unit.TWILIGHTCOUNCIL,near=pylon.position,
-                                 random_alternative=True,placement_step=2)
+                                 random_alternative=True,placement_step=3)
