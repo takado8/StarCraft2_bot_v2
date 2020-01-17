@@ -23,7 +23,6 @@ class GateBuilder:
             if pylon is None:
                 return
             await self.ai.build(unit.GATEWAY,near=pylon,placement_step=0,max_distance=0,random_alternative=False)
-        # elif 9 > gates_count >= gc:
 
     async def proxy(self):
         pylons = self.ai.structures(unit.PYLON).ready
@@ -31,12 +30,10 @@ class GateBuilder:
             pylon = pylons.further_than(40, self.ai.start_location.position)
             if pylon.ready.exists:
                 pylon = pylon.furthest_to(self.ai.start_location.position)
-                gates = self.ai.structures({unit.GATEWAY, unit.WARPGATE})
-                if 1 < gates.amount < 4 and self.ai.can_afford(unit.GATEWAY) and not self.ai.already_pending(unit.GATEWAY):
+                gates = self.ai.structures({unit.GATEWAY, unit.WARPGATE}).closer_than(9, pylon)
+                if gates.amount < 1 and not self.ai.already_pending(unit.GATEWAY):
                     worker = self.ai.units(unit.PROBE).closest_to(pylon)
                     await self.ai.build(unit.GATEWAY, near=pylon, build_worker=worker)
-
-                    # self.ai.do(worker.hold_position(queue=True))
 
     async def three_standard(self):
         gates_count = self.ai.structures(unit.GATEWAY).amount
@@ -49,6 +46,25 @@ class GateBuilder:
             if pylon is not None:
                 await self.ai.build(unit.GATEWAY,near=pylon,placement_step=3,max_distance=20,
                                     random_alternative=True)
+
+    async def upper_wall_plus_3(self):
+        gates_count = self.ai.structures(unit.GATEWAY).amount
+        gates_count += self.ai.structures(unit.WARPGATE).amount
+        gc = 1
+        if gates_count < gc and self.ai.structures(unit.PYLON).ready.exists and \
+                self.ai.already_pending(unit.GATEWAY) < 1:
+
+            placement = self.ai.main_base_ramp.protoss_wall_buildings[0]
+            if placement is not None:
+                await self.ai.build(unit.GATEWAY,near=placement,placement_step=0,max_distance=0,
+                                    random_alternative=False)
+        elif 0 < gates_count < 4 and self.ai.already_pending(unit.GATEWAY) < 2:
+            p = self.ai.get_proper_pylon()
+            if p:
+                await self.ai.build(unit.GATEWAY,near=p,placement_step=3,max_distance=22,
+                                    random_alternative=True)
+
+
 
     async def one_in_upper(self):
         gates_count = self.ai.structures(unit.GATEWAY).amount

@@ -15,10 +15,13 @@ from typing import Union
 from player_vs import player_vs_computer
 from strategy.carrier_madness import CarrierMadness
 from strategy.macro import Macro
-from strategy.stalker_hunt import StalkerHunt
+from strategy.stalker_proxy import StalkerProxy
 from strategy.call_of_void import CallOfTheVoid
 from strategy.proxy_void import ProxyVoid
 from strategy.bio import Bio
+from strategy.adept_proxy import AdeptProxy
+from strategy.adept_defend import AdeptDefend
+from strategy.stalker_defend import StalkerDefend
 
 
 class Octopus(sc2.BotAI):
@@ -109,7 +112,7 @@ class Octopus(sc2.BotAI):
         if p is None:
             return False
         # validate
-        if self.is_valid_location(p.x,p.y):
+        if building == unit.PHOTONCANNON or self.is_valid_location(p.x,p.y):
             # print("valid location: " + str(p))
             builder = build_worker or self.select_build_worker(p)
             if builder is None:
@@ -152,13 +155,15 @@ class Octopus(sc2.BotAI):
             self.linear_func = self.line_less_than
         else:
             self.linear_func = self.line_bigger_than
-
         # self.strategy = CarrierMadness(self)
         # self.strategy = CallOfTheVoid(self)
         # self.strategy = ProxyVoid(self)
         # self.strategy = Macro(self)
         # self.strategy = StalkerHunt(self)
-        self.strategy = Bio(self)
+        # self.strategy = Bio(self)
+        # self.strategy = AdeptProxy(self)
+        self.strategy = AdeptDefend(self)
+        # self.strategy = StalkerDefend(self)
 
     async def on_end(self, game_result: Result):
         lost_cost = self.state.score.lost_minerals_army + self.state.score.lost_vespene_army
@@ -197,6 +202,7 @@ class Octopus(sc2.BotAI):
         await self.pylon_next_build()
         await self.expand()
 
+        await self.cannons_build()
         if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS) or self.minerals > 400:
             await self.templar_archives_upgrades()
             await self.fleet_beacon_upgrades()
@@ -285,6 +291,9 @@ class Octopus(sc2.BotAI):
 
     def build_assimilators(self):
         self.strategy.assimilator_build()
+
+    async def cannons_build(self):
+        await self.strategy.cannons_build()
 
     async def expand(self):
         await self.strategy.expand()
@@ -460,7 +469,7 @@ class Octopus(sc2.BotAI):
             dist = 20
         else:
             dist = 6
-        for man in self.army:
+        for man in self.army.exclude_type({unit.ADEPT}):
             position = Point2(self.defend_position).towards(self.game_info.map_center, 2) if\
                 man.type_id == unit.ZEALOT else Point2(self.defend_position)
             if man.distance_to(self.defend_position) > dist:
@@ -473,13 +482,13 @@ class Octopus(sc2.BotAI):
         # self.defend_position = self.coords['defend_pos']
 
         # if self.prev_nexus_count != nex.amount or enemy.exists or self.change_position:
-        if self.change_position:
-            self.change_position = False
-        else:
-            self.change_position = True
-        self.prev_nexus_count = nex.amount
+        # if self.change_position:
+        #     self.change_position = False
+        # else:
+        #     self.change_position = True
+        # self.prev_nexus_count = nex.amount
         if enemy.exists and enemy.closer_than(50,self.start_location).amount > 0:
-            self.defend_position = nex.closest_to(enemy.closest_to(self.enemy_start_locations[0])).position.towards(self.game_info.map_center,5)
+            self.defend_position = enemy.closest_to(self.enemy_start_locations[0]).position
         elif nex.amount < 2:
             self.defend_position = self.main_base_ramp.top_center.towards(self.main_base_ramp.bottom_center, -6)
         elif nex.amount == 2:
@@ -507,10 +516,10 @@ class Octopus(sc2.BotAI):
 
     def get_proper_pylon(self):
         properPylons = self.structures().filter(lambda unit_: unit_.type_id == unit.PYLON and unit_.is_ready and
-            unit_.distance_to(self.start_location.position) < 30 and unit_.distance_to(self.defend_position) > 4)
+            unit_.distance_to(self.start_location.position) < 27)
         if properPylons.exists:
             min_neighbours = 99
-            pylon = properPylons.random
+            pylon = None
             for pyl in properPylons:
                 neighbours = self.structures().filter(lambda unit_: unit_.distance_to(pyl) < 6).amount
                 if neighbours < min_neighbours:
@@ -573,6 +582,8 @@ class Octopus(sc2.BotAI):
                 if target:
                     self.do(nexus(ability.EFFECT_CHRONOBOOSTENERGYCOST,target))
 
+
+
     async def nexus_buff2(self):
         if not self.structures(unit.NEXUS).exists:
             return
@@ -624,26 +635,54 @@ class Octopus(sc2.BotAI):
 
     async def adept_hunt(self):
         adepts = self.army(unit.ADEPT).ready
-        destination = self.enemy_start_locations[0]
-        if adepts.amount > 3:
-            for adept in adepts:
-                targets = self.enemy_units().filter(lambda x: x.type_id in self.workers_ids and x.distance_to(adept) < 12)
-                if targets.exists:
+        if adepts.amount > 1:
+            enemy = self.enemy_units()
+            targets = enemy.filter(lambda x: x.type_id in self.workers_ids)
+            if targets:
+                destination = targets.closest_to(self.defend_position)
+            else:
+                destination = self.enemy_start_locations[0]
 
-                    closest = targets.closest_to(adept)
-                    target = targets.sorted(lambda x: x.health + x.shield)[0]
-                    if target.health_percentage * target.shield_percentage == 1 or \
-                            target.distance_to(adept) > closest.distance_to(adept) + 4:
-                        target = closest
-                    self.do(adept.attack(target))
-                elif ability.ADEPTPHASESHIFT_ADEPTPHASESHIFT in await self.get_available_abilities(adept) and\
-                        adept.distance_to(destination) > 12:
-                    self.do(adept(ability.ADEPTPHASESHIFT_ADEPTPHASESHIFT, destination))
+            for adept in adepts:
+                if enemy.exists:
+                    threats = enemy.filter(lambda x: x.can_attack_ground and x.distance_to(adept) < x.ground_range + 1)
+                    if threats.exists:
+                        # shadow
+                        if ability.ADEPTPHASESHIFT_ADEPTPHASESHIFT in await self.get_available_abilities(adept):
+                            self.do(adept(ability.ADEPTPHASESHIFT_ADEPTPHASESHIFT,destination))
+                        # closest_enemy = threats.closest_to(adept)
+                        # # micro
+                        # i = 3
+                        # pos = adept.position.towards(closest_enemy.position,-i)
+                        # while not self.in_pathing_grid(pos) and i < 12:
+                        #     # print('func i: ' + str(i))
+                        #     pos = adept.position.towards(closest_enemy.position,-i)
+                        #     i += 1
+                        #     j = 1
+                        #     while not self.in_pathing_grid(pos) and j < 9:
+                        #         # print('func j: ' + str(j))
+                        #         pos = pos.random_on_distance(j)
+                        #         j += 1
+                        # if not pos:
+                        pos = self.defend_position
+                        self.do(adept.move(pos))
+                    elif targets.exists:
+                        targets = targets.filter(lambda x: x.distance_to(adept) < 12)
+                        if targets.exists:
+                            closest = targets.closest_to(adept)
+                            target = targets.sorted(lambda x: x.health + x.shield)[0]
+                            if self.enemy_race == Race.Protoss:
+                                shield = target.shield_percentage
+                            else:
+                                shield = 1
+                            if target.health_percentage * shield == 1 or \
+                                    target.distance_to(adept) > closest.distance_to(adept) + 5:
+                                target = closest
+                            self.do(adept.attack(target))
                 else:
-                    self.do(adept.move(destination))
+                    self.do(adept.attack(destination))
             for shadow in self.units(unit.ADEPTPHASESHIFT):
                 self.do(shadow.move(destination))
-
 
     async def blink(self, stalker, target):
         abilities = await self.get_available_abilities(stalker)
@@ -669,6 +708,7 @@ def botVsComputer(real_time):
                 "WintersGateLE", "WorldofSleepersLE"]
     races = [Race.Protoss, Race.Zerg, Race.Terran]
     # computer_builds = [AIBuild.Rush]
+    # computer_builds = [AIBuild.Timing]
     # computer_builds = [AIBuild.Air]
     computer_builds = [AIBuild.Power, AIBuild.Macro]
     build = random.choice(computer_builds)
@@ -676,12 +716,12 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[1], difficulty=Difficulty.CheatMoney, ai_build=build)
+        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=bool(real_time))
     return res, build, races[race_index]
 # CheatMoney   VeryHard
 
 
 if __name__ == '__main__':
-    test(real_time=0)
+    test(real_time=1)
     # player_vs_computer()

@@ -39,13 +39,13 @@ class AssimilatorBuilder:
                         self.ai.do(worker.move(worker.position.random_on_distance(2), queue=True))
 
     def standard(self):
-        if self.ai.structures(unit.GATEWAY).exists or self.ai.structures(unit.WARPGATE).exists and not self.ai.already_pending(unit.ASSIMILATOR):
+        if not self.ai.already_pending(unit.ASSIMILATOR) and (self.ai.structures(unit.GATEWAY).exists or self.ai.structures(unit.WARPGATE).exists):
 
-            if not self.ai.can_afford(unit.ASSIMILATOR) or self.ai.time < 250 and \
+            if self.ai.time < 250 and \
                     self.ai.structures(unit.ASSIMILATOR).amount > 1 or self.ai.structures(unit.NEXUS).amount > 1 \
                     and self.ai.vespene > self.ai.minerals:
                 return
-            for nexus in self.ai.structures(unit.NEXUS).ready:
+            for nexus in self.ai.structures(unit.NEXUS):
                 vaspenes = self.ai.vespene_geyser.closer_than(10,nexus)
                 for vaspene in vaspenes:
                     worker = self.ai.select_build_worker(vaspene.position)
@@ -56,4 +56,5 @@ class AssimilatorBuilder:
                             (self.ai.time > 120 and not self.ai.structures(unit.ASSIMILATOR).closer_than(5,
                                                                                                          vaspene).exists):
                         self.ai.do(worker.build(unit.ASSIMILATOR,vaspene))
+                        self.ai.do(worker.move(worker.position.towards(self.ai.n, 1),queue=True))
                         return

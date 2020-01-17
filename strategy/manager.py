@@ -8,6 +8,7 @@ from builders.pylon_builder import PylonBuilder
 from builders.cybernetics_builder import CyberneticsBuilder
 from builders.robotics_builder import RoboticsBuilder
 from builders.robotics_bay_builder import RoboticsBayBuilder
+from builders.cannon_builder import CannonBuilder
 from builders.expander import Expander
 from upgraders import *
 from trainers import *
@@ -32,6 +33,7 @@ class Strategy:
         self._robotics_builder = RoboticsBuilder(ai)
         self._robotics_bay_builder = RoboticsBayBuilder(ai)
         self._assimilator_builder = AssimilatorBuilder(ai)
+        self._cannon_builder = CannonBuilder(ai)
         self._expander = Expander(ai)
         # upgraders
         self._cybernetics_upgrader = CyberneticsUpgrader(ai)
@@ -89,6 +91,9 @@ class Strategy:
 
     async def robotics_bay_build(self):
         print('robotics_bay_build not implemented')
+
+    async def cannons_build(self):
+        pass
 
     async def expand(self):
         print('expand not implemented')

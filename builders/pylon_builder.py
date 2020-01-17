@@ -12,19 +12,7 @@ class PylonBuilder:
     async def next_standard(self):
         pylons = self.ai.structures(unit.PYLON)
         if pylons.exists:
-            if self.ai.time < 180:
-                pending = 1
-                left = 4
-            else:
-                pending = 2
-                left = 8
-            if self.ai.supply_left < left and self.ai.supply_cap < 200 or (pylons.amount < 2 and
-                                                                           self.ai.structures(unit.GATEWAY).exists):
-                if self.ai.can_afford(unit.PYLON) and self.ai.already_pending(unit.PYLON) < pending:
-                    max_dist = 40
-                    pl_step = 5
-
-                    await self.ai.build(unit.PYLON, near=self.ai.start_location.position.towards(self.ai.main_base_ramp.top_center,5), max_distance=max_dist, placement_step=pl_step)
+            await self.first_and_next_standard()
 
     async def first_in_lower_wall(self):
         if self.ai.structures(unit.PYLON).amount < 1 and self.ai.can_afford(unit.PYLON) and not self.ai.already_pending(unit.PYLON):
@@ -38,23 +26,22 @@ class PylonBuilder:
             await self.ai.build(unit.PYLON, near=placement, placement_step=0, max_distance=0,random_alternative=False)
 
     async def first_and_next_standard(self):
-        pylons = self.ai.structures(unit.PYLON)
-        if self.ai.supply_cap < 100:
-            max_d = 20
-            pending = 2
-            left = 5
-            step = 7
-        else:
-            max_d = 27
-
-            pending = 3
-            left = 8
-            step = 5
-        if self.ai.supply_left < left and self.ai.supply_cap < 200 or (pylons.amount < 2 and
-                                                                       self.ai.structures(unit.GATEWAY).exists):
-            if self.ai.can_afford(unit.PYLON) and self.ai.already_pending(unit.PYLON) < pending:
-                await self.ai.build(unit.PYLON,max_distance=max_d, placement_step=step,
-                        near=self.ai.start_location.position.towards(self.ai.main_base_ramp.top_center,5))
+        if self.ai.supply_cap < 200:
+            pylons = self.ai.structures(unit.PYLON)
+            if self.ai.supply_cap < 100:
+                max_d = 20
+                pending = 2 if self.ai.time > 180 else 1
+                left = 5
+                step = 7
+            else:
+                max_d = 27
+                pending = 3
+                left = 8
+                step = 5
+            if self.ai.supply_left < left or (pylons.amount < 1 and self.ai.structures(unit.GATEWAY).exists):
+                if self.ai.already_pending(unit.PYLON) < pending:
+                    await self.ai.build(unit.PYLON,max_distance=max_d, placement_step=step,
+                            near=self.ai.start_location.position.towards(self.ai.main_base_ramp.top_center,5))
 
     async def proxy(self):
         pylons = self.ai.structures(unit.PYLON)

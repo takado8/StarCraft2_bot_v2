@@ -44,6 +44,9 @@ class Macro(Strategy):
     async def robotics_bay_build(self):
         await self._robotics_bay_builder.standard()
 
+    async def cannons_build(self):
+        await self._cannon_builder.double_per_nex()
+
     async def expand(self):
         await self._expander.standard()
 

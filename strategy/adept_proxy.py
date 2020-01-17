@@ -1,7 +1,7 @@
 from strategy.manager import Strategy
 
 
-class StalkerHunt(Strategy):
+class AdeptProxy(Strategy):
     def __init__(self, ai):
         super().__init__(ai)
         self.type = 'rush'
@@ -9,7 +9,7 @@ class StalkerHunt(Strategy):
     # =======================================================  Builders
 
     async def gate_build(self):
-        await self._gate_builder.three_standard()
+        await self._gate_builder.upper_wall_plus_3()
 
     async def stargate_build(self):
         pass
@@ -24,10 +24,10 @@ class StalkerHunt(Strategy):
         await self._twilight_builder.none()
 
     async def pylon_first_build(self):
-        await self._pylon_builder.none()
+        await self._pylon_builder.first_in_upper_wall()
 
     async def pylon_next_build(self):
-        await self._pylon_builder.first_and_next_standard()
+        await self._pylon_builder.next_standard()
 
     async def proxy(self):
         await self._pylon_builder.proxy()
@@ -65,7 +65,7 @@ class StalkerHunt(Strategy):
         self._nexus_trainer.probes_standard()
 
     def gate_train(self):
-        self._gate_trainer.stalkers()
+        self._gate_trainer.adepts()
 
     def stargate_train(self):
         self._stargate_trainer.none()
@@ -74,7 +74,7 @@ class StalkerHunt(Strategy):
         self._robotics_trainer.none()
 
     async def warpgate_train(self):
-        await self._warpgate_trainer.stalkers()
+        await self._warpgate_trainer.adepts()
 
     async def templar_archives_upgrades(self):
         pass

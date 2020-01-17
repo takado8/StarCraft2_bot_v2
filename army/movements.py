@@ -7,10 +7,10 @@ class Movements:
 
     async def attack_formation_brand_new_newest_thee_most_new_shit_in_whole_wide_world(self):
         enemy_units = self.ai.enemy_units()
-        enemy = enemy_units.filter(lambda x: x.type_id not in self.ai.units_to_ignore and (x.can_attack_ground or
-                                                                                        x.can_attack_air))
-        enemy.extend(self.ai.enemy_structures().filter(lambda b: b.type_id in self.ai.bases_ids))
-        if self.ai.enemy_main_base_down or self.ai.army.closer_than(20,self.ai.enemy_start_locations[0]).amount > 20 and self.ai.enemy_structures().closer_than(17,
+        enemy = enemy_units.filter(lambda x: x.type_id not in self.ai.units_to_ignore and (x.can_attack_ground or x.can_attack_air))
+        enemy.extend(self.ai.enemy_structures().filter(lambda b: b.type_id in self.ai.bases_ids or b.can_attack_ground or b.can_attack_air))
+        if self.ai.enemy_main_base_down or self.ai.army.closer_than(20,self.ai.enemy_start_locations[0]).amount > 20 and\
+                self.ai.enemy_structures().exists and self.ai.enemy_structures().closer_than(17,
                 self.ai.enemy_start_locations[0]).amount == 0:
             if not self.ai.enemy_main_base_down:
                 self.ai.enemy_main_base_down = True
@@ -62,7 +62,7 @@ class Movements:
                 return
         # if everybody's here, we can go
         army = self.ai.army
-        _range = 7 if army.amount < 24 else 9
+        _range = 9 if army.amount < 24 else 13
         nearest = []
         i = 3
         pos = leader.position
