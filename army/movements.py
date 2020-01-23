@@ -55,14 +55,14 @@ class Movements:
         i = 0
         while position is None:
             i += 1
-            position = await self.ai.find_placement(unit.PYLON,near=point.random_on_distance(i * 3),max_distance=15,
-                                                                        placement_step=5, random_alternative=False)
-            if i > 8:
+            position = await self.ai.find_placement(unit.PYLON,near=point.random_on_distance(i * 3),max_distance=12,
+                                                                        placement_step=2, random_alternative=False)
+            if i > 7:
                 print("can't find position for army.")
                 return
         # if everybody's here, we can go
         army = self.ai.army
-        _range = 9 if army.amount < 24 else 13
+        _range = 11 if army.amount < 27 else 14
         nearest = []
         i = 3
         pos = leader.position
@@ -88,7 +88,7 @@ class Movements:
             if enemy and enemy.closer_than(11, leader).exists:
                 return
             for man in army:
-                self.ai.do(man.attack(position))
+                self.ai.do(man.move(position))
 
     async def voidrays_rush(self):
         enemy_units = self.ai.enemy_units()

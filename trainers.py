@@ -49,8 +49,7 @@ class GateTrainer:
                 u = unit.SENTRY
             else:
                 return
-        elif self.ai.army(unit.ZEALOT).amount < 1 and self.ai.can_afford(unit.ZEALOT) \
-                and not self.ai.already_pending(unit.ZEALOT):
+        elif self.ai.army(unit.ZEALOT).amount < 0 and self.ai.can_afford(unit.ZEALOT):
             u = unit.ZEALOT
         else:
             return
@@ -60,7 +59,7 @@ class GateTrainer:
 
     def standard(self):
         gateway = self.ai.structures(unit.GATEWAY).ready
-        if self.ai.minerals < 100 or not gateway.exists or not gateway.idle.exists:
+        if not gateway.exists or not gateway.idle.exists:
             return
 
         if self.ai.can_afford(unit.STALKER) and self.ai.structures(unit.CYBERNETICSCORE).ready.exists:
@@ -71,39 +70,12 @@ class GateTrainer:
         # elif self.can_afford(unit.ADEPT) and self.structures(unit.CYBERNETICSCORE).ready.exists and \
         #         self.army(unit.ADEPT).amount < 2:
         #     u = unit.ADEPT
-        elif self.ai.supply_left > 1 and self.ai.minerals > 150 and self.ai.units(unit.ZEALOT).amount < 3:
+        elif self.ai.minerals > 155 and self.ai.units(unit.ZEALOT).amount < 2:
             u = unit.ZEALOT
         else:
             return
         gateway = gateway.ready.idle.random
         self.ai.do(gateway.train(u))
-
-
-class StargateTrainer:
-    def __init__(self, ai):
-        self.ai = ai
-
-    def none(self):
-        pass
-
-    def carriers(self):
-        if self.ai.structures(unit.STARGATE).ready.idle.exists:
-            if self.ai.structures(unit.FLEETBEACON).ready.exists:
-                if self.ai.can_afford(unit.CARRIER):
-                    self.ai.train(unit_type=unit.CARRIER)
-                elif self.ai.can_afford(unit.TEMPEST) and self.ai.army(unit.TEMPEST).amount < 4 and\
-                        self.ai.army(unit.TEMPEST).amount * 2 < self.ai.army(unit.CARRIER).amount:
-                    self.ai.train(unit.TEMPEST)
-                elif self.ai.can_afford(unit.VOIDRAY) and self.ai.army(unit.VOIDRAY).amount < 7 and \
-                        self.ai.army(unit.CARRIER).amount > 5:
-                    self.ai.train(unit.VOIDRAY)
-            elif self.ai.can_afford(unit.VOIDRAY):
-                self.ai.train(unit.VOIDRAY)
-
-    def voidray(self):
-        if self.ai.structures(unit.STARGATE).ready.idle.exists:
-            if self.ai.can_afford(unit.VOIDRAY):
-                self.ai.train(unit.VOIDRAY)
 
 
 class WarpgateTrainer:
@@ -258,8 +230,8 @@ class WarpgateTrainer:
                 # elif self.ai.minerals > 150 and self.ai.supply_left > 1 and \
                 #         self.ai.structures(unit.CYBERNETICSCORE).ready.exists and self.ai.units(unit.ADEPT).amount < 7:
                 #     self.ai.do(warpgate.warp_in(unit.ADEPT, placement))
-                elif self.ai.minerals > 150 and \
-                        self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < 23:
+                elif self.ai.minerals > 350 and \
+                        self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < 17:
                     self.ai.do(warpgate.warp_in(unit.ZEALOT, placement))
 
 
@@ -300,6 +272,35 @@ class WarpgateTrainer:
                 elif self.ai.minerals > 130 and self.ai.vespene < 50 and \
                         self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < 12:
                     self.ai.do(warpgate.warp_in(unit.ZEALOT, placement))
+
+
+class StargateTrainer:
+    def __init__(self, ai):
+        self.ai = ai
+
+    def none(self):
+        pass
+
+    def carriers(self):
+        if self.ai.structures(unit.STARGATE).ready.idle.exists:
+            if self.ai.structures(unit.FLEETBEACON).ready.exists:
+                if self.ai.can_afford(unit.CARRIER):
+                    self.ai.train(unit_type=unit.CARRIER)
+                elif self.ai.can_afford(unit.TEMPEST) and self.ai.army(unit.TEMPEST).amount < 4 and\
+                        self.ai.army(unit.TEMPEST).amount * 2 < self.ai.army(unit.CARRIER).amount:
+                    self.ai.train(unit.TEMPEST)
+                elif self.ai.can_afford(unit.VOIDRAY) and self.ai.army(unit.VOIDRAY).amount < 7 and \
+                        self.ai.army(unit.CARRIER).amount > 5:
+                    self.ai.train(unit.VOIDRAY)
+            elif self.ai.can_afford(unit.VOIDRAY):
+                self.ai.train(unit.VOIDRAY)
+
+    def voidray(self):
+        if self.ai.structures(unit.STARGATE).ready.idle.exists:
+            if self.ai.can_afford(unit.VOIDRAY):
+                self.ai.train(unit.VOIDRAY)
+
+
 
 
 class RoboticsTrainer:

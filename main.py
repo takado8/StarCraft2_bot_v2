@@ -69,6 +69,12 @@ class Octopus(sc2.BotAI):
     g2 = None
     r = None
     linear_func = None
+
+    # gate_defender
+    defend_rush = False
+    gate_defender_tag = None
+    gate_locked = False
+
     # async def on_unit_destroyed(self, unit_tag):
     #     for ut in self.units_tags:
     #         if ut[0] == unit_tag:
@@ -77,56 +83,11 @@ class Octopus(sc2.BotAI):
     # async def on_unit_created(self, _unit):
     #     self.units_tags.append((_unit.tag, _unit.type_id))
 
-    def is_valid_location(self, x, y):
-        condition1 = self.in_circle(x,y)
-        if not condition1:
-            return True  # outside of circle is a valid location for sure
-        condition2 = self.linear_func(x,y,self.coe_a1, self.coe_b1)
-        if not condition2:
-            return True
-        condition3 = self.linear_func(x,y,self.coe_a2, self.coe_b2)
-        if not condition3:
-            return True
-        return False
-
-    def in_circle(self, x, y):
-        return (x - self.n.x)**2 + (y - self.n.y)**2 < self.r**2
-
-    @staticmethod
-    def line_less_than(x, y, a, b):
-        return y < a * x + b
-
-    @staticmethod
-    def line_bigger_than(x,y,a,b):
-        return y > a * x + b
-
-    async def build(self, building: unit, near: Union[Unit, Point2, Point3], max_distance: int = 20,
-        build_worker: Optional[Unit] = None, random_alternative: bool = True, placement_step: int = 3,) -> bool:
-        assert isinstance(near, (Unit, Point2, Point3))
-        if isinstance(near, Unit):
-            near = near.position
-        near = near.to2
-        if not self.can_afford(building):
-            return False
-        p = await self.find_placement(building, near, max_distance, random_alternative, placement_step)
-        if p is None:
-            return False
-        # validate
-        if building == unit.PHOTONCANNON or self.is_valid_location(p.x,p.y):
-            # print("valid location: " + str(p))
-            builder = build_worker or self.select_build_worker(p)
-            if builder is None:
-                return False
-            self.do(builder.build(building, p), subtract_cost=True)
-            return True
-        else:
-            print("not valid location for " + str(building)+" :  " + str(p))
-
 
     async def on_start(self):
         print('start location: ' + str(self.start_location.position))
         self.coords = cd['map1'][self.start_location.position]
-        # compute coefficients for build spots validation
+        # compute coefficients for building spots validation
         self.n = self.structures(unit.NEXUS).closest_to(self.start_location).position
         vespenes = self.vespene_geyser.closer_than(9,self.n)
         self.g1 = vespenes.pop(0).position
@@ -136,7 +97,6 @@ class Octopus(sc2.BotAI):
         if delta1 != 0:
             self.coe_a1 = (self.g1.y - self.n.y) / delta1
             self.coe_b1 = self.n.y - self.coe_a1 * self.n.x
-
         delta2 = (self.g2.x - self.n.x)
         if delta2 != 0:
             self.coe_a2 = (self.g2.y - self.n.y)/ delta2
@@ -158,11 +118,11 @@ class Octopus(sc2.BotAI):
         # self.strategy = CarrierMadness(self)
         # self.strategy = CallOfTheVoid(self)
         # self.strategy = ProxyVoid(self)
-        # self.strategy = Macro(self)
+        self.strategy = Macro(self)
         # self.strategy = StalkerHunt(self)
         # self.strategy = Bio(self)
         # self.strategy = AdeptProxy(self)
-        self.strategy = AdeptDefend(self)
+        # self.strategy = AdeptDefend(self)
         # self.strategy = StalkerDefend(self)
 
     async def on_end(self, game_result: Result):
@@ -185,9 +145,9 @@ class Octopus(sc2.BotAI):
         print('dmg_dealt_life: ' + str(dmg_dealt_life))
         print('lost_cost: ' + str(lost_cost))
         print('killed_cost: ' + str(killed_cost))
-        # print('start pos: ' + str(self.start_location.position))
-        # for gateway in self.structures().exclude_type({unit.NEXUS, unit.ASSIMILATOR}):
-        #     print(str(gateway.type_id)+' coords: ' + str(gateway.position))
+        print('start pos: ' + str(self.start_location.position))
+        for gateway in self.structures().exclude_type({unit.NEXUS, unit.ASSIMILATOR}):
+            print(str(gateway.type_id)+' coords: ' + str(gateway.position))
 
     async def on_step(self, iteration):
         self.set_game_step()
@@ -197,12 +157,11 @@ class Octopus(sc2.BotAI):
         self.train_workers()
         await self.distribute_workers()
         await self.morph_gates()
-
         await self.pylon_first_build()
         await self.pylon_next_build()
         await self.expand()
-
-        await self.cannons_build()
+        # await self.cannons_build()
+        await self.gate_guard()
         if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS) or self.minerals > 400:
             await self.templar_archives_upgrades()
             await self.fleet_beacon_upgrades()
@@ -226,6 +185,7 @@ class Octopus(sc2.BotAI):
 
         # counter attack
         if self.counter_attack_condition():
+            # print('counter attaaa!')
             # self.enemy_attack = True
         # if self.enemy_attack and self.enemy_units().amount < 5:
         #     self.enemy_attack = False
@@ -234,7 +194,7 @@ class Octopus(sc2.BotAI):
             self.attack = True
         # normal attack
         if self.attack_condition():
-            print('attaa!')
+            # print('attaa!')
             self.first_attack = True
             self.attack = True
 
@@ -244,7 +204,7 @@ class Octopus(sc2.BotAI):
         # retreat
         if self.retreat_condition():
             self.attack = False
-            print('retreat')
+            # print('retreat. army count: ' + str(self.army.amount))
 
         # attack
         await self.micro_units()
@@ -252,8 +212,40 @@ class Octopus(sc2.BotAI):
         if self.attack:
             await self.attack_formation()
         else:
-            pass
             await self.defend()
+    # =============================================
+
+    async def gate_guard(self):
+        if 300 > self.time > 115:
+            if not self.gate_locked:
+                self.defend_rush = True
+            defender = self.units().find_by_tag(self.gate_defender_tag)
+            # assign defender
+            if self.gate_defender_tag is None or defender is None:
+                self.gate_defender_tag = self.units(unit.PROBE).prefer_idle.random.tag
+            # defender on position
+            elif defender.distance_to(self.main_base_ramp.protoss_wall_warpin) > 4:
+                self.do(defender.move(self.main_base_ramp.protoss_wall_warpin.towards(self.main_base_ramp.top_center,-3)))
+                self.do(defender.hold_position(queue=True))
+            # build pylon wall
+            enemy = self.enemy_units()
+            if defender and enemy.exists:
+                enemy = enemy.closer_than(7, self.main_base_ramp.bottom_center)
+                if enemy.amount > 1:
+                    print('building pylon!')
+                    print('minerals:' + str(self.minerals))
+                    r = await self.build(unit.PYLON, near=Point2(self.coords['pylon_block']), placement_step=0,
+                        max_distance=0, build_worker=defender, random_alternative=False, block=True)
+                    if r:
+                        self.gate_locked = True
+                        self.defend_rush = False
+            # if self.gate_locked:   # cancel
+            #     if enemy.amount < 1 or enemy.closer_than(9, self.main_base_ramp.top_center).amount < 1:
+            #         pylon = self.structures().filter(lambda x: x.distance_to(Point2(self.coords['pylon_block'])) < 2 and
+            #                                          not x.is_ready)
+            #         if pylon.exists:
+            #             pylon = pylon.random
+
 
     # ============================================= Builders
     async def gate_build(self):
@@ -349,11 +341,11 @@ class Octopus(sc2.BotAI):
     # ============================================= none
 
     def set_game_step(self):
-        """It sets the interval of frames that it will take to make the actions, depending of the game situation"""
+        # It sets the interval of frames that it will take to make the actions, depending of the game situation
         if self.enemy_units().exists:
-            self._client.game_step = 4
+            self._client.game_step = 2
         else:
-            self._client.game_step = 16
+            self._client.game_step = 8
 
     def scan(self):
         phxs = self.units(unit.PHOENIX).filter(lambda z: z.is_hallucination)
@@ -387,9 +379,9 @@ class Octopus(sc2.BotAI):
 
     async def morph_Archons(self):
         archons = self.army(unit.ARCHON)
-        ht_amount = int(archons.amount / 2)
-        ht_thresh = ht_amount + 1
-        # ht_thresh = 1
+        # ht_amount = int(archons.amount / 2)
+        # ht_thresh = ht_amount + 1
+        ht_thresh = 1
         if self.units(unit.HIGHTEMPLAR).amount > ht_thresh:
             hts = self.units(unit.HIGHTEMPLAR).sorted(lambda u: u.energy)
             ht2 = hts[0]
@@ -465,15 +457,21 @@ class Octopus(sc2.BotAI):
 
     async def defend(self):
         enemy = self.enemy_units()
-        if enemy.amount > 1:
+        if enemy.amount > 2:
             dist = 20
+            for man in self.army:
+                position = Point2(self.defend_position).towards(self.game_info.map_center,3) if \
+                    man.type_id == unit.ZEALOT else Point2(self.defend_position)
+                if man.distance_to(self.defend_position) > dist:
+                    self.do(man.attack(position.random_on_distance(random.randint(1,2))))
         else:
-            dist = 6
-        for man in self.army.exclude_type({unit.ADEPT}):
-            position = Point2(self.defend_position).towards(self.game_info.map_center, 2) if\
-                man.type_id == unit.ZEALOT else Point2(self.defend_position)
-            if man.distance_to(self.defend_position) > dist:
-                self.do(man.attack(position.random_on_distance(random.randint(1,2))))
+            dist = 7
+            for man in self.army:
+                position = Point2(self.defend_position).towards(self.game_info.map_center,3) if \
+                    man.type_id == unit.ZEALOT else Point2(self.defend_position)
+                if man.distance_to(self.defend_position) > dist:
+                    self.do(man.move(position.random_on_distance(random.randint(1,2))))
+
 
     def assign_defend_position(self):
         nex = self.structures(unit.NEXUS)
@@ -581,8 +579,6 @@ class Octopus(sc2.BotAI):
                                 #         target = target.random
                 if target:
                     self.do(nexus(ability.EFFECT_CHRONOBOOSTENERGYCOST,target))
-
-
 
     async def nexus_buff2(self):
         if not self.structures(unit.NEXUS).exists:
@@ -692,6 +688,70 @@ class Octopus(sc2.BotAI):
         else:
             return False
 
+    def is_valid_location(self, x, y):
+        condition1 = self.in_circle(x,y)
+        if not condition1:
+            return True  # outside of circle is a valid location for sure
+        condition2 = self.linear_func(x,y,self.coe_a1, self.coe_b1)
+        if not condition2:
+            return True
+        condition3 = self.linear_func(x,y,self.coe_a2, self.coe_b2)
+        if not condition3:
+            return True
+        return False
+
+    def in_circle(self, x, y):
+        return (x - self.n.x)**2 + (y - self.n.y)**2 < self.r**2
+
+    @staticmethod
+    def line_less_than(x, y, a, b):
+        return y < a * x + b
+
+    @staticmethod
+    def line_bigger_than(x,y,a,b):
+        return y > a * x + b
+
+    async def build(self, building: unit, near: Union[Unit, Point2, Point3], max_distance: int = 20, block=False,
+        build_worker: Optional[Unit] = None, random_alternative: bool = True, placement_step: int = 3,) -> bool:
+        assert isinstance(near, (Unit, Point2, Point3))
+        if isinstance(near, Unit):
+            near = near.position
+        near = near.to2
+        if not self.can_afford(building, check_supply_cost=not block):
+            # print('cant afford')
+            return False
+
+        p = await self.find_placement(building, near, max_distance, random_alternative, placement_step)
+        if p is None:
+            # print('position none')
+            return False
+        # validate
+        if building == unit.PHOTONCANNON or self.is_valid_location(p.x,p.y):
+            # print("valid location: " + str(p))
+            builder = build_worker or self.select_build_worker(p)
+            if builder is None:
+                return False
+            self.do(builder.build(building, p), subtract_cost=True)
+            return True
+        else:
+            print("not valid location for " + str(building)+" :  " + str(p))
+
+    def can_afford(self, item_id: Union[unit, upgrade, ability], check_supply_cost: bool = True) -> bool:
+        cost = self.calculate_cost(item_id)
+
+        if self.defend_rush and check_supply_cost:
+            a = 100
+        else:
+            a = 0
+
+        if cost.minerals + a > self.minerals or cost.vespene > self.vespene:
+            return False
+        if check_supply_cost and isinstance(item_id, unit):
+            supply_cost = self.calculate_supply_cost(item_id)
+            if supply_cost and supply_cost > self.supply_left:
+                return False
+        return True
+
 
 def test(real_time=0):
     r = 1
@@ -716,7 +776,7 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[2], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=bool(real_time))
     return res, build, races[race_index]
 # CheatMoney   VeryHard

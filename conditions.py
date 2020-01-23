@@ -20,7 +20,7 @@ class ConditionAttack:
 
     def counter_attack(self):
         en = self.ai.enemy_units()
-        return en.exists and en.closer_than(40,self.ai.defend_position).amount > 2
+        return en.exists and en.closer_than(40,self.ai.defend_position).amount > 5
 
 
 class ConditionRetreat:
@@ -31,7 +31,7 @@ class ConditionRetreat:
         pass
 
     def rush(self):
-        return self.ai.attack and self.ai.army.amount < 2
+        return self.ai.attack and self.ai.army.amount < 4
 
     def macro(self):
         return self.ai.attack and self.ai.army.amount < 13
