@@ -115,11 +115,11 @@ class Octopus(sc2.BotAI):
             self.linear_func = self.line_less_than
         else:
             self.linear_func = self.line_bigger_than
-        # self.strategy = CarrierMadness(self)
+        self.strategy = CarrierMadness(self)
         # self.strategy = CallOfTheVoid(self)
         # self.strategy = ProxyVoid(self)
-        self.strategy = Macro(self)
-        # self.strategy = StalkerHunt(self)
+        # self.strategy = Macro(self)
+        # self.strategy = StalkerProxy(self)
         # self.strategy = Bio(self)
         # self.strategy = AdeptProxy(self)
         # self.strategy = AdeptDefend(self)
@@ -343,9 +343,9 @@ class Octopus(sc2.BotAI):
     def set_game_step(self):
         # It sets the interval of frames that it will take to make the actions, depending of the game situation
         if self.enemy_units().exists:
-            self._client.game_step = 2
+            self._client.game_step = 16
         else:
-            self._client.game_step = 8
+            self._client.game_step = 32
 
     def scan(self):
         phxs = self.units(unit.PHOENIX).filter(lambda z: z.is_hallucination)
@@ -776,12 +776,12 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[2], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=bool(real_time))
     return res, build, races[race_index]
 # CheatMoney   VeryHard
 
 
 if __name__ == '__main__':
-    test(real_time=1)
+    test(real_time=0)
     # player_vs_computer()

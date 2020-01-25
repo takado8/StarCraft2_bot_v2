@@ -31,7 +31,7 @@ class ConditionRetreat:
         pass
 
     def rush(self):
-        return self.ai.attack and self.ai.army.amount < 4
+        return self.ai.attack and self.ai.army.amount < 2
 
     def macro(self):
         return self.ai.attack and self.ai.army.amount < 13

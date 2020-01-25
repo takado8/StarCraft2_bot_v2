@@ -15,7 +15,7 @@ class CarrierMadness(Strategy):
         await self._stargate_builder.carrier_madness()
 
     def assimilator_build(self):
-        self._assimilator_builder.standard()
+        self._assimilator_builder.more_vespene()
 
     async def forge_build(self):
         await self._forge_builder.none()

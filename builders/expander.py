@@ -8,8 +8,8 @@ class Expander:
     async def standard(self):
         gates_count = self.ai.structures(unit.GATEWAY).amount
         gates_count += self.ai.structures(unit.WARPGATE).amount
-        if gates_count < 1:
-            return
+        # if gates_count < 1:
+        #     return
         nexuses = self.ai.structures(unit.NEXUS).ready
         if nexuses.amount < 2:
             self.ai.proper_nexus_count = 2

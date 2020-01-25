@@ -29,7 +29,7 @@ class AssimilatorBuilder:
         for nexus in nexuses:
             vespenes = self.ai.vespene_geyser.closer_than(9,nexus)
             workers = probes.closer_than(9, nexus)
-            if workers.amount > 14 or nexuses.amount > 3:
+            if workers.amount > 15 or nexuses.amount > 3:
                 for vespene in vespenes:
                     if not self.ai.already_pending(unit.ASSIMILATOR) and (not
                     self.ai.structures(unit.ASSIMILATOR).exists or not

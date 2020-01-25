@@ -156,7 +156,7 @@ class GateBuilder:
     async def macro_colossus(self):
         gates_count = self.ai.structures(unit.GATEWAY).amount
         gates_count += self.ai.structures(unit.WARPGATE).amount
-        gc = 2 if self.ai.structures(unit.NEXUS).amount > 1 else 1
+        gc = 2 if self.ai.structures(unit.NEXUS).amount > 1 else 0
         if gates_count < gc \
                 and self.ai.can_afford(unit.GATEWAY) and self.ai.structures(unit.PYLON).ready.exists and \
                 self.ai.already_pending(unit.GATEWAY) < 1:

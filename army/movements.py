@@ -47,7 +47,7 @@ class Movements:
 
         # point halfway
         dist = leader.distance_to(destination)
-        if dist > 12:
+        if dist > 24:
             point = leader.position.towards(destination,dist / 2)
         else:
             point = destination
@@ -62,7 +62,7 @@ class Movements:
                 return
         # if everybody's here, we can go
         army = self.ai.army
-        _range = 11 if army.amount < 27 else 14
+        _range = 7 if army.amount < 27 else 14
         nearest = []
         i = 3
         pos = leader.position
@@ -88,7 +88,7 @@ class Movements:
             if enemy and enemy.closer_than(11, leader).exists:
                 return
             for man in army:
-                self.ai.do(man.move(position))
+                self.ai.do(man.attack(position))
 
     async def voidrays_rush(self):
         enemy_units = self.ai.enemy_units()
