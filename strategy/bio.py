@@ -12,7 +12,7 @@ class Bio(Strategy):
         await self._gate_builder.macro()
 
     def assimilator_build(self):
-        self._assimilator_builder.standard()
+        self._assimilator_builder.more_vespene()
 
     async def stargate_build(self):
         await self._stargate_builder.none()

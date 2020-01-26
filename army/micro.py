@@ -357,7 +357,7 @@ class Micro:
 
                 # for st in army:
                 if man.shield_percentage < 0.4:
-                    if man.health_percentage < 0.33:
+                    if man.health_percentage < 0.35:
                         self.ai.do(man.move(pos))
                         continue
                     else:
@@ -366,7 +366,7 @@ class Micro:
                     d = 2
 
                 if pos is not None and man.weapon_cooldown > 0 and \
-                    closest_enemy.ground_range <= man.ground_range and threats.amount * 2.6 > whole_army.amount:
+                    closest_enemy.ground_range <= man.ground_range and threats.amount * 2.8 > whole_army.amount:
                     if not await self.ai.blink(man, pos):
                         self.ai.do(man.move(man.position.towards(pos,d)))
                 else:

@@ -101,7 +101,6 @@ class Octopus(sc2.BotAI):
         if delta2 != 0:
             self.coe_a2 = (self.g2.y - self.n.y)/ delta2
             self.coe_b2 = self.n.y - self.coe_a2 * self.n.x
-
         max_ = 0
         minerals = self.mineral_field.closer_than(9, self.n)
         minerals.append(self.g1)
@@ -115,10 +114,8 @@ class Octopus(sc2.BotAI):
             self.linear_func = self.line_less_than
         else:
             self.linear_func = self.line_bigger_than
-        self.strategy = CarrierMadness(self)
-        # self.strategy = CallOfTheVoid(self)
-        # self.strategy = ProxyVoid(self)
-        # self.strategy = Macro(self)
+        # self.strategy = CarrierMadness(self)
+        self.strategy = Macro(self)
         # self.strategy = StalkerProxy(self)
         # self.strategy = Bio(self)
         # self.strategy = AdeptProxy(self)
@@ -161,7 +158,7 @@ class Octopus(sc2.BotAI):
         await self.pylon_next_build()
         await self.expand()
         # await self.cannons_build()
-        await self.gate_guard()
+        # await self.gate_guard()
         if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS) or self.minerals > 400:
             await self.templar_archives_upgrades()
             await self.fleet_beacon_upgrades()
@@ -379,9 +376,9 @@ class Octopus(sc2.BotAI):
 
     async def morph_Archons(self):
         archons = self.army(unit.ARCHON)
-        # ht_amount = int(archons.amount / 2)
-        # ht_thresh = ht_amount + 1
-        ht_thresh = 1
+        ht_amount = int(archons.amount / 2)
+        ht_thresh = ht_amount + 1
+        # ht_thresh = 1
         if self.units(unit.HIGHTEMPLAR).amount > ht_thresh:
             hts = self.units(unit.HIGHTEMPLAR).sorted(lambda u: u.energy)
             ht2 = hts[0]
@@ -776,7 +773,7 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[2], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=bool(real_time))
     return res, build, races[race_index]
 # CheatMoney   VeryHard
