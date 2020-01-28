@@ -24,6 +24,7 @@ from strategy.bio import Bio
 from strategy.adept_proxy import AdeptProxy
 from strategy.adept_defend import AdeptDefend
 from strategy.stalker_defend import StalkerDefend
+from strategy.dt import Dt
 
 
 class Octopus(sc2.BotAI):
@@ -36,7 +37,7 @@ class Octopus(sc2.BotAI):
     bases_ids = [unit.NEXUS, unit.COMMANDCENTER, unit.COMMANDCENTERFLYING, unit.ORBITALCOMMAND, unit.ORBITALCOMMANDFLYING,
                  unit.PLANETARYFORTRESS, unit.HIVE, unit.HATCHERY, unit.LAIR]
     army_ids = [unit.ADEPT, unit.STALKER, unit.ZEALOT, unit.SENTRY, unit.OBSERVER, unit.IMMORTAL, unit.ARCHON,
-                 unit.HIGHTEMPLAR,unit.DISRUPTOR, unit.WARPPRISM, unit.VOIDRAY, unit.CARRIER, unit.COLOSSUS, unit.TEMPEST]
+                 unit.HIGHTEMPLAR, unit.DARKTEMPLAR, unit.WARPPRISM, unit.VOIDRAY, unit.CARRIER, unit.COLOSSUS, unit.TEMPEST]
     units_to_ignore = [unit.LARVA, unit.EGG, unit.INTERCEPTOR]
     workers_ids = [unit.SCV, unit.PROBE, unit.DRONE]
     proper_nexus_count = 1
@@ -85,6 +86,8 @@ class Octopus(sc2.BotAI):
         strategy_name = await self.enemy_info.pre_analysis()
         if strategy_name == 'adept_defend':
             self.strategy = AdeptDefend(self)
+        elif strategy_name == 'dt':
+            self.strategy = Dt(self)
         elif strategy_name == 'adept_proxy':
             self.strategy = AdeptProxy(self)
         elif strategy_name == 'stalker_proxy':
@@ -102,7 +105,8 @@ class Octopus(sc2.BotAI):
         elif strategy_name == '2b_archons':
             self.strategy = TwoBaseArchons(self)
         else:
-            self.strategy = Macro(self)
+            self.strategy = Dt(self)
+            # self.strategy = Macro(self)
 
         map_name = str(self.game_info.map_name)
         print('map_name: ' + map_name)
@@ -138,6 +142,7 @@ class Octopus(sc2.BotAI):
             await self.twilight_upgrades()
             self.forge_upgrades()
             await self.twilight_council_build()
+            await self.dark_shrine_build()
             await self.templar_archives_build()
             await self.robotics_build()
             await self.robotics_bay_build()
@@ -237,6 +242,9 @@ class Octopus(sc2.BotAI):
 
     async def templar_archives_build(self):
         await self.strategy.templar_archives_build()
+
+    async def dark_shrine_build(self):
+        await self.strategy.dark_shrine_build()
 
     async def pylon_first_build(self):
         await self.strategy.pylon_first_build()
@@ -445,7 +453,6 @@ class Octopus(sc2.BotAI):
                     man.type_id == unit.ZEALOT else Point2(self.defend_position)
                 if man.distance_to(self.defend_position) > dist:
                     self.do(man.move(position.random_on_distance(random.randint(1,2))))
-
 
     def assign_defend_position(self):
         nex = self.structures(unit.NEXUS)
@@ -802,16 +809,16 @@ def botVsComputer(real_time):
                 "WintersGateLE", "WorldofSleepersLE"]
     races = [Race.Protoss, Race.Zerg, Race.Terran]
 
-    computer_builds = [AIBuild.Rush]
+    # computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Timing]
     # computer_builds = [AIBuild.Air]
-    # computer_builds = [AIBuild.Power, AIBuild.Macro]
+    computer_builds = [AIBuild.Power, AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[2], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=real_time)
     return res, build, races[race_index]
 # CheatMoney   VeryHard

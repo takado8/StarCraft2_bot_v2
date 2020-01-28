@@ -145,7 +145,6 @@ class WarpgateTrainer:
             if (self.ai.structures(unit.ROBOTICSFACILITY).ready.idle.exists and
                     self.ai.army(unit.IMMORTAL).amount < 5) or self.ai.forge_upg_priority() or not self.ai.structures(unit.WARPGATE).exists:
                 return
-
         if self.ai.attack:
             prisms = self.ai.units(unit.WARPPRISMPHASING)
             if prisms.exists:
@@ -233,6 +232,45 @@ class WarpgateTrainer:
                 elif self.ai.minerals > 350 and \
                         self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < 17:
                     self.ai.do(warpgate.warp_in(unit.ZEALOT, placement))
+
+    async def dt(self):
+        if not self.ai.structures(unit.WARPGATE).exists:
+                return
+        if self.ai.attack:
+            prisms = self.ai.units(unit.WARPPRISMPHASING)
+            if prisms.exists:
+                pos = prisms.furthest_to(self.ai.start_location).position
+            else:
+                furthest_pylon = self.ai.structures(unit.PYLON).ready.furthest_to(self.ai.start_location.position)
+                pos = furthest_pylon.position
+        else:
+            pos = self.ai.structures(unit.PYLON).ready.closer_than(35,self.ai.start_location).furthest_to(
+                self.ai.start_location).position
+        placement = None
+        i = 0
+        while placement is None:
+            i += 1
+            placement = await self.ai.find_placement(ability.TRAINWARP_ADEPT, near=pos.random_on_distance(5),
+                                                  max_distance=5, placement_step=2, random_alternative=False)
+            if i > 5:
+                print("can't find position for warpin.")
+                return
+        dts = self.ai.army(unit.DARKTEMPLAR).amount
+        if dts == 0:
+            dts = 2
+        amount = 2 * dts
+        for warpgate in self.ai.structures(unit.WARPGATE).ready:
+            abilities = await self.ai.get_available_abilities(warpgate)
+            if ability.WARPGATETRAIN_DARKTEMPLAR in abilities:
+                if self.ai.structures(unit.DARKSHRINE).ready.exists and self.ai.can_afford(unit.DARKTEMPLAR) and self.ai.supply_left > 1:
+                        self.ai.do(warpgate.warp_in(unit.DARKTEMPLAR,placement))
+            elif ability.WARPGATETRAIN_STALKER in abilities:
+                if self.ai.can_afford(unit.STALKER) and self.ai.supply_left > 1 and self.ai.army(unit.STALKER).amount < amount:
+                    self.ai.do(warpgate.warp_in(unit.STALKER, placement))
+                elif self.ai.minerals > 350 and \
+                        self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < 23:
+                    self.ai.do(warpgate.warp_in(unit.ZEALOT, placement))
+
 
     async def two_base_colossus(self):
         if not self.ai.attack:

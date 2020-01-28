@@ -502,3 +502,14 @@ class Micro:
                     self.ai.do(zl(ability.EFFECT_CHARGE, target))
                 self.ai.do(zl.attack(target))
 
+        for dt in self.ai.army(unit.DARKTEMPLAR):
+            threats = self.ai.enemy_units().filter(lambda x2: x2.distance_to(dt) < 9 and not x2.is_flying and
+                          x2.type_id not in self.ai.units_to_ignore).sorted(lambda _x: _x.health + _x.shield)
+            if threats.exists:
+                closest = threats.closest_to(dt)
+                if threats[0].health_percentage * threats[0].shield_percentage == 1 or threats[0].distance_to(dt) > \
+                    closest.distance_to(dt) + 3 or not self.ai.in_pathing_grid(threats[0]):
+                    target = closest
+                else:
+                    target = threats[0]
+                self.ai.do(dt.attack(target))
