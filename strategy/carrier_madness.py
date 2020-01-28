@@ -5,6 +5,7 @@ class CarrierMadness(Strategy):
     def __init__(self, ai):
         super().__init__(ai)
         self.type = 'macro'
+        self.name = 'air'
 
     # =======================================================  Builders
 

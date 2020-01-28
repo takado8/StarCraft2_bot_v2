@@ -5,6 +5,7 @@ class AdeptProxy(Strategy):
     def __init__(self, ai):
         super().__init__(ai)
         self.type = 'rush'
+        self.name = 'adept_proxy'
 
     # =======================================================  Builders
 

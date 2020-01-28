@@ -22,6 +22,7 @@ class Strategy:
         self.ai = ai
         # type
         self.type = 'strategy type'
+        self.name = 'strategy name'
         # builders
         self._gate_builder = GateBuilder(ai)
         self._stargate_builder = StargateBuilder(ai)

@@ -18,6 +18,9 @@ class ConditionAttack:
     def colossus(self):
         return (not self.ai.first_attack) and self.ai.army(unit.COLOSSUS).amount > 1
 
+    def archons(self):
+        return (not self.ai.first_attack) and self.ai.army(unit.ARCHON).amount > 2
+
     def counter_attack(self):
         en = self.ai.enemy_units()
         return en.exists and en.closer_than(40,self.ai.defend_position).amount > 5

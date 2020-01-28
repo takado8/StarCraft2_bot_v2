@@ -98,7 +98,7 @@ class Micro:
                             d = 2
 
                         if pos is not None and st.weapon_cooldown > 0 and \
-                            closest_enemy.ground_range <= st.ground_range and threats.amount * 2 > army.amount:
+                            closest_enemy.ground_range <= st.ground_range and threats.amount * 3 > army.amount:
                             if not await self.ai.blink(st, pos):
                                 self.ai.do(st.move(st.position.towards(pos,d)))
                         elif not st.is_attacking:

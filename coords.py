@@ -1,6 +1,6 @@
 # map 1
 coords = {
-    'map1': {
+    'Akropol ER': {
         (33.5, 138.5):{
             'defend_pos': (37.0, 108.0),
             'pylon': (35.0, 105.0),

@@ -30,16 +30,30 @@ class GateBuilder:
             pylon = pylons.further_than(40, self.ai.start_location.position)
             if pylon.ready.exists:
                 pylon = pylon.furthest_to(self.ai.start_location.position)
-                gates = self.ai.structures({unit.GATEWAY, unit.WARPGATE}).closer_than(9, pylon)
+                gates = self.ai.structures({unit.GATEWAY, unit.WARPGATE})
+                if gates:
+                    gates = gates.closer_than(9,pylon)
+                else:
+                    return
                 if gates.amount < 1 and not self.ai.already_pending(unit.GATEWAY):
                     worker = self.ai.units(unit.PROBE).closest_to(pylon)
                     await self.ai.build(unit.GATEWAY, near=pylon, build_worker=worker)
 
     async def three_standard(self):
-        gates_count = self.ai.structures(unit.GATEWAY).amount
-        gates_count += self.ai.structures(unit.WARPGATE).amount
-        gc = 3 if self.ai.structures(unit.CYBERNETICSCORE).exists else 1
-        if gates_count < gc \
+        gates = self.ai.structures(unit.GATEWAY)
+        gates.extend(self.ai.structures(unit.WARPGATE))
+        gates_count = gates.amount
+        if gates.ready.idle.exists:
+            return
+        if self.ai.structures(unit.ROBOTICSBAY).exists:
+            gc = 4
+        elif self.ai.structures(unit.ROBOTICSFACILITY).exists:
+            gc = 3
+        elif self.ai.structures(unit.CYBERNETICSCORE).exists:
+            gc = 2
+        else:
+            gc = 1
+        if gates_count < gc\
                 and self.ai.can_afford(unit.GATEWAY) and self.ai.structures(unit.PYLON).ready.exists and \
                 self.ai.already_pending(unit.GATEWAY) < 2:
             pylon = self.ai.get_proper_pylon()

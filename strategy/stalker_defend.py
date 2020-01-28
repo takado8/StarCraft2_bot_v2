@@ -5,6 +5,7 @@ class StalkerDefend(Strategy):
     def __init__(self, ai):
         super().__init__(ai)
         self.type = 'rush'
+        self.name = 'stalker_defend'
 
     # =======================================================  Builders
 

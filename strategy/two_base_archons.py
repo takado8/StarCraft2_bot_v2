@@ -1,12 +1,11 @@
 from strategy.manager import Strategy
 
 
-class Bio(Strategy):
+class TwoBaseArchons(Strategy):
     def __init__(self, ai):
         super().__init__(ai)
         self.type = 'macro'
-        self.name = 'bio'
-
+        self.name = '2b_archons'
 
     # =======================================================  Builders
     async def gate_build(self):
@@ -19,7 +18,7 @@ class Bio(Strategy):
         await self._stargate_builder.none()
 
     async def forge_build(self):
-        await self._forge_builder.single()
+        await self._forge_builder.none()
 
     async def twilight_build(self):
         await self._twilight_builder.standard()
@@ -45,8 +44,11 @@ class Bio(Strategy):
     async def robotics_bay_build(self):
         await self._robotics_bay_builder.none()
 
+    async def cannons_build(self):
+        await self._cannon_builder.double_per_nex()
+
     async def expand(self):
-        await self._expander.standard()
+        await self._expander.two_bases()
 
     # =======================================================  Upgraders
 
@@ -54,16 +56,17 @@ class Bio(Strategy):
         self._cybernetics_upgrader.standard()
 
     def forge_upgrades(self):
-        self._forge_upgrader.standard()
+        self._forge_upgrader.none()
 
     async def twilight_upgrades(self):
         await self._twilight_upgrader.charge()
 
     async def templar_archives_upgrades(self):
-        await self._templar_archives_upgrader.storm()
+        pass
 
     async def fleet_beacon_upgrades(self):
         pass
+
 
     # =======================================================  Trainers
 
@@ -71,7 +74,7 @@ class Bio(Strategy):
         self._nexus_trainer.probes_standard()
 
     def gate_train(self):
-        self._gate_trainer.standard()
+        self._gate_trainer.zealots()
 
     def stargate_train(self):
         self._stargate_trainer.none()
@@ -80,7 +83,7 @@ class Bio(Strategy):
         self._robotics_trainer.standard()
 
     async def warpgate_train(self):
-        await self._warpgate_trainer.bio()
+        await self._warpgate_trainer.standard()
 
     # =======================================================  Army
 
@@ -90,10 +93,11 @@ class Bio(Strategy):
     async def movements(self):
         await self._movements.attack_formation_brand_new_newest_thee_most_new_shit_in_whole_wide_world()
 
+
     # ======================================================= Conditions
 
     def attack_condition(self):
-        return self._condition_attack.none()
+        return self._condition_attack.archons()
 
     def counter_attack_condition(self):
         return self._condition_attack.counter_attack()

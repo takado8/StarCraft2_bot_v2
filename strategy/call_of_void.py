@@ -5,6 +5,7 @@ class CallOfTheVoid(Strategy):
     def __init__(self, ai):
         super().__init__(ai)
         self.type = 'air'
+        self.name = 'void'
 
     # =======================================================  Builders
 
@@ -15,7 +16,7 @@ class CallOfTheVoid(Strategy):
         await self._stargate_builder.carrier_madness()
 
     def assimilator_build(self):
-        self._assimilator_builder.max_vespene()
+        self._assimilator_builder.more_vespene()
 
     async def forge_build(self):
         await self._forge_builder.none()
@@ -78,7 +79,19 @@ class CallOfTheVoid(Strategy):
     # =======================================================  Army
 
     async def micro(self):
-        await self._micro.personal()
+        await self._micro.personal_new()
 
     async def movements(self):
-        await self._movements.attack_formation()
+        await self._movements.attack_formation_brand_new_newest_thee_most_new_shit_in_whole_wide_world()
+
+# ======================================================= Conditions
+
+    def attack_condition(self):
+        return self._condition_attack.none()
+
+    def counter_attack_condition(self):
+        return self._condition_attack.counter_attack()
+
+    def retreat_condition(self):
+        return self._condition_retreat.rush()
+
