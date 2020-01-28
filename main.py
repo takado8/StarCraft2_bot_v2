@@ -802,10 +802,10 @@ def botVsComputer(real_time):
                 "WintersGateLE", "WorldofSleepersLE"]
     races = [Race.Protoss, Race.Zerg, Race.Terran]
 
-    computer_builds = [AIBuild.Rush]
+    # computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Timing]
     # computer_builds = [AIBuild.Air]
-    # computer_builds = [AIBuild.Power, AIBuild.Macro]
+    computer_builds = [AIBuild.Power, AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
