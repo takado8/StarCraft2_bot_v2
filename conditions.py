@@ -12,6 +12,9 @@ class ConditionAttack:
     def rush(self):
         return (not self.ai.first_attack) and upgrade.WARPGATERESEARCH in self.ai.state.upgrades
 
+    def dt(self):
+        return (not self.ai.first_attack) and self.ai.structures(unit.DARKSHRINE).ready.amount > 0
+
     def rush_voidray(self):
         return (not self.ai.first_attack) and self.ai.army(unit.VOIDRAY).amount > 1
 

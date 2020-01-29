@@ -83,7 +83,7 @@ class Micro:
                         pos = leader.position.towards(closest_enemy.position,-i)
                         i += 1
                         j = 1
-                        while not self.__in_grid(pos) and j < 9:
+                        while not self.__in_grid(pos) and j < 23:
                             # print('func j: ' + str(j))
                             pos = pos.random_on_distance(j)
                             j+=1
@@ -97,8 +97,7 @@ class Micro:
                         else:
                             d = 2
 
-                        if pos is not None and st.weapon_cooldown > 0 and \
-                            closest_enemy.ground_range <= st.ground_range and threats.amount * 3 > army.amount:
+                        if pos is not None and st.weapon_cooldown > 0:
                             if not await self.ai.blink(st, pos):
                                 self.ai.do(st.move(st.position.towards(pos,d)))
                         elif not st.is_attacking:
@@ -348,10 +347,10 @@ class Micro:
                 i=3
                 pos = man.position.towards(closest_enemy.position,-i)
                 while not self.__in_grid(pos) and i < 12:
-                    pos = man.position.towards(closest_enemy.position,-i)
                     i += 1
+                    pos = man.position.towards(closest_enemy.position,-i)
                     j=1
-                    while not self.__in_grid(pos) and j < 9:
+                    while not self.__in_grid(pos) and j < 23:
                         pos = pos.random_on_distance(j)
                         j+=1
 
@@ -365,8 +364,8 @@ class Micro:
                 else:
                     d = 2
 
-                if pos is not None and man.weapon_cooldown > 0 and \
-                    closest_enemy.ground_range <= man.ground_range and threats.amount * 2.8 > whole_army.amount:
+                if pos is not None and man.weapon_cooldown > 0:# and \
+                    # closest_enemy.ground_range <= man.ground_range and threats.amount * 2.8 > whole_army.amount:
                     if not await self.ai.blink(man, pos):
                         self.ai.do(man.move(man.position.towards(pos,d)))
                 else:

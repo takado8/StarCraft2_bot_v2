@@ -61,6 +61,26 @@ class GateBuilder:
                 await self.ai.build(unit.GATEWAY,near=pylon,placement_step=3,max_distance=20,
                                     random_alternative=True)
 
+    async def three_rush(self):
+        gates = self.ai.structures(unit.GATEWAY)
+        gates.extend(self.ai.structures(unit.WARPGATE))
+        gates_count = gates.amount
+        if gates.ready.idle.amount > 1:
+            return
+        if self.ai.structures(unit.TWILIGHTCOUNCIL).exists:
+            gc = 4
+        elif self.ai.structures(unit.CYBERNETICSCORE).exists:
+            gc = 3
+        else:
+            gc = 1
+        if gates_count < gc\
+                and self.ai.can_afford(unit.GATEWAY) and self.ai.structures(unit.PYLON).ready.exists and \
+                self.ai.already_pending(unit.GATEWAY) < 2:
+            pylon = self.ai.get_proper_pylon()
+            if pylon is not None:
+                await self.ai.build(unit.GATEWAY,near=pylon,placement_step=3,max_distance=20,
+                                    random_alternative=True)
+
     async def upper_wall_plus_3(self):
         gates_count = self.ai.structures(unit.GATEWAY).amount
         gates_count += self.ai.structures(unit.WARPGATE).amount

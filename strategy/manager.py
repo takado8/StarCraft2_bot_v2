@@ -8,6 +8,7 @@ from builders.pylon_builder import PylonBuilder
 from builders.cybernetics_builder import CyberneticsBuilder
 from builders.robotics_builder import RoboticsBuilder
 from builders.robotics_bay_builder import RoboticsBayBuilder
+from builders.dark_shrine import DarkShrineBuilder
 from builders.cannon_builder import CannonBuilder
 from builders.expander import Expander
 from upgraders import *
@@ -29,6 +30,7 @@ class Strategy:
         self._forge_builder = ForgeBuilder(ai)
         self._twilight_builder = TwilightBuilder(ai)
         self._templar_archives_builder = TemplarArchivesBuilder(ai)
+        self._dark_shrine_builder = DarkShrineBuilder(ai)
         self._pylon_builder = PylonBuilder(ai)
         self._cybernetics_builder = CyberneticsBuilder(ai)
         self._robotics_builder = RoboticsBuilder(ai)
@@ -74,6 +76,9 @@ class Strategy:
 
     async def templar_archives_build(self):
         print('templar_archives_build not implemented')
+
+    async def dark_shrine_build(self):
+        pass
 
     async def pylon_first_build(self):
         print('pylon_first_build not implemented')

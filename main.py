@@ -24,6 +24,7 @@ from strategy.bio import Bio
 from strategy.adept_proxy import AdeptProxy
 from strategy.adept_defend import AdeptDefend
 from strategy.stalker_defend import StalkerDefend
+from strategy.dt import Dt
 
 
 class Octopus(sc2.BotAI):
@@ -36,7 +37,7 @@ class Octopus(sc2.BotAI):
     bases_ids = [unit.NEXUS, unit.COMMANDCENTER, unit.COMMANDCENTERFLYING, unit.ORBITALCOMMAND, unit.ORBITALCOMMANDFLYING,
                  unit.PLANETARYFORTRESS, unit.HIVE, unit.HATCHERY, unit.LAIR]
     army_ids = [unit.ADEPT, unit.STALKER, unit.ZEALOT, unit.SENTRY, unit.OBSERVER, unit.IMMORTAL, unit.ARCHON,
-                 unit.HIGHTEMPLAR,unit.DISRUPTOR, unit.WARPPRISM, unit.VOIDRAY, unit.CARRIER, unit.COLOSSUS, unit.TEMPEST]
+                 unit.HIGHTEMPLAR, unit.DARKTEMPLAR, unit.WARPPRISM, unit.VOIDRAY, unit.CARRIER, unit.COLOSSUS, unit.TEMPEST]
     units_to_ignore = [unit.LARVA, unit.EGG, unit.INTERCEPTOR]
     workers_ids = [unit.SCV, unit.PROBE, unit.DRONE]
     proper_nexus_count = 1
@@ -82,9 +83,11 @@ class Octopus(sc2.BotAI):
     async def on_start(self):
         # enemy_info
         self.enemy_info = EnemyInfo(self)
-        strategy_name = await self.enemy_info.pre_analysis()
+        strategy_name = '2b_colossus'#await self.enemy_info.pre_analysis()
         if strategy_name == 'adept_defend':
             self.strategy = AdeptDefend(self)
+        elif strategy_name == 'dt':
+            self.strategy = Dt(self)
         elif strategy_name == 'adept_proxy':
             self.strategy = AdeptProxy(self)
         elif strategy_name == 'stalker_proxy':
@@ -102,7 +105,8 @@ class Octopus(sc2.BotAI):
         elif strategy_name == '2b_archons':
             self.strategy = TwoBaseArchons(self)
         else:
-            self.strategy = Macro(self)
+            self.strategy = Dt(self)
+            # self.strategy = Macro(self)
 
         map_name = str(self.game_info.map_name)
         print('map_name: ' + map_name)
@@ -119,6 +123,7 @@ class Octopus(sc2.BotAI):
         self.print_stats()
 
     async def on_step(self, iteration):
+        # self.numbers()
         self.set_game_step()
         self.assign_defend_position()
         self.army = self.units().filter(lambda x: x.type_id in self.army_ids)
@@ -138,6 +143,7 @@ class Octopus(sc2.BotAI):
             await self.twilight_upgrades()
             self.forge_upgrades()
             await self.twilight_council_build()
+            await self.dark_shrine_build()
             await self.templar_archives_build()
             await self.robotics_build()
             await self.robotics_bay_build()
@@ -183,6 +189,26 @@ class Octopus(sc2.BotAI):
         else:
             await self.defend()
     # =============================================
+
+    def numbers(self):
+        lost_cost = self.state.score.lost_minerals_army + self.state.score.lost_vespene_army
+        killed_cost = self.state.score.killed_minerals_army + self.state.score.killed_vespene_army
+        print('lost_cost: ' + str(lost_cost))
+        print('killed_cost: ' + str(killed_cost))
+
+        total_value_units = self.state.score.total_value_units
+        total_value_enemy = self.state.score.killed_value_units
+        dmg_taken_shields = self.state.score.total_damage_taken_shields
+        dmg_dealt_shields = self.state.score.total_damage_dealt_shields
+        dmg_taken_life = self.state.score.total_damage_taken_life
+        dmg_dealt_life = self.state.score.total_damage_dealt_life
+        print('total_value_units: ' + str(total_value_units))
+        print('total_value_enemy: ' + str(total_value_enemy))
+        print('dmg_taken_shields: ' + str(dmg_taken_shields))
+        print('dmg_dealt_shields: ' + str(dmg_dealt_shields))
+        print('dmg_taken_life: ' + str(dmg_taken_life))
+        print('dmg_dealt_life: ' + str(dmg_dealt_life))
+
 
     async def gate_guard(self):
         if 300 > self.time > 115:
@@ -237,6 +263,9 @@ class Octopus(sc2.BotAI):
 
     async def templar_archives_build(self):
         await self.strategy.templar_archives_build()
+
+    async def dark_shrine_build(self):
+        await self.strategy.dark_shrine_build()
 
     async def pylon_first_build(self):
         await self.strategy.pylon_first_build()
@@ -445,7 +474,6 @@ class Octopus(sc2.BotAI):
                     man.type_id == unit.ZEALOT else Point2(self.defend_position)
                 if man.distance_to(self.defend_position) > dist:
                     self.do(man.move(position.random_on_distance(random.randint(1,2))))
-
 
     def assign_defend_position(self):
         nex = self.structures(unit.NEXUS)
@@ -818,5 +846,5 @@ def botVsComputer(real_time):
 
 
 if __name__ == '__main__':
-    test(real_time=0)
+    test(real_time=1)
     # player_vs_computer()

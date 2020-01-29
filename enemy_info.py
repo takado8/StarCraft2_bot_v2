@@ -78,6 +78,7 @@ class EnemyInfo:
                 'last_game': {'strategy': '', 'result': 0},
                 'scoreboard': {
                     'stalker_proxy': {'win': 0,'total': 0},
+                    'dt': {'win': 0,'total': 0},
                     'macro': {'win': 0,'total': 0},
                     'adept_defend': {'win': 0,'total': 0},
                     'bio': {'win': 0,'total': 0},
