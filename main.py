@@ -83,7 +83,7 @@ class Octopus(sc2.BotAI):
     async def on_start(self):
         # enemy_info
         self.enemy_info = EnemyInfo(self)
-        strategy_name = await self.enemy_info.pre_analysis()
+        strategy_name = '2b_colossus'#await self.enemy_info.pre_analysis()
         if strategy_name == 'adept_defend':
             self.strategy = AdeptDefend(self)
         elif strategy_name == 'dt':
@@ -123,6 +123,7 @@ class Octopus(sc2.BotAI):
         self.print_stats()
 
     async def on_step(self, iteration):
+        # self.numbers()
         self.set_game_step()
         self.assign_defend_position()
         self.army = self.units().filter(lambda x: x.type_id in self.army_ids)
@@ -188,6 +189,26 @@ class Octopus(sc2.BotAI):
         else:
             await self.defend()
     # =============================================
+
+    def numbers(self):
+        lost_cost = self.state.score.lost_minerals_army + self.state.score.lost_vespene_army
+        killed_cost = self.state.score.killed_minerals_army + self.state.score.killed_vespene_army
+        print('lost_cost: ' + str(lost_cost))
+        print('killed_cost: ' + str(killed_cost))
+
+        total_value_units = self.state.score.total_value_units
+        total_value_enemy = self.state.score.killed_value_units
+        dmg_taken_shields = self.state.score.total_damage_taken_shields
+        dmg_dealt_shields = self.state.score.total_damage_dealt_shields
+        dmg_taken_life = self.state.score.total_damage_taken_life
+        dmg_dealt_life = self.state.score.total_damage_dealt_life
+        print('total_value_units: ' + str(total_value_units))
+        print('total_value_enemy: ' + str(total_value_enemy))
+        print('dmg_taken_shields: ' + str(dmg_taken_shields))
+        print('dmg_dealt_shields: ' + str(dmg_dealt_shields))
+        print('dmg_taken_life: ' + str(dmg_taken_life))
+        print('dmg_dealt_life: ' + str(dmg_dealt_life))
+
 
     async def gate_guard(self):
         if 300 > self.time > 115:
@@ -818,12 +839,12 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[2], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=real_time)
     return res, build, races[race_index]
 # CheatMoney   VeryHard
 
 
 if __name__ == '__main__':
-    test(real_time=0)
+    test(real_time=1)
     # player_vs_computer()
