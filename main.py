@@ -352,11 +352,10 @@ class Octopus(sc2.BotAI):
     #     self.units_tags.append((_unit.tag, _unit.type_id))
 
     def set_game_step(self):
-        # It sets the interval of frames that it will take to make the actions, depending of the game situation
         if self.enemy_units().exists:
-            self._client.game_step = 8
+            self._client.game_step = 4
         else:
-            self._client.game_step = 16
+            self._client.game_step = 8
 
     def scan(self):
         phxs = self.units(unit.PHOENIX).filter(lambda z: z.is_hallucination)
@@ -772,8 +771,8 @@ class Octopus(sc2.BotAI):
                 return False
             self.do(builder.build(building, p), subtract_cost=True)
             return True
-        else:
-            print("not valid location for " + str(building)+" :  " + str(p))
+        # else:
+        #     print("not valid location for " + str(building)+" :  " + str(p))
 
     def can_afford(self, item_id: Union[unit, upgrade, ability], check_supply_cost: bool = True) -> bool:
         cost = self.calculate_cost(item_id)
@@ -855,5 +854,5 @@ def botVsComputer(real_time):
 
 
 if __name__ == '__main__':
-    test(real_time=0)
+    test(real_time=1)
     # player_vs_computer()

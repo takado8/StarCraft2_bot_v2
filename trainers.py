@@ -297,10 +297,10 @@ class WarpgateTrainer:
             if i > 5:
                 print("can't find position for warpin.")
                 return
-        archons = self.ai.army(unit.IMMORTAL).amount
-        if archons == 0:
-            archons = 1
-        amount = 2.5 * archons
+        immortals = self.ai.army(unit.IMMORTAL).amount
+        if immortals == 0:
+            immortals = 2
+        amount = 3 * immortals
         for warpgate in self.ai.structures(unit.WARPGATE).ready:
             abilities = await self.ai.get_available_abilities(warpgate)
             if ability.WARPGATETRAIN_ZEALOT in abilities:
@@ -315,7 +315,7 @@ class WarpgateTrainer:
                 # elif self.ai.minerals > 150 and self.ai.supply_left > 1 and \
                 #         self.ai.structures(unit.CYBERNETICSCORE).ready.exists and self.ai.units(unit.ADEPT).amount < 7:
                 #     self.ai.do(warpgate.warp_in(unit.ADEPT, placement))
-                elif self.ai.minerals > 350 and \
+                elif self.ai.minerals > 450 and \
                         self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < 17:
                     self.ai.do(warpgate.warp_in(unit.ZEALOT, placement))
 
@@ -438,7 +438,7 @@ class RoboticsTrainer:
                     and self.ai.units(unit.COLOSSUS).amount < 2:
                 immortals_amm = 1
             else:
-                immortals_amm = 10
+                immortals_amm = 12
             if self.ai.units(unit.OBSERVER).amount + self.ai.units(unit.OBSERVERSIEGEMODE).amount < 1 and \
                 self.ai.can_afford(unit.OBSERVER):
                 for factory in robotics:
@@ -446,7 +446,7 @@ class RoboticsTrainer:
                     break
             elif self.ai.units(unit.WARPPRISMPHASING).amount + self.ai.units(unit.WARPPRISM).amount < 1 \
                     and self.ai.can_afford(unit.WARPPRISM) and not self.ai.already_pending(
-                unit.WARPPRISM) and self.ai.supply_left > 2 and (immortals.amount > 2 or self.ai.attack):
+                unit.WARPPRISM) and self.ai.supply_left > 2 and (immortals.amount > 0 or self.ai.attack):
                 for factory in self.ai.structures(unit.ROBOTICSFACILITY).ready.idle:
                     self.ai.do(factory.train(unit.WARPPRISM))
                     break

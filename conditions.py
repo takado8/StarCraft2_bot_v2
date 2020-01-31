@@ -55,7 +55,7 @@ class ConditionTransform:
             await self.ai.set_strategy('2b_colossus')
 
     async def two_base(self):
-        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 26:
+        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 30:
             await self.ai.set_strategy('macro')
 
     async def macro(self):

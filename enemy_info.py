@@ -81,10 +81,10 @@ class EnemyInfo:
                 }
             }
         # update scoreboard
-        self.enemy['scoreboard'][self.ai.starting_strategy.name]['total'] += 1
+        self.enemy['scoreboard'][self.ai.starting_strategy]['total'] += 1
         if score:
-            self.enemy['scoreboard'][self.ai.starting_strategy.name]['win'] += 1
-        self.enemy['last_game']['strategy'] = self.ai.starting_strategy.name
+            self.enemy['scoreboard'][self.ai.starting_strategy]['win'] += 1
+        self.enemy['last_game']['strategy'] = self.ai.starting_strategy
         self.enemy['last_game']['result'] = score
 
         with open(self.opponent_file_path,'w+') as file:
