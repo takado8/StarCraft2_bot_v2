@@ -21,20 +21,21 @@ class Movements:
                     self.ai.do(man.attack(enemy_units.closest_to(man)))
             return
         if enemy.amount > 2:
-            # if enemy.closer_than(40,self.ai.start_location).amount > 7:
-            #     await self.ai.defend()
-            #     return
-            # if self.ai.destination is not None:
-            #     destination = enemy.closest_to(self.ai.destination).position
-            # else:
-            destination = enemy.closest_to(self.ai.start_location).position
+            if enemy.closer_than(25,self.ai.start_location).amount > 5:
+                destination = enemy.closest_to(self.ai.start_location).position
+            else:
+                destination = enemy.further_than(30, self.ai.start_location)
+                if destination:
+                    destination = destination.closest_to(self.ai.start_location).position
+                elif self.ai.enemy_structures().exists:
+                    enemy = self.ai.enemy_structures()
+                    destination = enemy.closest_to(self.ai.start_location).position
+                else:
+                    enemy = None
+                    destination = self.ai.enemy_start_locations[0].position
         elif self.ai.enemy_structures().exists:
             enemy = self.ai.enemy_structures()
-            # if self.ai.destination is not None:
-            #     destination = enemy.closest_to(self.ai.destination).position
-            # else:
             destination = enemy.closest_to(self.ai.start_location).position
-            # destination = enemy.closest_to(self.ai.start_location).position
         else:
             enemy = None
             destination = self.ai.enemy_start_locations[0].position
@@ -42,20 +43,21 @@ class Movements:
         if self.ai.leader_tag is None or self.ai.army.find_by_tag(self.ai.leader_tag) is None:
             self.ai.leader_tag = self.ai.army.closest_to(destination).tag
 
-        leader = self.ai.army.find_by_tag(self.ai.leader_tag)     # self.ai.army.closest_to(destination)
+        leader = self.ai.army.find_by_tag(self.ai.leader_tag)
         self.ai.destination = destination
 
         # point halfway
         dist = leader.distance_to(destination)
-        if dist > 24:
-            point = leader.position.towards(destination,dist / 2)
+        step = 11
+        if dist > step:
+            point = leader.position.towards(destination, step)
         else:
             point = destination
         position = None
         i = 0
         while position is None:
             i += 1
-            position = await self.ai.find_placement(unit.PYLON,near=point.random_on_distance(i * 3),max_distance=12,
+            position = await self.ai.find_placement(unit.PYLON,near=point.random_on_distance(i * 2),max_distance=5,
                                                                         placement_step=2, random_alternative=False)
             if i > 7:
                 print("can't find position for army.")

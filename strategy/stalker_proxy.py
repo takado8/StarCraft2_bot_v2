@@ -103,3 +103,5 @@ class StalkerProxy(Strategy):
     def retreat_condition(self):
         return self._condition_retreat.rush()
 
+    async def transformation(self):
+        await self._condition_transform.rush()

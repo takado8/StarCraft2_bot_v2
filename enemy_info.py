@@ -3,16 +3,6 @@ import os
 import json
 
 
-Enemy = {
-    'id': 'enemy_id',
-    'scoreboard': {
-        'stalker_proxy': None,
-        'macro': 0.9,
-        'bio': 0.45
-    }
-}
-
-
 class EnemyInfo:
     def __init__(self, ai):
         self.ai = ai
@@ -91,10 +81,10 @@ class EnemyInfo:
                 }
             }
         # update scoreboard
-        self.enemy['scoreboard'][self.ai.strategy.name]['total'] += 1
+        self.enemy['scoreboard'][self.ai.starting_strategy]['total'] += 1
         if score:
-            self.enemy['scoreboard'][self.ai.strategy.name]['win'] += 1
-        self.enemy['last_game']['strategy'] = self.ai.strategy.name
+            self.enemy['scoreboard'][self.ai.starting_strategy]['win'] += 1
+        self.enemy['last_game']['strategy'] = self.ai.starting_strategy
         self.enemy['last_game']['result'] = score
 
         with open(self.opponent_file_path,'w+') as file:

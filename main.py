@@ -50,7 +50,9 @@ class Octopus(sc2.BotAI):
     prev_nexus_count = 0
     coords = None
     change_position = False
+
     strategy: Strategy = None
+    starting_strategy = None
 
     units_tags = []
     enemy_tags = []
@@ -83,34 +85,16 @@ class Octopus(sc2.BotAI):
     async def on_start(self):
         # enemy_info
         self.enemy_info = EnemyInfo(self)
-        strategy_name = '2b_colossus'#await self.enemy_info.pre_analysis()
-        if strategy_name == 'adept_defend':
-            self.strategy = AdeptDefend(self)
-        elif strategy_name == 'dt':
-            self.strategy = Dt(self)
-        elif strategy_name == 'adept_proxy':
-            self.strategy = AdeptProxy(self)
-        elif strategy_name == 'stalker_proxy':
-            self.strategy = StalkerProxy(self)
-        elif strategy_name == 'stalker_defend':
-            self.strategy = StalkerDefend(self)
-        elif strategy_name == 'bio':
-            self.strategy = Bio(self)
-        elif strategy_name == 'void':
-            self.strategy = CallOfTheVoid(self)
-        elif strategy_name == 'air':
-            self.strategy = CarrierMadness(self)
-        elif strategy_name == '2b_colossus':
-            self.strategy = TwoBaseColossus(self)
-        elif strategy_name == '2b_archons':
-            self.strategy = TwoBaseArchons(self)
-        else:
-            self.strategy = Dt(self)
-            # self.strategy = Macro(self)
+        strategy_name = '2b_colossus'  # await self.enemy_info.pre_analysis()
+        if not strategy_name:
+            strategy_name = 'stalker_proxy'
+            await self.chat_send('UNKNOWN STRATEGY: ' + strategy_name + '  ||  setting default.')
+        self.starting_strategy = strategy_name
+        await self.set_strategy(strategy_name)
 
         map_name = str(self.game_info.map_name)
         print('map_name: ' + map_name)
-        print('start location: ' + str(self.start_location.position))
+        # print('start location: ' + str(self.start_location.position))
         self.coords = cd[map_name][self.start_location.position]
         self.compute_coeficients_for_buliding_validation()
 
@@ -134,6 +118,8 @@ class Octopus(sc2.BotAI):
         await self.pylon_first_build()
         await self.pylon_next_build()
         await self.expand()
+        await self.proxy()
+        await self.transformation()
         # await self.cannons_build()
         # await self.gate_guard()
         if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS) or self.minerals > 400:
@@ -159,36 +145,52 @@ class Octopus(sc2.BotAI):
         await self.nexus_buff()
 
         # counter attack
-        if self.counter_attack_condition():
-            # print('counter attaaa!')
-            # self.enemy_attack = True
-        # if self.enemy_attack and self.enemy_units().amount < 5:
-        #     self.enemy_attack = False
-            self.after_first_attack = True
+        if self.counter_attack_condition() or self.attack_condition():
             self.first_attack = True
             self.attack = True
-        # normal attack
-        if self.attack_condition():
-            # print('attaa!')
-            self.first_attack = True
-            self.attack = True
-
-        await self.proxy()
-        await self.warp_prism()
 
         # retreat
         if self.retreat_condition():
             self.attack = False
-            # print('retreat. army count: ' + str(self.army.amount))
+            self.after_first_attack = True
 
-        # attack
         await self.micro_units()
 
         if self.attack:
             await self.attack_formation()
         else:
             await self.defend()
+
+        await self.warp_prism()
+
     # =============================================
+
+    async def set_strategy(self, strategy_name):
+        await self.chat_send('Setting strategy: '+ strategy_name)
+        if strategy_name == 'adept_defend':
+            self.strategy = AdeptDefend(self)
+        elif strategy_name == 'dt':
+            self.strategy = Dt(self)
+        elif strategy_name == 'adept_proxy':
+            self.strategy = AdeptProxy(self)
+        elif strategy_name == 'stalker_proxy':
+            self.strategy = StalkerProxy(self)
+        elif strategy_name == 'stalker_defend':
+            self.strategy = StalkerDefend(self)
+        elif strategy_name == 'bio':
+            self.strategy = Bio(self)
+        elif strategy_name == 'void':
+            self.strategy = CallOfTheVoid(self)
+        elif strategy_name == 'air':
+            self.strategy = CarrierMadness(self)
+        elif strategy_name == '2b_colossus':
+            self.strategy = TwoBaseColossus(self)
+        elif strategy_name == '2b_archons':
+            self.strategy = TwoBaseArchons(self)
+        elif strategy_name == 'macro':
+            self.strategy = Macro(self)
+        else:
+            self.strategy = StalkerProxy(self)
 
     def numbers(self):
         lost_cost = self.state.score.lost_minerals_army + self.state.score.lost_vespene_army
@@ -336,6 +338,9 @@ class Octopus(sc2.BotAI):
     def retreat_condition(self):
         return self.strategy.retreat_condition()
 
+    async def transformation(self):
+        await self.strategy.transformation()
+
     # ============================================= none
 
     # async def on_unit_destroyed(self, unit_tag):
@@ -347,33 +352,31 @@ class Octopus(sc2.BotAI):
     #     self.units_tags.append((_unit.tag, _unit.type_id))
 
     def set_game_step(self):
-        # It sets the interval of frames that it will take to make the actions, depending of the game situation
         if self.enemy_units().exists:
-            self._client.game_step = 16
+            self._client.game_step = 4
         else:
-            self._client.game_step = 32
+            self._client.game_step = 8
 
     def scan(self):
         phxs = self.units(unit.PHOENIX).filter(lambda z: z.is_hallucination)
-        if phxs.amount < 1:
+        if phxs.amount < 2:
             snts = self.army(unit.SENTRY).filter(lambda z: z.energy >= 75)
-            if snts.exists:
-                se = snts.random
-                self.do(se(ability.HALLUCINATION_PHOENIX))
-        else:
+            if snts:
+                for se in snts:
+                    self.do(se(ability.HALLUCINATION_PHOENIX))
+                phxs = self.units(unit.PHOENIX).filter(lambda z: z.is_hallucination)
+        if phxs:
             if len(self.observer_scounting_points) == 0:
                 for exp in self.expansion_locations:
                     if not self.structures().closer_than(12,exp).exists:
                         self.observer_scounting_points.append(exp)
                 self.observer_scounting_points = sorted(self.observer_scounting_points,
                                                         key=lambda x: self.enemy_start_locations[0].distance_to(x))
-
             for px in phxs.idle:
                 self.do(px.move(self.observer_scounting_points[self.observer_scouting_index]))
                 self.observer_scouting_index += 1
                 if self.observer_scouting_index == len(self.observer_scounting_points):
                     self.observer_scouting_index = 0
-
 
     async def morph_Archons(self):
         if upgrade.PSISTORMTECH is self.state.upgrades or self.already_pending_upgrade(upgrade.PSISTORMTECH):
@@ -390,7 +393,7 @@ class Octopus(sc2.BotAI):
                 for ht in self.army(unit.HIGHTEMPLAR):
                     if ht.tag == ht1.tag or ht.tag==ht2.tag:
                         self.army.remove(ht)
-                if ht1.distance_to(ht2) > 2:
+                if ht1.distance_to(ht2) > 4:
                     if ht1.distance_to(self.main_base_ramp.bottom_center) > 30:
                         self.do(ht1.move(ht2))
                         self.do(ht2.move(ht1))
@@ -443,7 +446,7 @@ class Octopus(sc2.BotAI):
 
     async def warp_prism(self):
         if self.attack:
-            dist = self.enemy_start_locations[0].distance_to(self.game_info.map_center) * 0.75
+            dist = self.enemy_start_locations[0].distance_to(self.game_info.map_center) * 0.8
             for warp in self.units(unit.WARPPRISM):
                 if warp.distance_to(self.enemy_start_locations[0]) <= dist:
                     abilities = await self.get_available_abilities(warp)
@@ -460,6 +463,10 @@ class Octopus(sc2.BotAI):
         if 3 > enemy.amount > 0:
             for st in self.army({unit.STALKER, unit.OBSERVER}):
                 self.do(st.attack(enemy.closest_to(st)))
+            zlts = self.army(unit.ZEALOT)
+            if zlts:
+                for zl in zlts.further_than(13, self.defend_position):
+                    self.do(zl.move(Point2(self.defend_position)))
         elif enemy.amount > 2:
             dist = 12
             for man in self.army:
@@ -478,6 +485,7 @@ class Octopus(sc2.BotAI):
     def assign_defend_position(self):
         nex = self.structures(unit.NEXUS)
         enemy = self.enemy_units()
+
         # start = self.start_location.position
         # self.defend_position = self.coords['defend_pos']
 
@@ -763,8 +771,8 @@ class Octopus(sc2.BotAI):
                 return False
             self.do(builder.build(building, p), subtract_cost=True)
             return True
-        else:
-            print("not valid location for " + str(building)+" :  " + str(p))
+        # else:
+        #     print("not valid location for " + str(building)+" :  " + str(p))
 
     def can_afford(self, item_id: Union[unit, upgrade, ability], check_supply_cost: bool = True) -> bool:
         cost = self.calculate_cost(item_id)
@@ -846,5 +854,5 @@ def botVsComputer(real_time):
 
 
 if __name__ == '__main__':
-    test(real_time=1)
+    test(real_time=0)
     # player_vs_computer()

@@ -106,3 +106,5 @@ class Macro(Strategy):
     def retreat_condition(self):
         return self._condition_retreat.macro()
 
+    async def transformation(self):
+        await self._condition_transform.macro()

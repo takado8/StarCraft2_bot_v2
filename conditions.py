@@ -26,7 +26,7 @@ class ConditionAttack:
 
     def counter_attack(self):
         en = self.ai.enemy_units()
-        return en.exists and en.closer_than(40,self.ai.defend_position).amount > 5
+        return en.exists and en.closer_than(40,self.ai.defend_position).amount > 3
 
 
 class ConditionRetreat:
@@ -41,3 +41,24 @@ class ConditionRetreat:
 
     def macro(self):
         return self.ai.attack and self.ai.army.amount < 13
+
+
+class ConditionTransform:
+    def __init__(self,ai):
+        self.ai = ai
+
+    def none(self):
+        pass
+
+    async def rush(self):
+        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 14:
+            await self.ai.set_strategy('2b_colossus')
+
+    async def two_base(self):
+        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 30:
+            await self.ai.set_strategy('macro')
+
+    async def macro(self):
+        if self.ai.after_first_attack and self.ai.army.amount > 27 and self.ai.time > 1000 and self.ai.minerals > 1000\
+                and self.ai.vespene > 500:
+            await self.ai.set_strategy('air')
