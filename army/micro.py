@@ -27,7 +27,7 @@ class Micro:
                 yield lst[k:k + n]
 
         # stalkers // mixed
-        whole_army = self.ai.army.exclude_type(unit.ZEALOT)
+        whole_army = self.ai.army.exclude_type({unit.ZEALOT, unit.DARKTEMPLAR, unit.WARPPRISM, unit.WARPPRISMPHASING})
         dist = 7
         group_size = 5
         c = int(len(whole_army) / group_size)
@@ -286,6 +286,33 @@ class Micro:
                         # if self.ai.army.closer_than(3,target).amount < 2:
                         print("Steering Purification nova to " + str(maxNeighbours + 1) + " units.")
                         self.ai.do(nova.move(target.position.towards(nova, -2)))
+
+        for wp in self.ai.army(unit.WARPPRISM):
+            threats = self.ai.enemy_units().filter(lambda x: x.can_attack_air and x.distance_to(wp) < 11)
+            for t in threats:
+                if t.target_in_range(wp):
+                    self.ai.do(wp.move(wp.position.towards(t, -5)))
+        for wp in self.ai.army(unit.WARPPRISMPHASING):
+            threats = self.ai.enemy_units().filter(lambda x: x.can_attack_air and x.distance_to(wp) < 11)
+            for t in threats:
+                if t.target_in_range(wp):
+                    abilities = await self.ai.get_available_abilities(wp)
+                    if ability.MORPH_WARPPRISMTRANSPORTMODE in abilities:
+                        self.ai.do(wp(ability.MORPH_WARPPRISMTRANSPORTMODE))
+                        self.ai.do(wp.move(wp.position.towards(t, -5), queue=True))
+
+        for dt in self.ai.army(unit.DARKTEMPLAR):
+            threats = self.ai.enemy_units().filter(lambda x2: x2.distance_to(dt) < 9 and not x2.is_flying and
+                          x2.type_id not in self.ai.units_to_ignore).sorted(lambda _x: _x.health + _x.shield)
+            if threats.exists:
+                closest = threats.closest_to(dt)
+                if threats[0].health_percentage * threats[0].shield_percentage == 1 or threats[0].distance_to(dt) > \
+                    closest.distance_to(dt) + 3 or not self.ai.in_pathing_grid(threats[0]):
+                    target = closest
+                else:
+                    target = threats[0]
+                self.ai.do(dt.attack(target))
+
         # zealot
         for zl in zealots.filter(lambda z: not z.is_attacking):
             threats = self.ai.enemy_units().filter(lambda x2: x2.distance_to(zl) < 7).sorted(lambda _x: _x.health + _x.shield)

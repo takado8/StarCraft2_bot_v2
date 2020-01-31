@@ -83,7 +83,7 @@ class Octopus(sc2.BotAI):
     async def on_start(self):
         # enemy_info
         self.enemy_info = EnemyInfo(self)
-        strategy_name = '2b_colossus'#await self.enemy_info.pre_analysis()
+        strategy_name = 'bio'  # await self.enemy_info.pre_analysis()
         if strategy_name == 'adept_defend':
             self.strategy = AdeptDefend(self)
         elif strategy_name == 'dt':
@@ -174,8 +174,6 @@ class Octopus(sc2.BotAI):
             self.attack = True
 
         await self.proxy()
-        await self.warp_prism()
-
         # retreat
         if self.retreat_condition():
             self.attack = False
@@ -188,6 +186,9 @@ class Octopus(sc2.BotAI):
             await self.attack_formation()
         else:
             await self.defend()
+
+        await self.warp_prism()
+
     # =============================================
 
     def numbers(self):
@@ -349,31 +350,30 @@ class Octopus(sc2.BotAI):
     def set_game_step(self):
         # It sets the interval of frames that it will take to make the actions, depending of the game situation
         if self.enemy_units().exists:
-            self._client.game_step = 16
+            self._client.game_step = 8
         else:
-            self._client.game_step = 32
+            self._client.game_step = 16
 
     def scan(self):
         phxs = self.units(unit.PHOENIX).filter(lambda z: z.is_hallucination)
-        if phxs.amount < 1:
+        if phxs.amount < 2:
             snts = self.army(unit.SENTRY).filter(lambda z: z.energy >= 75)
-            if snts.exists:
-                se = snts.random
-                self.do(se(ability.HALLUCINATION_PHOENIX))
-        else:
+            if snts:
+                for se in snts:
+                    self.do(se(ability.HALLUCINATION_PHOENIX))
+                phxs = self.units(unit.PHOENIX).filter(lambda z: z.is_hallucination)
+        if phxs:
             if len(self.observer_scounting_points) == 0:
                 for exp in self.expansion_locations:
                     if not self.structures().closer_than(12,exp).exists:
                         self.observer_scounting_points.append(exp)
                 self.observer_scounting_points = sorted(self.observer_scounting_points,
                                                         key=lambda x: self.enemy_start_locations[0].distance_to(x))
-
             for px in phxs.idle:
                 self.do(px.move(self.observer_scounting_points[self.observer_scouting_index]))
                 self.observer_scouting_index += 1
                 if self.observer_scouting_index == len(self.observer_scounting_points):
                     self.observer_scouting_index = 0
-
 
     async def morph_Archons(self):
         if upgrade.PSISTORMTECH is self.state.upgrades or self.already_pending_upgrade(upgrade.PSISTORMTECH):
@@ -390,7 +390,7 @@ class Octopus(sc2.BotAI):
                 for ht in self.army(unit.HIGHTEMPLAR):
                     if ht.tag == ht1.tag or ht.tag==ht2.tag:
                         self.army.remove(ht)
-                if ht1.distance_to(ht2) > 2:
+                if ht1.distance_to(ht2) > 4:
                     if ht1.distance_to(self.main_base_ramp.bottom_center) > 30:
                         self.do(ht1.move(ht2))
                         self.do(ht2.move(ht1))
@@ -443,7 +443,7 @@ class Octopus(sc2.BotAI):
 
     async def warp_prism(self):
         if self.attack:
-            dist = self.enemy_start_locations[0].distance_to(self.game_info.map_center) * 0.75
+            dist = self.enemy_start_locations[0].distance_to(self.game_info.map_center) * 0.65
             for warp in self.units(unit.WARPPRISM):
                 if warp.distance_to(self.enemy_start_locations[0]) <= dist:
                     abilities = await self.get_available_abilities(warp)
@@ -460,6 +460,10 @@ class Octopus(sc2.BotAI):
         if 3 > enemy.amount > 0:
             for st in self.army({unit.STALKER, unit.OBSERVER}):
                 self.do(st.attack(enemy.closest_to(st)))
+            zlts = self.army(unit.ZEALOT)
+            if zlts:
+                for zl in zlts.further_than(13, self.defend_position):
+                    self.do(zl.move(Point2(self.defend_position)))
         elif enemy.amount > 2:
             dist = 12
             for man in self.army:
@@ -478,6 +482,7 @@ class Octopus(sc2.BotAI):
     def assign_defend_position(self):
         nex = self.structures(unit.NEXUS)
         enemy = self.enemy_units()
+
         # start = self.start_location.position
         # self.defend_position = self.coords['defend_pos']
 
@@ -839,12 +844,12 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=real_time)
     return res, build, races[race_index]
 # CheatMoney   VeryHard
 
 
 if __name__ == '__main__':
-    test(real_time=1)
+    test(real_time=0)
     # player_vs_computer()

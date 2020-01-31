@@ -3,16 +3,6 @@ import os
 import json
 
 
-Enemy = {
-    'id': 'enemy_id',
-    'scoreboard': {
-        'stalker_proxy': None,
-        'macro': 0.9,
-        'bio': 0.45
-    }
-}
-
-
 class EnemyInfo:
     def __init__(self, ai):
         self.ai = ai
