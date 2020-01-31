@@ -56,6 +56,7 @@ class Strategy:
         # Conditions
         self._condition_attack = ConditionAttack(ai)
         self._condition_retreat = ConditionRetreat(ai)
+        self._condition_transform = ConditionTransform(ai)
 
     # =======================================================  Builders
 
@@ -157,3 +158,5 @@ class Strategy:
     def retreat_condition(self):
         raise NotImplementedError
 
+    async def transformation(self):
+        pass

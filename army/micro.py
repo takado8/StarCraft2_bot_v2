@@ -152,7 +152,8 @@ class Micro:
                     points.append(Point2((enemy_army_center.x, enemy_army_center.y + gap)))
             for se in self.ai.units(unit.SENTRY):
                 abilities = await self.ai.get_available_abilities(se)
-                if threats.amount > thr and not guardian_shield_on and ability.GUARDIANSHIELD_GUARDIANSHIELD in abilities:
+                if threats.amount > thr and not guardian_shield_on and ability.GUARDIANSHIELD_GUARDIANSHIELD in abilities\
+                        and se.distance_to(threats.closest_to(se)) < 7:
                     self.ai.do(se(ability.GUARDIANSHIELD_GUARDIANSHIELD))
                     guardian_shield_on = True
                 if ability.FORCEFIELD_FORCEFIELD in abilities and enemy_army_center is not None and len(points) > 0:

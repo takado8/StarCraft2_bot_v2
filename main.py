@@ -50,7 +50,9 @@ class Octopus(sc2.BotAI):
     prev_nexus_count = 0
     coords = None
     change_position = False
+
     strategy: Strategy = None
+    starting_strategy = None
 
     units_tags = []
     enemy_tags = []
@@ -83,34 +85,16 @@ class Octopus(sc2.BotAI):
     async def on_start(self):
         # enemy_info
         self.enemy_info = EnemyInfo(self)
-        strategy_name = 'bio'  # await self.enemy_info.pre_analysis()
-        if strategy_name == 'adept_defend':
-            self.strategy = AdeptDefend(self)
-        elif strategy_name == 'dt':
-            self.strategy = Dt(self)
-        elif strategy_name == 'adept_proxy':
-            self.strategy = AdeptProxy(self)
-        elif strategy_name == 'stalker_proxy':
-            self.strategy = StalkerProxy(self)
-        elif strategy_name == 'stalker_defend':
-            self.strategy = StalkerDefend(self)
-        elif strategy_name == 'bio':
-            self.strategy = Bio(self)
-        elif strategy_name == 'void':
-            self.strategy = CallOfTheVoid(self)
-        elif strategy_name == 'air':
-            self.strategy = CarrierMadness(self)
-        elif strategy_name == '2b_colossus':
-            self.strategy = TwoBaseColossus(self)
-        elif strategy_name == '2b_archons':
-            self.strategy = TwoBaseArchons(self)
-        else:
-            self.strategy = Dt(self)
-            # self.strategy = Macro(self)
+        strategy_name = '2b_colossus'  # await self.enemy_info.pre_analysis()
+        if not strategy_name:
+            strategy_name = 'stalker_proxy'
+            await self.chat_send('UNKNOWN STRATEGY: ' + strategy_name + '  ||  setting default.')
+        self.starting_strategy = strategy_name
+        await self.set_strategy(strategy_name)
 
         map_name = str(self.game_info.map_name)
         print('map_name: ' + map_name)
-        print('start location: ' + str(self.start_location.position))
+        # print('start location: ' + str(self.start_location.position))
         self.coords = cd[map_name][self.start_location.position]
         self.compute_coeficients_for_buliding_validation()
 
@@ -134,6 +118,8 @@ class Octopus(sc2.BotAI):
         await self.pylon_first_build()
         await self.pylon_next_build()
         await self.expand()
+        await self.proxy()
+        await self.transformation()
         # await self.cannons_build()
         # await self.gate_guard()
         if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS) or self.minerals > 400:
@@ -159,27 +145,15 @@ class Octopus(sc2.BotAI):
         await self.nexus_buff()
 
         # counter attack
-        if self.counter_attack_condition():
-            # print('counter attaaa!')
-            # self.enemy_attack = True
-        # if self.enemy_attack and self.enemy_units().amount < 5:
-        #     self.enemy_attack = False
-            self.after_first_attack = True
-            self.first_attack = True
-            self.attack = True
-        # normal attack
-        if self.attack_condition():
-            # print('attaa!')
+        if self.counter_attack_condition() or self.attack_condition():
             self.first_attack = True
             self.attack = True
 
-        await self.proxy()
         # retreat
         if self.retreat_condition():
             self.attack = False
-            # print('retreat. army count: ' + str(self.army.amount))
+            self.after_first_attack = True
 
-        # attack
         await self.micro_units()
 
         if self.attack:
@@ -190,6 +164,33 @@ class Octopus(sc2.BotAI):
         await self.warp_prism()
 
     # =============================================
+
+    async def set_strategy(self, strategy_name):
+        await self.chat_send('Setting strategy: '+ strategy_name)
+        if strategy_name == 'adept_defend':
+            self.strategy = AdeptDefend(self)
+        elif strategy_name == 'dt':
+            self.strategy = Dt(self)
+        elif strategy_name == 'adept_proxy':
+            self.strategy = AdeptProxy(self)
+        elif strategy_name == 'stalker_proxy':
+            self.strategy = StalkerProxy(self)
+        elif strategy_name == 'stalker_defend':
+            self.strategy = StalkerDefend(self)
+        elif strategy_name == 'bio':
+            self.strategy = Bio(self)
+        elif strategy_name == 'void':
+            self.strategy = CallOfTheVoid(self)
+        elif strategy_name == 'air':
+            self.strategy = CarrierMadness(self)
+        elif strategy_name == '2b_colossus':
+            self.strategy = TwoBaseColossus(self)
+        elif strategy_name == '2b_archons':
+            self.strategy = TwoBaseArchons(self)
+        elif strategy_name == 'macro':
+            self.strategy = Macro(self)
+        else:
+            self.strategy = StalkerProxy(self)
 
     def numbers(self):
         lost_cost = self.state.score.lost_minerals_army + self.state.score.lost_vespene_army
@@ -337,6 +338,9 @@ class Octopus(sc2.BotAI):
     def retreat_condition(self):
         return self.strategy.retreat_condition()
 
+    async def transformation(self):
+        await self.strategy.transformation()
+
     # ============================================= none
 
     # async def on_unit_destroyed(self, unit_tag):
@@ -443,7 +447,7 @@ class Octopus(sc2.BotAI):
 
     async def warp_prism(self):
         if self.attack:
-            dist = self.enemy_start_locations[0].distance_to(self.game_info.map_center) * 0.65
+            dist = self.enemy_start_locations[0].distance_to(self.game_info.map_center) * 0.8
             for warp in self.units(unit.WARPPRISM):
                 if warp.distance_to(self.enemy_start_locations[0]) <= dist:
                     abilities = await self.get_available_abilities(warp)
@@ -844,7 +848,7 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[2]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=real_time)
     return res, build, races[race_index]
 # CheatMoney   VeryHard
