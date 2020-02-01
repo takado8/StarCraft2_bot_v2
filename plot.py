@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def plot(x, y, title=''):
-    fig, ax = plt.subplots()
+def plot(time, y1, y2):
 
-    ax.set(xlabel='x (n=10 games avg)', ylabel='y (avg. kil)',
-           title=title)
+    fig, ax = plt.subplots()
+    plt.ion()
+    ax.set(xlabel='time (s)', ylabel='lost cost', title='')
     ax.grid()
-    ax.plot(x,y)
-    # plt.draw()
-    plt.show()
+    ax.plot(time,y1)
+    ax.plot(time,y2)
+    plt.show(1)

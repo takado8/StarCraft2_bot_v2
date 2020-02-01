@@ -25,6 +25,7 @@ from strategy.adept_proxy import AdeptProxy
 from strategy.adept_defend import AdeptDefend
 from strategy.stalker_defend import StalkerDefend
 from strategy.dt import Dt
+from plot import plot
 
 
 class Octopus(sc2.BotAI):
@@ -81,11 +82,15 @@ class Octopus(sc2.BotAI):
     gate_locked = False
     enemy_info = None
 
+    times = []
+    y1 = []
+    y2 = []
+
 
     async def on_start(self):
         # enemy_info
         self.enemy_info = EnemyInfo(self)
-        strategy_name = '2b_colossus'  # await self.enemy_info.pre_analysis()
+        strategy_name = 'bio'  # await self.enemy_info.pre_analysis()
         if not strategy_name:
             strategy_name = 'stalker_proxy'
             await self.chat_send('UNKNOWN STRATEGY: ' + strategy_name + '  ||  setting default.')
@@ -103,11 +108,13 @@ class Octopus(sc2.BotAI):
             score = 1
         else:
             score = 0
+        plot(self.times,self.y1,self.y2)
+
         self.enemy_info.post_analysis(score)
         self.print_stats()
 
     async def on_step(self, iteration):
-        # self.numbers()
+        self.numbers()
         self.set_game_step()
         self.assign_defend_position()
         self.army = self.units().filter(lambda x: x.type_id in self.army_ids)
@@ -195,21 +202,26 @@ class Octopus(sc2.BotAI):
     def numbers(self):
         lost_cost = self.state.score.lost_minerals_army + self.state.score.lost_vespene_army
         killed_cost = self.state.score.killed_minerals_army + self.state.score.killed_vespene_army
-        print('lost_cost: ' + str(lost_cost))
-        print('killed_cost: ' + str(killed_cost))
+        if lost_cost != 0 or killed_cost != 0:
+            self.times.append(self.time)
+            self.y1.append(lost_cost)
+            self.y2.append(killed_cost)
 
-        total_value_units = self.state.score.total_value_units
-        total_value_enemy = self.state.score.killed_value_units
-        dmg_taken_shields = self.state.score.total_damage_taken_shields
-        dmg_dealt_shields = self.state.score.total_damage_dealt_shields
-        dmg_taken_life = self.state.score.total_damage_taken_life
-        dmg_dealt_life = self.state.score.total_damage_dealt_life
-        print('total_value_units: ' + str(total_value_units))
-        print('total_value_enemy: ' + str(total_value_enemy))
-        print('dmg_taken_shields: ' + str(dmg_taken_shields))
-        print('dmg_dealt_shields: ' + str(dmg_dealt_shields))
-        print('dmg_taken_life: ' + str(dmg_taken_life))
-        print('dmg_dealt_life: ' + str(dmg_dealt_life))
+        # print('lost_cost: ' + str(lost_cost))
+        # print('killed_cost: ' + str(killed_cost))
+
+        # total_value_units = self.state.score.total_value_units
+        # total_value_enemy = self.state.score.killed_value_units
+        # dmg_taken_shields = self.state.score.total_damage_taken_shields
+        # dmg_dealt_shields = self.state.score.total_damage_dealt_shields
+        # dmg_taken_life = self.state.score.total_damage_taken_life
+        # dmg_dealt_life = self.state.score.total_damage_dealt_life
+        # print('total_value_units: ' + str(total_value_units))
+        # print('total_value_enemy: ' + str(total_value_enemy))
+        # print('dmg_taken_shields: ' + str(dmg_taken_shields))
+        # print('dmg_dealt_shields: ' + str(dmg_dealt_shields))
+        # print('dmg_taken_life: ' + str(dmg_taken_life))
+        # print('dmg_dealt_life: ' + str(dmg_dealt_life))
 
 
     async def gate_guard(self):
@@ -855,4 +867,3 @@ def botVsComputer(real_time):
 
 if __name__ == '__main__':
     test(real_time=0)
-    # player_vs_computer()

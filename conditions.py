@@ -51,7 +51,7 @@ class ConditionTransform:
         pass
 
     async def rush(self):
-        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 14:
+        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 23:
             await self.ai.set_strategy('2b_colossus')
 
     async def two_base(self):

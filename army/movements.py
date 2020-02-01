@@ -48,7 +48,7 @@ class Movements:
 
         # point halfway
         dist = leader.distance_to(destination)
-        step = 11
+        step = 17
         if dist > step:
             point = leader.position.towards(destination, step)
         else:

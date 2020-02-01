@@ -63,6 +63,7 @@ class TwoBaseArchons(Strategy):
 
     async def templar_archives_upgrades(self):
         pass
+        # await self._templar_archives_upgrader.storm()
 
     async def fleet_beacon_upgrades(self):
         pass
