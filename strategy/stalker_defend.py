@@ -37,7 +37,7 @@ class StalkerDefend(Strategy):
         await self._templar_archives_builder.none()
 
     async def cybernetics_build(self):
-        await self._cybernetics_builder.upper_wall()
+        await self._cybernetics_builder.standard()
 
     async def robotics_bay_build(self):
         await self._robotics_bay_builder.none()
@@ -93,7 +93,7 @@ class StalkerDefend(Strategy):
     # ======================================================= Conditions
 
     def attack_condition(self):
-        return self._condition_attack.none()
+        return self._condition_attack.defend()
 
     def counter_attack_condition(self):
         return self._condition_attack.counter_attack()
@@ -101,3 +101,5 @@ class StalkerDefend(Strategy):
     def retreat_condition(self):
         return self._condition_retreat.rush()
 
+    async def transformation(self):
+        await self._condition_transform.stalker_defend()

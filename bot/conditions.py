@@ -12,6 +12,9 @@ class ConditionAttack:
     def rush(self):
         return (not self.ai.first_attack) and upgrade.WARPGATERESEARCH in self.ai.state.upgrades
 
+    def defend(self):
+        return (not self.ai.first_attack) and self.ai.time > 420
+
     def dt(self):
         return (not self.ai.first_attack) and self.ai.structures(unit.DARKSHRINE).ready.amount > 0
 
@@ -49,6 +52,18 @@ class ConditionTransform:
 
     def none(self):
         pass
+
+    async def adept_defend(self):
+        if (not self.ai.first_attack) and self.ai.time > 360:
+            await self.ai.set_strategy('adept_proxy')
+        if self.ai.after_first_attack:
+            await self.ai.set_strategy('2b_archons')
+
+    async def stalker_defend(self):
+        if (not self.ai.first_attack) and self.ai.time > 360:
+            await self.ai.set_strategy('stalker_proxy')
+        if self.ai.after_first_attack:
+            await self.ai.set_strategy('2b_colossus')
 
     async def rush(self):
         if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 23:

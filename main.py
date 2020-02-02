@@ -8,11 +8,10 @@ from sc2.player import Bot, Computer
 from sc2.ids.buff_id import BuffId as buff
 from sc2.ids.upgrade_id import UpgradeId as upgrade
 from sc2.position import Point2, Point3
-from coords import coords as cd
+from bot.coords import coords as cd
 from sc2.unit import Unit
 from typing import Union
-from enemy_info import EnemyInfo
-from player_vs import player_vs_computer
+from bot.enemy_info import EnemyInfo
 from strategy.manager import Strategy
 from strategy.carrier_madness import CarrierMadness
 from strategy.macro import Macro
@@ -25,7 +24,7 @@ from strategy.adept_proxy import AdeptProxy
 from strategy.adept_defend import AdeptDefend
 from strategy.stalker_defend import StalkerDefend
 from strategy.dt import Dt
-from plot import plot
+from bot.plot import plot
 
 
 class Octopus(sc2.BotAI):
@@ -90,7 +89,7 @@ class Octopus(sc2.BotAI):
     async def on_start(self):
         # enemy_info
         self.enemy_info = EnemyInfo(self)
-        strategy_name = 'bio'  # await self.enemy_info.pre_analysis()
+        strategy_name = await self.enemy_info.pre_analysis()
         if not strategy_name:
             strategy_name = 'stalker_proxy'
             await self.chat_send('UNKNOWN STRATEGY: ' + strategy_name + '  ||  setting default.')
@@ -473,7 +472,7 @@ class Octopus(sc2.BotAI):
     async def defend(self):
         enemy = self.enemy_units()
         if 3 > enemy.amount > 0:
-            for st in self.army({unit.STALKER, unit.OBSERVER}):
+            for st in self.army({unit.STALKER, unit.OBSERVER, unit.ADEPT, unit.VOIDRAY}):
                 self.do(st.attack(enemy.closest_to(st)))
             zlts = self.army(unit.ZEALOT)
             if zlts:

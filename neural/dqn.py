@@ -1,6 +1,4 @@
-import socket
-import prepare_data
-import model
+import neural.model as model
 from collections import deque
 import numpy as np
 import random

@@ -11,11 +11,11 @@ from builders.robotics_bay_builder import RoboticsBayBuilder
 from builders.dark_shrine import DarkShrineBuilder
 from builders.cannon_builder import CannonBuilder
 from builders.expander import Expander
-from upgraders import *
-from trainers import *
+from bot.upgraders import *
+from bot.trainers import *
+from bot.conditions import *
 from army.micro import *
 from army.movements import *
-from conditions import *
 
 
 class Strategy:
