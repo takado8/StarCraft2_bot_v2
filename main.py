@@ -12,18 +12,7 @@ from bot.coords import coords as cd
 from sc2.unit import Unit
 from typing import Union
 from bot.enemy_info import EnemyInfo
-from strategy.manager import Strategy
-from strategy.carrier_madness import CarrierMadness
-from strategy.macro import Macro
-from strategy.stalker_proxy import StalkerProxy
-from strategy.call_of_void import CallOfTheVoid
-from strategy.two_base_colossus import TwoBaseColossus
-from strategy.two_base_archons import TwoBaseArchons
-from strategy.bio import Bio
-from strategy.adept_proxy import AdeptProxy
-from strategy.adept_defend import AdeptDefend
-from strategy.stalker_defend import StalkerDefend
-from strategy.dt import Dt
+from strategy import *
 from bot.plot import plot
 
 
@@ -39,7 +28,7 @@ class Octopus(sc2.BotAI):
     army_ids = [unit.ADEPT, unit.STALKER, unit.ZEALOT, unit.SENTRY, unit.OBSERVER, unit.IMMORTAL, unit.ARCHON,
                  unit.HIGHTEMPLAR, unit.DARKTEMPLAR, unit.WARPPRISM, unit.VOIDRAY, unit.CARRIER, unit.COLOSSUS, unit.TEMPEST]
     units_to_ignore = [unit.LARVA, unit.EGG, unit.INTERCEPTOR]
-    workers_ids = [unit.SCV, unit.PROBE, unit.DRONE]
+    workers_ids = [unit.SCV, unit.PROBE, unit.DRONE, unit.MULE]
     proper_nexus_count = 1
     army = []
     known_enemies = []
@@ -61,8 +50,6 @@ class Octopus(sc2.BotAI):
     observer_scounting_points = []
     psi_storm_wait = 0
     nova_wait = 0
-    # observer_released = False
-    slow = True
 
     # linear function coefficients for bulid spot validation
     coe_a1 = None
@@ -91,8 +78,9 @@ class Octopus(sc2.BotAI):
         self.enemy_info = EnemyInfo(self)
         strategy_name = await self.enemy_info.pre_analysis()
         if not strategy_name:
+            await self.chat_send('UNKNOWN STRATEGY: ' + str(strategy_name))
             strategy_name = 'stalker_proxy'
-            await self.chat_send('UNKNOWN STRATEGY: ' + strategy_name + '  ||  setting default.')
+
         self.starting_strategy = strategy_name
         await self.set_strategy(strategy_name)
 
@@ -731,7 +719,7 @@ class Octopus(sc2.BotAI):
             d = self.n.distance_to(field)
             if d > max_:
                 max_ = d
-        self.r = int(max_)
+        self.r = int(max_)**2
         if self.start_location.position.y < self.enemy_start_locations[0].position.y:
             self.linear_func = self.line_less_than
         else:
@@ -750,7 +738,7 @@ class Octopus(sc2.BotAI):
         return False
 
     def in_circle(self, x, y):
-        return (x - self.n.x)**2 + (y - self.n.y)**2 < self.r**2
+        return (x - self.n.x)**2 + (y - self.n.y)**2 < self.r
 
     @staticmethod
     def line_less_than(x, y, a, b):
