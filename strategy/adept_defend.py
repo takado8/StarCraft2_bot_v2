@@ -65,7 +65,7 @@ class AdeptDefend(Strategy):
         self._nexus_trainer.probes_standard()
 
     def gate_train(self):
-        self._gate_trainer.adepts()
+        self._gate_trainer.adepts_defend()
 
     def stargate_train(self):
         self._stargate_trainer.none()

@@ -1,6 +1,7 @@
 import argparse
-import os
 import json
+import os
+import sys
 
 
 class EnemyInfo:
@@ -29,8 +30,13 @@ class EnemyInfo:
         try:
             self.opponent_id = await self.get_opponent_id()
             if self.opponent_id:
-                dir_ = os.path.dirname(__file__)
-                self.opponent_file_path = os.path.join(dir_,'data','enemy_info',self.opponent_id + '.json')
+                dir_ = os.path.realpath(sys.argv[0]) if sys.argv[0] else None
+                if dir_:
+                    path = os.path.dirname(os.path.abspath(dir_))
+                else:
+                    await self.ai.chat_send('dir error')
+                    return
+                self.opponent_file_path = os.path.join(path,'data','enemy_info',self.opponent_id + '.json')
                 if os.path.isfile(self.opponent_file_path):
                     await self.ai.chat_send('Hello ' + self.opponent_id + ', I know You!')
                     # enemy = None

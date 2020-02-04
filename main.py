@@ -75,7 +75,7 @@ class Octopus(sc2.BotAI):
     async def on_start(self):
         # enemy_info
         self.enemy_info = EnemyInfo(self)
-        strategy_name = 'adept_proxy'#await self.enemy_info.pre_analysis()
+        strategy_name = await self.enemy_info.pre_analysis()
         if not strategy_name:
             await self.chat_send('UNKNOWN STRATEGY: ' + str(strategy_name))
             strategy_name = 'stalker_proxy'

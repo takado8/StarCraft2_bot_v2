@@ -66,10 +66,14 @@ class ConditionTransform:
             await self.ai.set_strategy('2b_colossus')
 
     async def adept_proxy(self):
-        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 15:
+        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 7:
             await self.ai.set_strategy('2b_archons')
 
-    async def two_base(self):
+    async def two_base_colossus(self):
+        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 17:
+            await self.ai.set_strategy('macro')
+
+    async def two_base_archons(self):
         if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 17:
             await self.ai.set_strategy('macro')
 
