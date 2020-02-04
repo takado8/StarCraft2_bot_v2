@@ -480,6 +480,39 @@ class Micro:
                 if target2 is not None:
                     self.ai.do(cr.attack(target2))
 
+        if self.ai.attack:
+            for ad in self.ai.army(unit.ADEPT):
+                workers = self.ai.enemy_units().filter(lambda x: x.distance_to(ad) < 17 and x.type_id in
+                                                                 self.ai.workers_ids)
+                threats = self.ai.enemy_units().filter(lambda x: x.distance_to(ad) < 10 and x.type_id not in
+                                                       self.ai.workers_ids)
+                if workers.amount < 4 or threats.amount > 2:
+                    if ability.ADEPTPHASESHIFT_ADEPTPHASESHIFT in await self.ai.get_available_abilities(ad):
+                        self.ai.do(ad(ability.ADEPTPHASESHIFT_ADEPTPHASESHIFT, ad.position))
+                elif workers.amount > 3:
+                    self.ai.do(ad.attack(workers.closest_to(ad)))
+            for shadow in self.ai.units(unit.ADEPTPHASESHIFT):
+                workers = self.ai.enemy_units().filter(lambda x: x.distance_to(shadow) < 7 and x.type_id in
+                                                       self.ai.workers_ids)
+                if workers.amount > 3:
+                    self.ai.do(shadow.move(workers.closest_to(shadow)))
+                else:
+                    # bases = self.ai.enemy_structures().filter(lambda x: x.type_id in self.ai.bases_ids)
+                    # if bases.exists:
+                    #     base = bases.closest_to(shadow).position
+                    #     workers = self.ai.enemy_units().filter(lambda x: x.distance_to(base) < 9 and x.type_id in
+                    #                                                      self.ai.workers_ids)
+                    #     if shadow.distance_to(base) < 4 and (workers.amount < 5 or self.ai.enemy_units().filter(lambda x:
+                    #         x.distance_to(shadow) < 7 and x.type_id not in self.ai.workers_ids).amount > 4):
+                    #         self.ai.do(shadow.move(self.ai.enemy_start_locations[0]))
+                    #         print('going to main base case1')
+                    #     else:
+                    #         print('going to near base')
+                    #         self.ai.do(shadow.move(base))
+                    # else:
+                    self.ai.do(shadow.move(self.ai.enemy_start_locations[0]))
+                    # print('going to main base case2')
+
         # zealot
         for zl in self.ai.army(unit.ZEALOT):
             threats = self.ai.enemy_units().filter(lambda x2: x2.distance_to(zl) < 9 and not x2.is_flying and

@@ -41,7 +41,14 @@ class GateTrainer:
                 if self.ai.can_afford(unit.STALKER):
                     self.ai.do(gateway.train(unit.STALKER))
 
-    def adepts(self):
+    def adepts_proxy(self):
+        if self.ai.structures(unit.CYBERNETICSCORE).ready.exists:
+            gateways = self.ai.structures(unit.GATEWAY).ready.idle
+            for gateway in gateways:
+                if self.ai.can_afford(unit.ADEPT):
+                    self.ai.do(gateway.train(unit.ADEPT))
+
+    def adepts_defend(self):
         if self.ai.structures(unit.CYBERNETICSCORE).ready.exists:
             if self.ai.can_afford(unit.ADEPT):
                 u = unit.ADEPT
@@ -139,6 +146,38 @@ class WarpgateTrainer:
                         self.ai.do(warpgate.warp_in(unit.SENTRY,placement))
                     elif self.ai.can_afford(unit.ADEPT):
                         self.ai.do(warpgate.warp_in(unit.ADEPT, placement))
+
+    async def adept_stalker(self):
+        warpgates = self.ai.structures(unit.WARPGATE).ready.idle
+        if warpgates.exists:
+            if self.ai.attack:
+                prisms = self.ai.units(unit.WARPPRISMPHASING)
+                if prisms.exists:
+                    pos = prisms.furthest_to(self.ai.start_location).position
+                else:
+                    furthest_pylon = self.ai.structures(unit.PYLON).ready.furthest_to(self.ai.start_location.position)
+                    pos = furthest_pylon.position
+            else:
+                pos = self.ai.structures(unit.PYLON).ready.closer_than(35,self.ai.start_location).furthest_to(
+                    self.ai.start_location).position
+            for warpgate in warpgates:
+                abilities = await self.ai.get_available_abilities(warpgate)
+                if ability.WARPGATETRAIN_ZEALOT in abilities:
+                    placement = None
+                    i = 0
+                    while placement is None:
+                        i += 1
+                        placement = await self.ai.find_placement(ability.TRAINWARP_ADEPT,near=pos.random_on_distance(5),
+                                                                 max_distance=5,placement_step=2,
+                                                                 random_alternative=False)
+                        if i > 5:
+                            print("can't find position for warpin.")
+                            break
+                    if self.ai.can_afford(unit.STALKER):
+                        self.ai.do(warpgate.warp_in(unit.STALKER,placement))
+                    elif self.ai.can_afford(unit.ADEPT) and self.ai.units(unit.STALKER).amount + 5 >= \
+                            self.ai.units(unit.ADEPT).amount:
+                        self.ai.do(warpgate.warp_in(unit.ADEPT,placement))
 
     async def bio(self):
         if not self.ai.attack:
