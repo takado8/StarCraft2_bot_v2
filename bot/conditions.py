@@ -54,23 +54,23 @@ class ConditionTransform:
         pass
 
     async def adept_defend(self):
-        if (not self.ai.first_attack) and self.ai.time > 360:
+        if ((not self.ai.first_attack) and self.ai.time > 320) or (self.ai.after_first_attack and self.ai.army.amount > 4):
             await self.ai.set_strategy('adept_proxy')
-        if self.ai.after_first_attack:
-            await self.ai.set_strategy('2b_archons')
 
     async def stalker_defend(self):
-        if (not self.ai.first_attack) and self.ai.time > 360:
+        if ((not self.ai.first_attack) and self.ai.time > 320) or (self.ai.after_first_attack and self.ai.army.amount > 4):
             await self.ai.set_strategy('stalker_proxy')
-        if self.ai.after_first_attack:
+
+    async def stalker_proxy(self):
+        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 15:
             await self.ai.set_strategy('2b_colossus')
 
-    async def rush(self):
-        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 23:
-            await self.ai.set_strategy('2b_colossus')
+    async def adept_proxy(self):
+        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 15:
+            await self.ai.set_strategy('2b_archons')
 
     async def two_base(self):
-        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 30:
+        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 17:
             await self.ai.set_strategy('macro')
 
     async def macro(self):

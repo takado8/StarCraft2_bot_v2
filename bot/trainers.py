@@ -49,7 +49,7 @@ class GateTrainer:
                 u = unit.SENTRY
             else:
                 return
-        elif self.ai.army(unit.ZEALOT).amount < 0 and self.ai.can_afford(unit.ZEALOT):
+        elif self.ai.army(unit.ZEALOT).amount < 1 and self.ai.can_afford(unit.ZEALOT):
             u = unit.ZEALOT
         else:
             return

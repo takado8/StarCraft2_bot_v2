@@ -13,7 +13,6 @@ from sc2.unit import Unit
 from typing import Union
 from bot.enemy_info import EnemyInfo
 from strategy import *
-from bot.plot import plot
 
 
 class Octopus(sc2.BotAI):
@@ -76,7 +75,7 @@ class Octopus(sc2.BotAI):
     async def on_start(self):
         # enemy_info
         self.enemy_info = EnemyInfo(self)
-        strategy_name = await self.enemy_info.pre_analysis()
+        strategy_name = 'adept_proxy'#await self.enemy_info.pre_analysis()
         if not strategy_name:
             await self.chat_send('UNKNOWN STRATEGY: ' + str(strategy_name))
             strategy_name = 'stalker_proxy'
@@ -95,8 +94,7 @@ class Octopus(sc2.BotAI):
             score = 1
         else:
             score = 0
-        plot(self.times,self.y1,self.y2)
-
+        # plot(self.times,self.y1,self.y2)
         self.enemy_info.post_analysis(score)
         self.print_stats()
 
@@ -114,8 +112,7 @@ class Octopus(sc2.BotAI):
         await self.expand()
         await self.proxy()
         await self.transformation()
-        # await self.cannons_build()
-        # await self.gate_guard()
+
         if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS) or self.minerals > 400:
             await self.templar_archives_upgrades()
             await self.fleet_beacon_upgrades()
@@ -376,6 +373,7 @@ class Octopus(sc2.BotAI):
                 self.observer_scouting_index += 1
                 if self.observer_scouting_index == len(self.observer_scounting_points):
                     self.observer_scouting_index = 0
+                    
 
     async def morph_Archons(self):
         if upgrade.PSISTORMTECH is self.state.upgrades or self.already_pending_upgrade(upgrade.PSISTORMTECH):
@@ -833,8 +831,7 @@ def test(real_time):
 
 
 def botVsComputer(real_time):
-    maps_set = ['blink', "zealots", "AcropolisLE", "DiscoBloodbathLE", "ThunderbirdLE", "TritonLE", "Ephemeron",
-                "WintersGateLE", "WorldofSleepersLE"]
+    maps_set = ["ThunderbirdLE", "TritonLE", "Ephemeron", "WintersGateLE", "WorldofSleepersLE"]
     races = [Race.Protoss, Race.Zerg, Race.Terran]
 
     # computer_builds = [AIBuild.Rush]
@@ -844,7 +841,7 @@ def botVsComputer(real_time):
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
-    res = run_game(map_settings=maps.get(maps_set[2]), players=[
+    res = run_game(map_settings=maps.get(maps_set[0]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
         Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=real_time)

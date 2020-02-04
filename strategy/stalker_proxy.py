@@ -17,7 +17,7 @@ class StalkerProxy(Strategy):
         pass
 
     def assimilator_build(self):
-        self._assimilator_builder.standard()
+        self._assimilator_builder.more_vespene()
 
     async def forge_build(self):
         await self._forge_builder.none()
@@ -90,7 +90,7 @@ class StalkerProxy(Strategy):
         await self._micro.personal_new()
 
     async def movements(self):
-        await self._movements.attack_formation_brand_new_newest_thee_most_new_shit_in_whole_wide_world()
+        await self._movements.rush()
 
     # ======================================================= Conditions
 
@@ -104,4 +104,4 @@ class StalkerProxy(Strategy):
         return self._condition_retreat.rush()
 
     async def transformation(self):
-        await self._condition_transform.rush()
+        await self._condition_transform.stalker_proxy()
