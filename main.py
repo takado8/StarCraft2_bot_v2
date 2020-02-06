@@ -136,12 +136,15 @@ class Octopus(sc2.BotAI):
         await self.nexus_buff()
 
         # counter attack
-        if self.counter_attack_condition() or self.attack_condition():
+        if (not self.attack) and (not self.retreat_condition()) and (self.counter_attack_condition() or self.attack_condition()):
+            await self.chat_send('Attack!  army len: ' + str(len(self.army)))
+
             self.first_attack = True
             self.attack = True
 
         # retreat
         if self.retreat_condition():
+            await self.chat_send('Retreat! army len: ' + str(len(self.army)))
             self.attack = False
             self.after_first_attack = True
 

@@ -100,7 +100,7 @@ class AdeptProxy(Strategy):
         return self._condition_attack.counter_attack()
 
     def retreat_condition(self):
-        return self._condition_retreat.rush()
+        return self._condition_retreat.adept_proxy()
 
     async def transformation(self):
         await self._condition_transform.adept_proxy()

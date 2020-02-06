@@ -57,7 +57,6 @@ class EnemyInfo:
                                 if win_rate > max_:
                                     max_ = win_rate
                                     strategy_chosen = strategy
-                    await self.ai.chat_send('strategy_chosen: ' + strategy_chosen)
                     return strategy_chosen
                 else:
                     await self.ai.chat_send("Hello " + self.opponent_id + ", new opponent.")

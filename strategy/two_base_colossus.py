@@ -106,4 +106,4 @@ class TwoBaseColossus(Strategy):
         return self._condition_retreat.macro()
 
     async def transformation(self):
-        await self._condition_transform.two_base()
+        await self._condition_transform.two_base_colossus()

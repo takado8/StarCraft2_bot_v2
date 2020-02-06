@@ -39,8 +39,11 @@ class ConditionRetreat:
     def none(self):
         pass
 
-    def rush(self):
-        return self.ai.attack and self.ai.army.amount < 2
+    def adept_proxy(self):
+        return self.ai.attack and self.ai.army.amount < (3 if self.ai.time < 300 else 5)
+
+    def stalker_proxy(self):
+        return self.ai.attack and self.ai.army.amount < (2 if self.ai.time < 300 else 5)
 
     def macro(self):
         return self.ai.attack and self.ai.army.amount < 13
@@ -54,19 +57,19 @@ class ConditionTransform:
         pass
 
     async def adept_defend(self):
-        if ((not self.ai.first_attack) and self.ai.time > 320) or (self.ai.after_first_attack and self.ai.army.amount > 4):
+        if ((not self.ai.first_attack) and self.ai.time > 300) or (self.ai.after_first_attack and self.ai.army.amount > 4):
             await self.ai.set_strategy('adept_proxy')
 
     async def stalker_defend(self):
-        if ((not self.ai.first_attack) and self.ai.time > 320) or (self.ai.after_first_attack and self.ai.army.amount > 4):
+        if ((not self.ai.first_attack) and self.ai.time > 300) or (self.ai.after_first_attack and self.ai.army.amount > 4):
             await self.ai.set_strategy('stalker_proxy')
 
     async def stalker_proxy(self):
-        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 15:
+        if self.ai.after_first_attack and self.ai.army.amount > 7:
             await self.ai.set_strategy('2b_colossus')
 
     async def adept_proxy(self):
-        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 7:
+        if self.ai.after_first_attack and self.ai.army.amount > 7:
             await self.ai.set_strategy('2b_archons')
 
     async def two_base_colossus(self):
@@ -75,9 +78,9 @@ class ConditionTransform:
 
     async def two_base_archons(self):
         if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 17:
-            await self.ai.set_strategy('macro')
+            await self.ai.set_strategy('bio')
 
     async def macro(self):
         if self.ai.after_first_attack and self.ai.army.amount > 27 and self.ai.time > 1000 and self.ai.minerals > 1000\
                 and self.ai.vespene > 500:
-            await self.ai.set_strategy('air')
+            await self.ai.set_strategy('bio')
