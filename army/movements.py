@@ -9,10 +9,10 @@ class Movements:
         enemy_units = self.ai.enemy_units()
         enemy = enemy_units.filter(lambda x: x.type_id not in self.ai.units_to_ignore and (x.can_attack_ground or x.can_attack_air))
         enemy.extend(self.ai.enemy_structures().filter(lambda b: b.type_id in self.ai.bases_ids or b.can_attack_ground or b.can_attack_air))
-        if self.ai.enemy_main_base_down or self.ai.army.closer_than(20,self.ai.enemy_start_locations[0]).amount > 20 and\
-                self.ai.enemy_structures().exists and self.ai.enemy_structures().closer_than(17,
-                self.ai.enemy_start_locations[0]).amount == 0:
+        if self.ai.enemy_main_base_down or (self.ai.army.closer_than(20,self.ai.enemy_start_locations[0]).amount > 17 and
+                not self.ai.enemy_structures().exists):
             if not self.ai.enemy_main_base_down:
+                await self.ai.chat_send('enemy main base down.')
                 self.ai.enemy_main_base_down = True
             self.ai.scan()
             enemy_units.extend(self.ai.enemy_structures())
@@ -96,12 +96,12 @@ class Movements:
         enemy_units = self.ai.enemy_units()
         enemy = enemy_units.filter(lambda x: x.type_id not in self.ai.units_to_ignore and (x.can_attack_ground or x.can_attack_air))
         enemy.extend(self.ai.enemy_structures().filter(lambda b: b.type_id in self.ai.bases_ids or b.can_attack_ground or b.can_attack_air))
-        if self.ai.enemy_main_base_down or self.ai.army.closer_than(20,self.ai.enemy_start_locations[0]).amount > 20 and\
-                self.ai.enemy_structures().exists and self.ai.enemy_structures().closer_than(17,
-                self.ai.enemy_start_locations[0]).amount == 0:
+        if self.ai.enemy_main_base_down or (self.ai.army.closer_than(20,self.ai.enemy_start_locations[0]).amount > 17 and
+                not self.ai.enemy_structures().exists):
             if not self.ai.enemy_main_base_down:
                 self.ai.enemy_main_base_down = True
             self.ai.scan()
+            await self.ai.chat_send('scouting')
             enemy_units.extend(self.ai.enemy_structures())
             if enemy_units.exists:
                 for man in self.ai.army.exclude_type(unit.OBSERVER):

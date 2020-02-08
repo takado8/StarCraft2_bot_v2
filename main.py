@@ -357,21 +357,29 @@ class Octopus(sc2.BotAI):
             self._client.game_step = 8
 
     def scan(self):
-        phxs = self.units(unit.PHOENIX).filter(lambda z: z.is_hallucination)
-        if phxs.amount < 2:
-            snts = self.army(unit.SENTRY).filter(lambda z: z.energy >= 75)
-            if snts:
-                for se in snts:
-                    self.do(se(ability.HALLUCINATION_PHOENIX))
-                phxs = self.units(unit.PHOENIX).filter(lambda z: z.is_hallucination)
-        if phxs:
+        scouts = self.units(unit.PHOENIX).filter(lambda z: z.is_hallucination)
+        if scouts.amount < 2:
+            snts = self.army(unit.SENTRY)
+            if snts.exists:
+                snts = self.army(unit.SENTRY).filter(lambda z: z.energy >= 75)
+                if snts:
+                    for se in snts:
+                        self.do(se(ability.HALLUCINATION_PHOENIX))
+                    scouts = self.units(unit.PHOENIX).filter(lambda z: z.is_hallucination)
+            else:
+                scouts = self.units({unit.WARPPRISM, unit.OBSERVER})
+                if not scouts.exists:
+                    scouts = self.army.filter(lambda z: z.is_flying)
+                    if not scouts.exists:
+                        scouts = self.units(unit.PROBE).closest_n_units(self.enemy_start_locations[0],3)
+        if scouts:
             if len(self.observer_scounting_points) == 0:
                 for exp in self.expansion_locations:
                     if not self.structures().closer_than(12,exp).exists:
                         self.observer_scounting_points.append(exp)
                 self.observer_scounting_points = sorted(self.observer_scounting_points,
                                                         key=lambda x: self.enemy_start_locations[0].distance_to(x))
-            for px in phxs.idle:
+            for px in scouts.idle:
                 self.do(px.move(self.observer_scounting_points[self.observer_scouting_index]))
                 self.observer_scouting_index += 1
                 if self.observer_scouting_index == len(self.observer_scounting_points):
@@ -846,11 +854,11 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[0]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[2], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=real_time)
     return res, build, races[race_index]
 # CheatMoney   VeryHard
 
 
 if __name__ == '__main__':
-    test(real_time=0)
+    test(real_time=1)
