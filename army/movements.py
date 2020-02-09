@@ -85,8 +85,8 @@ class Movements:
                     if h.exists:
                         self.ai.do(man.attack(enemy.closest_to(h.closest_to(man))))
             else:   # away. join army
-                self.ai.do(man.attack(pos))
-        if len(nearest) > len(self.ai.army) * 0.55:
+                self.ai.do(man.move(pos))
+        if len(nearest) > len(self.ai.army) * 0.55:  # take next position
             if enemy and enemy.closer_than(11, leader).exists:
                 return
             for man in army:

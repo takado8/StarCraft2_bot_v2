@@ -1,0 +1,8 @@
+add try/except to on_step before uploading to ladder
+total stats
+attack condition for macro after long time
+macro and bio balans (2 forge, make units, attack/retret condition)
+adept proxy another bases
+defend does not work
+on ramp targeting
+defend adepts not working (shadows suicidal)

@@ -11,7 +11,7 @@ class StalkerProxy(Strategy):
     # =======================================================  Builders
 
     async def gate_build(self):
-        await self._gate_builder.three_standard()
+        await self._gate_builder.three_rush()
 
     async def stargate_build(self):
         pass

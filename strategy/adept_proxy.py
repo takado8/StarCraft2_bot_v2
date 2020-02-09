@@ -89,7 +89,7 @@ class AdeptProxy(Strategy):
         await self._micro.personal_new()
 
     async def movements(self):
-        await self._movements.attack_formation_brand_new_newest_thee_most_new_shit_in_whole_wide_world()
+        await self._movements.rush()
 
     # ======================================================= Conditions
 

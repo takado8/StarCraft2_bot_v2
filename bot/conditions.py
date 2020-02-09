@@ -29,7 +29,7 @@ class ConditionAttack:
 
     def counter_attack(self):
         en = self.ai.enemy_units()
-        return en.exists and en.closer_than(40,self.ai.defend_position).amount > 3
+        return en.exists and en.closer_than(40,self.ai.defend_position).amount > 5
 
 
 class ConditionRetreat:
@@ -46,7 +46,7 @@ class ConditionRetreat:
         return self.ai.attack and self.ai.army.amount < (2 if self.ai.time < 300 else 5)
 
     def macro(self):
-        return self.ai.attack and self.ai.army.amount < 13
+        return self.ai.attack and self.ai.army.amount < 21
 
 
 class ConditionTransform:
@@ -57,7 +57,7 @@ class ConditionTransform:
         pass
 
     async def adept_defend(self):
-        if ((not self.ai.first_attack) and self.ai.time > 300) or (self.ai.after_first_attack and self.ai.army.amount > 4):
+        if ((not self.ai.first_attack) and self.ai.time > 340) or (self.ai.after_first_attack and self.ai.army.amount > 4):
             await self.ai.set_strategy('adept_proxy')
 
     async def stalker_defend(self):
@@ -73,11 +73,11 @@ class ConditionTransform:
             await self.ai.set_strategy('2b_archons')
 
     async def two_base_colossus(self):
-        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 17:
+        if self.ai.after_first_attack and self.ai.army.amount > 13:
             await self.ai.set_strategy('macro')
 
     async def two_base_archons(self):
-        if (self.ai.attack or self.ai.after_first_attack) and self.ai.army.amount > 17:
+        if self.ai.after_first_attack and self.ai.army.amount > 13:
             await self.ai.set_strategy('bio')
 
     async def macro(self):

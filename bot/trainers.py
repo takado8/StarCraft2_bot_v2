@@ -28,7 +28,7 @@ class GateTrainer:
         self.ai = ai
 
     def zealots(self):
-        if self.ai.minerals > 250 and self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < 20:
+        if self.ai.minerals > 250 and self.ai.supply_left > 1 and self.ai.units(unit.ZEALOT).amount < 17:
             gateway = self.ai.structures(unit.GATEWAY).ready.idle
             if gateway.exists:
                 gateway = gateway.random
@@ -56,7 +56,7 @@ class GateTrainer:
                 u = unit.SENTRY
             else:
                 return
-        elif self.ai.army(unit.ZEALOT).amount < 1 and self.ai.can_afford(unit.ZEALOT):
+        elif self.ai.army(unit.ZEALOT).amount < 1:
             u = unit.ZEALOT
         else:
             return
@@ -71,12 +71,6 @@ class GateTrainer:
 
         if self.ai.can_afford(unit.STALKER) and self.ai.structures(unit.CYBERNETICSCORE).ready.exists:
             u = unit.STALKER
-        elif self.ai.can_afford(unit.SENTRY) and self.ai.structures(unit.CYBERNETICSCORE).ready.exists and self.ai.units(
-                unit.SENTRY).amount < 1:
-            u = unit.SENTRY
-        # elif self.can_afford(unit.ADEPT) and self.structures(unit.CYBERNETICSCORE).ready.exists and \
-        #         self.army(unit.ADEPT).amount < 2:
-        #     u = unit.ADEPT
         elif self.ai.minerals > 155 and self.ai.units(unit.ZEALOT).amount < 2:
             u = unit.ZEALOT
         else:
