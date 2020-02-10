@@ -93,7 +93,7 @@ class Bio(Strategy):
     # ======================================================= Conditions
 
     def attack_condition(self):
-        return self._condition_attack.none()
+        return self._condition_attack.macro()
 
     def counter_attack_condition(self):
         return self._condition_attack.counter_attack()

@@ -469,14 +469,24 @@ class Octopus(sc2.BotAI):
     async def defend(self):
         enemy = self.enemy_units()
         if 3 > enemy.amount > 0:
-            for st in self.army({unit.STALKER, unit.OBSERVER, unit.ADEPT, unit.VOIDRAY}):
-                self.do(st.attack(enemy.closest_to(st)))
-            zlts = self.army(unit.ZEALOT)
-            if zlts:
-                for zl in zlts.further_than(13, self.defend_position):
-                    self.do(zl.move(Point2(self.defend_position)))
+            hunters = []
+            hunters_ids = [unit.STALKER, unit.OBSERVER, unit.ADEPT, unit.VOIDRAY]
+            regular = []
+            for man in self.army:
+                if man.type_id in hunters_ids:
+                    hunters.append(man)
+                else:
+                    regular.append(man)
+            for hunter in hunters:
+                self.do(hunter.attack(enemy.closest_to(hunter)))
+            dist = 7
+            for man in regular:
+                position = Point2(self.defend_position).towards(self.game_info.map_center,3) if \
+                    man.type_id == unit.ZEALOT else Point2(self.defend_position)
+                if man.distance_to(self.defend_position) > dist:
+                    self.do(man.move(position.random_on_distance(random.randint(1,2))))
         elif enemy.amount > 2:
-            dist = 12
+            dist = 11
             for man in self.army:
                 position = Point2(self.defend_position).towards(self.game_info.map_center,3) if \
                     man.type_id == unit.ZEALOT else Point2(self.defend_position)
@@ -716,10 +726,14 @@ class Octopus(sc2.BotAI):
         if delta1 != 0:
             self.coe_a1 = (self.g1.y - self.n.y) / delta1
             self.coe_b1 = self.n.y - self.coe_a1 * self.n.x
+        else:
+            raise ZeroDivisionError
         delta2 = (self.g2.x - self.n.x)
         if delta2 != 0:
             self.coe_a2 = (self.g2.y - self.n.y) / delta2
             self.coe_b2 = self.n.y - self.coe_a2 * self.n.x
+        else:
+            raise ZeroDivisionError
         max_ = 0
         minerals = self.mineral_field.closer_than(9,self.n)
         minerals.append(self.g1)
@@ -845,10 +859,10 @@ def botVsComputer(real_time):
     maps_set = ["ThunderbirdLE", "TritonLE", "Ephemeron", "WintersGateLE", "WorldofSleepersLE"]
     races = [Race.Protoss, Race.Zerg, Race.Terran]
 
-    # computer_builds = [AIBuild.Rush]
+    computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Timing]
     # computer_builds = [AIBuild.Air]
-    computer_builds = [AIBuild.Power, AIBuild.Macro]
+    # computer_builds = [AIBuild.Power, AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)

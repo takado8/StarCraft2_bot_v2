@@ -539,3 +539,195 @@ class Micro:
                 else:
                     target = threats[0]
                 self.ai.do(dt.attack(target))
+
+    async def personal_defend(self):
+        enemy = self.ai.enemy_units()
+        if not enemy.exists:
+            return
+        whole_army = self.ai.army.exclude_type({unit.CARRIER, unit.TEMPEST, unit.VOIDRAY, unit.ZEALOT})
+        dist = 9
+        for man in whole_army:
+            threats = enemy.filter(
+                lambda unit_: unit_.can_attack_ground and unit_.distance_to(man) <= dist and
+                              unit_.type_id not in self.ai.units_to_ignore)
+            if self.ai.attack:
+                threats.extend(self.ai.enemy_structures().filter(lambda _x: _x.can_attack_ground or _x.type_id in
+                                                                    [unit.NEXUS, unit.HATCHERY, unit.COMMANDCENTER]))
+            if threats.exists:
+                closest_enemy = threats.closest_to(man)
+                priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR,
+                    unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.SIEGETANK, unit.THOR])
+                if priority.exists:
+                    targets = priority.sorted(lambda x1: x1.health + x1.shield)
+                    if self.ai.enemy_race == Race.Protoss:
+                        a = targets[0].shield_percentage
+                    else:
+                        a = 1
+                    if targets[0].health_percentage * a == 1:
+                        target = priority.closest_to(man)
+                    else:
+                        target = targets[0]
+                else:
+                    targets = threats.sorted(lambda x1: x1.health + x1.shield)
+                    if self.ai.enemy_race == Race.Protoss:
+                        a = targets[0].shield_percentage
+                    else:
+                        a = 1
+                    if targets[0].health_percentage * a == 1:
+                        target = closest_enemy
+                    else:
+                        target = targets[0]
+                if target.distance_to(man) > man.distance_to(closest_enemy) + 4:
+                    target = closest_enemy
+                i=3
+                pos = man.position.towards(closest_enemy.position,-i)
+                while not self.__in_grid(pos) and i < 12:
+                    pos = man.position.towards(closest_enemy.position,-i)
+                    i += 1
+                    j=1
+                    while not self.__in_grid(pos) and j < 9:
+                        pos = pos.random_on_distance(j)
+                        j+=1
+
+                # for st in army:
+                if man.shield_percentage < 0.4:
+                    if man.health_percentage < 0.35:
+                        self.ai.do(man.move(pos))
+                        continue
+                    else:
+                        d = 4
+                else:
+                    d = 2
+
+                if pos is not None and man.weapon_cooldown > 0:
+                    self.ai.do(man.move(man.position.towards(pos,d)))
+                else:
+                    if man.distance_to(target) > 6:
+                        self.ai.do(man.attack(target))
+
+                #  Sentry region  #
+            sents = self.ai.army(unit.SENTRY)
+            if sents.exists:
+                m = -1
+                sentry = None
+                for se in sents:
+                    close = sents.closer_than(7,se).amount
+                    if close > m:
+                        m = close
+                        sentry = se
+                force_fields = []
+                guardian_shield_on = False
+                for eff in self.ai.state.effects:
+                    if eff.id == FakeEffectID.get(unit.FORCEFIELD.value):
+                        force_fields.append(eff)
+                    elif not guardian_shield_on and eff.id == effect.GUARDIANSHIELDPERSISTENT:
+                        guardian_shield_on = True
+                threats = self.ai.enemy_units().filter(
+                    lambda unit_: unit_.can_attack_ground or unit_.can_attack_air and unit_.distance_to(sentry) <= 9 and
+                                  unit_.type_id not in self.ai.units_to_ignore and unit_.type_id not in self.ai.workers_ids)
+                has_energy_amount = sents.filter(lambda x2: x2.energy >= 50).amount
+                points = []
+
+                if has_energy_amount > 0 and len(
+                        force_fields) < 5 and threats.amount > 4:  # and self.ai.time - self.ai.force_field_time > 1:
+                    enemy_army_center = threats.center.towards(sentry,-1)
+                    gap = 3
+                    points.append(enemy_army_center)
+                    points.append(Point2((enemy_army_center.x - gap,enemy_army_center.y)))
+                    points.append(Point2((enemy_army_center.x + gap,enemy_army_center.y)))
+                    points.append(Point2((enemy_army_center.x,enemy_army_center.y - gap)))
+                    points.append(Point2((enemy_army_center.x,enemy_army_center.y + gap)))
+                for se in self.ai.units(unit.SENTRY):
+                    abilities = await self.ai.get_available_abilities(se)
+                    if threats.amount > 4 and not guardian_shield_on and ability.GUARDIANSHIELD_GUARDIANSHIELD in abilities \
+                            and se.distance_to(threats.closest_to(se)) < 7:
+                        self.ai.do(se(ability.GUARDIANSHIELD_GUARDIANSHIELD))
+                        guardian_shield_on = True
+                    if ability.FORCEFIELD_FORCEFIELD in abilities and len(points) > 0:
+                        self.ai.do(se(ability.FORCEFIELD_FORCEFIELD,points.pop(0)))
+                    else:
+                        army_nearby = self.ai.army.closer_than(9,se)
+                        if army_nearby.exists:
+                            if threats.exists:
+                                self.ai.do(se.move(army_nearby.center.towards(threats.closest_to(se),-4)))
+        # voidray
+        for vr in self.ai.army(unit.VOIDRAY):
+            threats = self.ai.enemy_units().filter(lambda z: z.distance_to(vr) < 9 and z.type_id
+                not in self.ai.units_to_ignore)
+            threats.extend(self.ai.enemy_structures().filter(lambda z: z.can_attack_air))
+            if threats.exists:
+                # target2 = None
+                priority = threats.filter(lambda z: z.can_attack_air).sorted(lambda z: z.air_dps, reverse=True)
+                arm = False
+                if priority.exists:
+
+                    armored = priority.filter(lambda z: z.is_armored)
+                    if armored.exists:
+                        arm = True
+                        priority = armored
+                    target2 = priority[0]
+                else:
+                    armored = threats.filter(lambda z: z.is_armored)
+                    if armored.exists:
+                        arm = True
+                        threats = armored
+                    target2 = threats.sorted(lambda z: z.health + z.shield)[0]
+                if target2 is not None:
+                    if arm:
+                        if ability.EFFECT_VOIDRAYPRISMATICALIGNMENT in await self.ai.get_available_abilities(vr)\
+                                and target2.distance_to(vr) < 8:
+                            self.ai.do(vr(ability.EFFECT_VOIDRAYPRISMATICALIGNMENT))
+                    self.ai.do(vr.attack(target2))
+
+        completion_ids = {unit.VOIDRAY, unit.BATTLECRUISER, unit.CARRIER}  # units that returns wrong air dps
+        # Carrier
+        for cr in self.ai.army({unit.CARRIER,unit.TEMPEST}):
+            threats = self.ai.enemy_units().filter(
+                lambda z: z.distance_to(cr) < 20 and z.type_id not in self.ai.units_to_ignore)
+            threats.extend(self.ai.enemy_structures().filter(lambda z: z.can_attack_air))
+            if threats.exists:
+                completion = threats.filter(lambda z: z.type_id in completion_ids)
+                if completion.exists:
+                    priority = completion
+                else:
+                    priority = threats.filter(lambda z: z.can_attack_air).sorted(lambda z: z.air_dps, reverse=True)
+                    if priority.exists:
+                        id0 = priority[0].type_id
+                        i = 0
+                        while i < len(priority) and priority[i].type_id == id0:
+                            i+=1
+                        priority = priority[:i]
+                if priority:
+                    priority = sorted(priority,key=lambda z: z.health + z.shield)
+                    target2 = priority[0]
+                else:
+                    target2 = threats.sorted(lambda z: z.health + z.shield)[0]
+                if target2 is not None:
+                    self.ai.do(cr.attack(target2))
+
+        # zealot
+        for zl in self.ai.army(unit.ZEALOT):
+            threats = self.ai.enemy_units().filter(lambda x2: x2.distance_to(zl) < 9 and not x2.is_flying and
+                          x2.type_id not in self.ai.units_to_ignore).sorted(lambda _x: _x.health + _x.shield)
+            if threats.exists:
+                closest = threats.closest_to(zl)
+                if threats[0].health_percentage * threats[0].shield_percentage == 1 or threats[0].distance_to(zl) > \
+                    closest.distance_to(zl) + 5 or not self.ai.in_pathing_grid(threats[0]):
+                    target = closest
+                else:
+                    target = threats[0]
+                if ability.EFFECT_CHARGE in await self.ai.get_available_abilities(zl):
+                    self.ai.do(zl(ability.EFFECT_CHARGE, target))
+                self.ai.do(zl.attack(target))
+
+        for dt in self.ai.army(unit.DARKTEMPLAR):
+            threats = self.ai.enemy_units().filter(lambda x2: x2.distance_to(dt) < 9 and not x2.is_flying and
+                          x2.type_id not in self.ai.units_to_ignore).sorted(lambda _x: _x.health + _x.shield)
+            if threats.exists:
+                closest = threats.closest_to(dt)
+                if threats[0].health_percentage * threats[0].shield_percentage == 1 or threats[0].distance_to(dt) > \
+                    closest.distance_to(dt) + 3 or not self.ai.in_pathing_grid(threats[0]):
+                    target = closest
+                else:
+                    target = threats[0]
+                self.ai.do(dt.attack(target))
