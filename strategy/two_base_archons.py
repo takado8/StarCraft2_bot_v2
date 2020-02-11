@@ -21,7 +21,7 @@ class TwoBaseArchons(Strategy):
         await self._forge_builder.none()
 
     async def twilight_build(self):
-        await self._twilight_builder.standard()
+        await self._twilight_builder.early()
 
     async def templar_archives_build(self):
         await self._templar_archives_builder.standard()
@@ -30,10 +30,10 @@ class TwoBaseArchons(Strategy):
         await self._pylon_builder.first_and_next_standard()
 
     async def pylon_next_build(self):
-        await self._pylon_builder.none()
+        pass
 
     async def proxy(self):
-        await self._pylon_builder.none()
+        pass
 
     async def cybernetics_build(self):
         await self._cybernetics_builder.standard()
@@ -42,10 +42,10 @@ class TwoBaseArchons(Strategy):
         await self._robotics_builder.macro()
 
     async def robotics_bay_build(self):
-        await self._robotics_bay_builder.none()
+        pass
 
     async def cannons_build(self):
-        await self._cannon_builder.double_per_nex()
+        pass
 
     async def expand(self):
         await self._expander.two_bases()
@@ -56,7 +56,7 @@ class TwoBaseArchons(Strategy):
         self._cybernetics_upgrader.standard()
 
     def forge_upgrades(self):
-        self._forge_upgrader.none()
+        pass
 
     async def twilight_upgrades(self):
         await self._twilight_upgrader.charge()
@@ -74,10 +74,10 @@ class TwoBaseArchons(Strategy):
         self._nexus_trainer.probes_standard()
 
     def gate_train(self):
-        self._gate_trainer.zealots()
+        self._gate_trainer.adepts_defend()
 
     def stargate_train(self):
-        self._stargate_trainer.none()
+        pass
 
     def robotics_train(self):
         self._robotics_trainer.standard()
@@ -103,5 +103,7 @@ class TwoBaseArchons(Strategy):
         return self._condition_attack.counter_attack()
 
     def retreat_condition(self):
-        return self._condition_retreat.macro()
+        return self._condition_retreat.two_base()
 
+    async def transformation(self):
+        await self._condition_transform.two_base_archons()

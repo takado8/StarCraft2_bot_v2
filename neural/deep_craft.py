@@ -13,7 +13,6 @@ import cv2
 # from dqn import DQN
 import constants
 from collections import deque
-import plot
 
 reward_val = {'kill': 0.1,'die': -0.1,'win': 0.3,'loose': -0.3}
 # branch power build
@@ -92,8 +91,8 @@ class DeepCraft(sc2.BotAI):
             print('Last 10 games avg kill: ' + str(avg))
             print('--------------------------------------------')
             self.avgs.append(avg)
-            if self.game_counter % 100 == 0:
-                plot.plot([x for x in range(len(self.avgs))],self.avgs)
+            # if self.game_counter % 100 == 0:
+            #     plot.plot([x for x in range(len(self.avgs))],self.avgs)
             self.game_counter += 1
             data = self.prep_data(result)
             # if len(data) > 2:

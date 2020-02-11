@@ -2,7 +2,6 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 import datetime
-import prepare_data
 import os
 import constants
 

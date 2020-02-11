@@ -10,7 +10,7 @@ class AdeptProxy(Strategy):
     # =======================================================  Builders
 
     async def gate_build(self):
-        await self._gate_builder.upper_wall_plus_3()
+        await self._gate_builder.three_rush()
 
     async def stargate_build(self):
         pass
@@ -25,10 +25,10 @@ class AdeptProxy(Strategy):
         await self._twilight_builder.none()
 
     async def pylon_first_build(self):
-        await self._pylon_builder.first_in_upper_wall()
+        await self._pylon_builder.first_and_next_standard()
 
     async def pylon_next_build(self):
-        await self._pylon_builder.next_standard()
+        await self._pylon_builder.none()
 
     async def proxy(self):
         await self._pylon_builder.proxy()
@@ -66,7 +66,7 @@ class AdeptProxy(Strategy):
         self._nexus_trainer.probes_standard()
 
     def gate_train(self):
-        self._gate_trainer.adepts()
+        self._gate_trainer.adepts_proxy()
 
     def stargate_train(self):
         self._stargate_trainer.none()
@@ -75,7 +75,7 @@ class AdeptProxy(Strategy):
         self._robotics_trainer.none()
 
     async def warpgate_train(self):
-        await self._warpgate_trainer.adepts()
+        await self._warpgate_trainer.adept_stalker()
 
     async def templar_archives_upgrades(self):
         pass
@@ -89,7 +89,7 @@ class AdeptProxy(Strategy):
         await self._micro.personal_new()
 
     async def movements(self):
-        await self._movements.attack_formation_brand_new_newest_thee_most_new_shit_in_whole_wide_world()
+        await self._movements.rush()
 
     # ======================================================= Conditions
 
@@ -100,5 +100,7 @@ class AdeptProxy(Strategy):
         return self._condition_attack.counter_attack()
 
     def retreat_condition(self):
-        return self._condition_retreat.rush()
+        return self._condition_retreat.adept_proxy()
 
+    async def transformation(self):
+        await self._condition_transform.adept_proxy()

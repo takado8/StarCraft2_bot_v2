@@ -65,7 +65,7 @@ class AdeptDefend(Strategy):
         self._nexus_trainer.probes_standard()
 
     def gate_train(self):
-        self._gate_trainer.adepts()
+        self._gate_trainer.adepts_defend()
 
     def stargate_train(self):
         self._stargate_trainer.none()
@@ -85,7 +85,7 @@ class AdeptDefend(Strategy):
     # =======================================================  Army
 
     async def micro(self):
-        await self._micro.personal_new()
+        await self._micro.personal_defend()
 
     async def movements(self):
         await self._movements.attack_formation_brand_new_newest_thee_most_new_shit_in_whole_wide_world()
@@ -99,5 +99,7 @@ class AdeptDefend(Strategy):
         return self._condition_attack.counter_attack()
 
     def retreat_condition(self):
-        return self._condition_retreat.rush()
+        return self._condition_retreat.adept_proxy()
 
+    async def transformation(self):
+        await self._condition_transform.adept_defend()

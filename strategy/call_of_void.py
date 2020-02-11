@@ -87,11 +87,11 @@ class CallOfTheVoid(Strategy):
 # ======================================================= Conditions
 
     def attack_condition(self):
-        return self._condition_attack.none()
+        return self._condition_attack.air()
 
     def counter_attack_condition(self):
         return self._condition_attack.counter_attack()
 
     def retreat_condition(self):
-        return self._condition_retreat.rush()
+        return self._condition_retreat.stalker_proxy()
 

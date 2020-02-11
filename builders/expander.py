@@ -75,7 +75,8 @@ class Expander:
     async def two_bases(self):
         gates_count = self.ai.structures(unit.GATEWAY).amount
         gates_count += self.ai.structures(unit.WARPGATE).amount
-        if gates_count < 1:
+        cybernetics_count = self.ai.structures(unit.CYBERNETICSCORE).amount
+        if gates_count < 1 or cybernetics_count < 1:
             return
         nexuses = self.ai.structures(unit.NEXUS).ready
         if nexuses.amount < 2:

@@ -64,12 +64,13 @@ class GateBuilder:
     async def three_rush(self):
         gates = self.ai.structures(unit.GATEWAY)
         gates.extend(self.ai.structures(unit.WARPGATE))
-        gates_count = gates.amount
-        if gates.ready.idle.amount > 1:
-            return
-        if self.ai.structures(unit.TWILIGHTCOUNCIL).exists:
-            gc = 4
-        elif self.ai.structures(unit.CYBERNETICSCORE).exists:
+        if gates.exists:
+            gates_count = gates.closer_than(30,self.ai.start_location).amount
+        else:
+            gates_count = 0
+        # if gates.ready.idle.amount > 1:
+        #     return
+        if self.ai.structures(unit.CYBERNETICSCORE).exists:
             gc = 3
         else:
             gc = 1

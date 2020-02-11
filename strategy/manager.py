@@ -1,21 +1,9 @@
-from builders.gate_builder import GateBuilder
-from builders.stargate_builder import StargateBuilder
-from builders.assimilator_builder import AssimilatorBuilder
-from builders.forge_builder import ForgeBuilder
-from builders.twilight_builder import TwilightBuilder
-from builders.templar_builder import TemplarArchivesBuilder
-from builders.pylon_builder import PylonBuilder
-from builders.cybernetics_builder import CyberneticsBuilder
-from builders.robotics_builder import RoboticsBuilder
-from builders.robotics_bay_builder import RoboticsBayBuilder
-from builders.dark_shrine import DarkShrineBuilder
-from builders.cannon_builder import CannonBuilder
-from builders.expander import Expander
-from upgraders import *
-from trainers import *
+from builders import *
+from bot.upgraders import *
+from bot.trainers import *
+from bot.conditions import *
 from army.micro import *
 from army.movements import *
-from conditions import *
 
 
 class Strategy:
