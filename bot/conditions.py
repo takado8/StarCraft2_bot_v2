@@ -56,7 +56,10 @@ class ConditionRetreat:
         return self.ai.attack and self.ai.army.amount < (2 if self.ai.time < 300 else 5)
 
     def macro(self):
-        return self.ai.attack and self.ai.army.amount < 21
+        return self.ai.attack and self.ai.army.amount < 17
+
+    def two_base(self):
+        return self.ai.attack and self.ai.army.amount < 13
 
 
 class ConditionTransform:

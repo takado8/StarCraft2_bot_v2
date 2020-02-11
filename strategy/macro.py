@@ -19,7 +19,7 @@ class Macro(Strategy):
         await self._stargate_builder.none()
 
     async def forge_build(self):
-        await self._forge_builder.single()
+        await self._forge_builder.double_late()
 
     async def twilight_build(self):
         await self._twilight_builder.standard()

@@ -73,89 +73,143 @@ class Octopus(sc2.BotAI):
 
 
     async def on_start(self):
-        # enemy_info
-        self.enemy_info = EnemyInfo(self)
-        strategy_name = await self.enemy_info.pre_analysis()
-        if not strategy_name:
-            await self.chat_send('UNKNOWN STRATEGY: ' + str(strategy_name))
-            strategy_name = 'stalker_proxy'
+        try:
+            # enemy_info
+            self.enemy_info = EnemyInfo(self)
+            strategy_name = await self.enemy_info.pre_analysis()
+            if not strategy_name:
+                strategy_name = 'stalker_proxy'
 
-        self.starting_strategy = strategy_name
-        await self.set_strategy(strategy_name)
+            self.starting_strategy = strategy_name
+            await self.set_strategy(strategy_name)
 
-        map_name = str(self.game_info.map_name)
-        print('map_name: ' + map_name)
-        # print('start location: ' + str(self.start_location.position))
-        self.coords = cd[map_name][self.start_location.position]
-        self.compute_coeficients_for_buliding_validation()
+            map_name = str(self.game_info.map_name)
+            print('map_name: ' + map_name)
+            # print('start location: ' + str(self.start_location.position))
+            self.coords = cd[map_name][self.start_location.position]
+            self.compute_coeficients_for_buliding_validation()
+        except Exception as ex:
+            print(ex)
+            try:
+                await self.chat_send('on_start() error.')
+            except:
+                print('cant send chat msg')
+
 
     async def on_end(self, game_result: Result):
-        if game_result == Result.Victory:
-            score = 1
-        else:
-            score = 0
-        # plot(self.times,self.y1,self.y2)
-        self.enemy_info.post_analysis(score)
-        self.print_stats()
+        try:
+            if game_result == Result.Victory:
+                score = 1
+            else:
+                score = 0
+            # plot(self.times,self.y1,self.y2)
+            self.enemy_info.post_analysis(score)
+            self.print_stats()
+        except Exception as ex:
+            print(ex)
+            try:
+                await self.chat_send('on_end() error.')
+            except:
+                print('cant send chat msg')
 
     async def on_step(self, iteration):
-        self.numbers()
-        self.set_game_step()
-        self.assign_defend_position()
-        self.army = self.units().filter(lambda x: x.type_id in self.army_ids)
-        await self.morph_Archons()
-        self.train_workers()
-        await self.distribute_workers()
-        await self.morph_gates()
-        await self.pylon_first_build()
-        await self.pylon_next_build()
-        await self.expand()
-        await self.proxy()
-        await self.transformation()
+        try:
+            self.set_game_step()
+        except:
+            pass
+        try:
+            self.assign_defend_position()
+            self.army = self.units().filter(lambda x: x.type_id in self.army_ids)
+            await self.morph_Archons()
+        except Exception as ex:
+            print(ex)
+            await self.chat_send('on_step error 1')
+        try:
+            self.train_workers()
+            await self.distribute_workers()
+            await self.morph_gates()
+        except Exception as ex:
+            print(ex)
+            await self.chat_send('on_step error 2')
+        try:
+            await self.pylon_first_build()
+            await self.pylon_next_build()
+
+            await self.proxy()
+        except Exception as ex:
+            print(ex)
+            await self.chat_send('on_step error 3')
+        try:
+            await self.transformation()
+            await self.expand()
+        except Exception as ex:
+            print(ex)
+            await self.chat_send('on_step error 4')
 
         if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS) or self.minerals > 400:
-            await self.templar_archives_upgrades()
-            await self.fleet_beacon_upgrades()
-            self.cybernetics_core_upgrades()
-            await self.twilight_upgrades()
-            self.forge_upgrades()
-            await self.twilight_council_build()
-            await self.dark_shrine_build()
-            await self.templar_archives_build()
-            await self.robotics_build()
-            await self.robotics_bay_build()
-            await self.stargate_build()
-            await self.forge_build()
-            await self.cybernetics_core_build()
-            await self.gate_build()
-            self.build_assimilators()
-            self.robotics_train()
-            self.strategy.stargate_train()
-            self.gate_train()
-            await self.strategy.warpgate_train()
-        await self.nexus_buff()
+            try:
+                await self.templar_archives_upgrades()
+                await self.fleet_beacon_upgrades()
+                self.cybernetics_core_upgrades()
+                await self.twilight_upgrades()
+                self.forge_upgrades()
+                await self.twilight_council_build()
+                await self.dark_shrine_build()
+                await self.templar_archives_build()
+                await self.robotics_build()
+                await self.robotics_bay_build()
+                await self.stargate_build()
+                await self.forge_build()
+            except Exception as ex:
+                print(ex)
+                await self.chat_send('on_step error 5')
+            try:
+                await self.cybernetics_core_build()
+                await self.gate_build()
+                self.build_assimilators()
+            except Exception as ex:
+                print(ex)
+                await self.chat_send('on_step error 6')
+            try:
+                self.robotics_train()
+                self.strategy.stargate_train()
+                self.gate_train()
+                await self.strategy.warpgate_train()
+            except Exception as ex:
+                print(ex)
+                await self.chat_send('on_step error 7')
+        try:
+            await self.nexus_buff()
 
-        # counter attack
-        if (not self.attack) and (not self.retreat_condition()) and (self.counter_attack_condition() or self.attack_condition()):
-            await self.chat_send('Attack!  army len: ' + str(len(self.army)))
+            # counter attack
+            if (not self.attack) and (not self.retreat_condition()) and (self.counter_attack_condition() or self.attack_condition()):
+                # await self.chat_send('Attack!  army len: ' + str(len(self.army)))
+                self.first_attack = True
+                self.attack = True
 
-            self.first_attack = True
-            self.attack = True
+            # retreat
+            if self.retreat_condition():
+                # await self.chat_send('Retreat! army len: ' + str(len(self.army)))
+                self.attack = False
+                self.after_first_attack = True
+        except Exception as ex:
+            print(ex)
+            await self.chat_send('on_step error 8')
+        try:
+            await self.micro_units()
+        except Exception as ex:
+            print(ex)
+            await self.chat_send('on_step error 9 -> micro_units')
+        try:
+            if self.attack:
+                await self.attack_formation()
+            else:
+                await self.defend()
 
-        # retreat
-        if self.retreat_condition():
-            await self.chat_send('Retreat! army len: ' + str(len(self.army)))
-            self.attack = False
-            self.after_first_attack = True
-
-        await self.micro_units()
-
-        if self.attack:
-            await self.attack_formation()
-        else:
-            await self.defend()
-
-        await self.warp_prism()
+            await self.warp_prism()
+        except Exception as ex:
+            print(ex)
+            await self.chat_send('on_step error 10')
 
     # =============================================
 
@@ -517,8 +571,8 @@ class Octopus(sc2.BotAI):
             self.defend_position = enemy.closest_to(self.enemy_start_locations[0]).position
         elif nex.amount < 2:
             self.defend_position = self.main_base_ramp.top_center.towards(self.main_base_ramp.bottom_center, -6)
-        elif nex.amount == 2:
-            self.defend_position = self.coords['defend_pos']
+        # elif nex.amount == 2:
+        #     self.defend_position = self.coords['defend_pos']
         else:
             self.defend_position = nex.closest_to(self.enemy_start_locations[0]).position.towards(self.game_info.map_center,5)
 
@@ -856,17 +910,18 @@ def test(real_time):
 
 
 def botVsComputer(real_time):
-    maps_set = ["ThunderbirdLE", "TritonLE", "Ephemeron", "WintersGateLE", "WorldofSleepersLE"]
+    maps_set = ["TritonLE","Ephemeron",'Eternal Empire LE','Nightshade LE','Simulacrum LE',
+                'World of Sleepers LE','Zen LE']
     races = [Race.Protoss, Race.Zerg, Race.Terran]
 
-    computer_builds = [AIBuild.Rush]
+    # computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Timing]
     # computer_builds = [AIBuild.Air]
-    # computer_builds = [AIBuild.Power, AIBuild.Macro]
+    computer_builds = [AIBuild.Power, AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
-    res = run_game(map_settings=maps.get(maps_set[0]), players=[
+    res = run_game(map_settings=maps.get(maps_set[3]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
         Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=real_time)

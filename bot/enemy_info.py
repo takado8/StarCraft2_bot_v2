@@ -39,12 +39,10 @@ class EnemyInfo:
                     return
                 self.opponent_file_path = os.path.join(self.dir_path,'data','enemy_info',self.opponent_id + '.json')
                 if os.path.isfile(self.opponent_file_path):
-                    await self.ai.chat_send('Hello ' + self.opponent_id + ', I know You!')
                     # enemy = None
                     with open(self.opponent_file_path, 'r') as file:
                         self.enemy = json.load(file)
-                    print('--------------------------------------')
-                    print(self.enemy)
+                    # await self.ai.chat_send(str(self.enemy))
                     if self.enemy['last_game']['result'] is 1:
                         strategy_chosen = self.enemy['last_game']['strategy']
                     else:
@@ -60,7 +58,7 @@ class EnemyInfo:
                                     strategy_chosen = strategy
                     return strategy_chosen
                 else:
-                    await self.ai.chat_send("Hello " + self.opponent_id + ", new opponent.")
+                    await self.ai.chat_send("new opponent.")
             else:
                 await self.ai.chat_send("opponent_id is None")
         except Exception as ex:
