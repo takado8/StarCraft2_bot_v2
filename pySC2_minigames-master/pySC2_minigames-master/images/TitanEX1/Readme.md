@@ -1,1 +1,0 @@
-DefeatRavagersRepairCyclones image map 

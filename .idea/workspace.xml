@@ -2,18 +2,49 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8c31ee0e-5715-4e85-a78f-7d7c2ebf81b0" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/neural/constants.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/strategy/blinkers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/army/micro.py" beforeDir="false" afterPath="$PROJECT_DIR$/army/micro.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bot/conditions.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot/conditions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bot/coords.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot/coords.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bot/enemy_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot/enemy_info.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/builders/forge_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/builders/forge_builder.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/builders/pylon_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/builders/pylon_builder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/enemy_info/opo.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategy/bio.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategy/bio.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategy/macro.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategy/macro.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategy/two_base_archons.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategy/two_base_archons.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategy/two_base_colossus.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategy/two_base_colossus.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/to_do.txt" beforeDir="false" afterPath="$PROJECT_DIR$/to_do.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini_games/mini_games/BuildMarines.SC2Map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini_games/mini_games/CollectMineralShards.SC2Map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini_games/mini_games/CollectMineralsAndGas.SC2Map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini_games/mini_games/DefeatZerglingsAndBanelings.SC2Map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini_games/mini_games/FindAndDefeatZerglings.SC2Map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini_games/mini_games/MoveToBeacon.SC2Map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mini_games/mini_games/roaches.SC2Map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/neural/deep_craft.py" beforeDir="false" afterPath="$PROJECT_DIR$/neural/deep_craft.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/CODE_OF_CONDUCT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/CONTRIBUTING.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/ISSUE_TEMPLATE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/images/4rChon/DefeatZealots .png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/images/4rChon/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/images/SoyGema/Captura de pantalla 2018-01-02 a las 14.51.09.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/images/SoyGema/HallucinIce .png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/images/SoyGema/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/images/TitanEX1/DefeatRavagersRepairCyclones.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/images/TitanEX1/Readme.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/images/deadzombie2333/PredictBattleOutcome.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/images/deadzombie2333/Predict_Battle_Outcome.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/images/deadzombie2333/readme.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/mini-games/DefeatRavagerswithRepairCyclones.SC2Map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/mini-games/DefeatZealots.SC2Map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/mini-games/FlowerFields.SC2Map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/mini-games/HallucinIce.SC2Map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/mini-games/HitAndRun.SC2Map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/mini-games/Marine_Rescue.SC2Map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/mini-games/PredictBattleOutcome.SC2Map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/mini-games/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/mini-games/ResourcesHaveArrived.SC2Map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pySC2_minigames-master/pySC2_minigames-master/zip/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/strategy/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategy/__init__.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,40 +56,40 @@
     <session id="-907730567">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="138" />
-          <entry key="project.open.time.0" value="6" />
+          <entry key="project.closed" value="146" />
+          <entry key="project.open.time.0" value="8" />
           <entry key="project.open.time.1" value="2" />
           <entry key="project.open.time.10" value="2" />
           <entry key="project.open.time.12" value="1" />
           <entry key="project.open.time.13" value="1" />
           <entry key="project.open.time.4" value="1" />
           <entry key="project.open.time.5" value="2" />
-          <entry key="project.open.time.6" value="86" />
-          <entry key="project.open.time.7" value="36" />
-          <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="139" />
+          <entry key="project.open.time.6" value="90" />
+          <entry key="project.open.time.7" value="37" />
+          <entry key="project.open.time.9" value="2" />
+          <entry key="project.opened" value="147" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="61" />
-          <entry key="py" value="74847" />
+          <entry key="py" value="75389" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="61" />
-          <entry key="Python" value="74847" />
+          <entry key="Python" value="75389" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="564" />
+          <entry key="py" value="581" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="564" />
+          <entry key="Python" value="581" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages">
@@ -73,8 +104,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="20">
-              <caret line="915" lean-forward="true" selection-start-line="915" selection-end-line="915" />
+            <state relative-caret-position="154">
+              <caret line="150" column="16" lean-forward="true" selection-start-line="150" selection-start-column="16" selection-end-line="150" selection-end-column="16" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -83,55 +114,37 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/client.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="353">
+              <caret line="188" column="14" selection-start-line="188" selection-start-column="14" selection-end-line="188" selection-end-column="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/strategy/blinkers.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="261">
+              <caret line="89" column="40" selection-start-line="89" selection-start-column="40" selection-end-line="89" selection-end-column="40" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bot/upgraders.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="128">
+              <caret line="109" column="14" selection-start-line="109" selection-start-column="14" selection-end-line="109" selection-end-column="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bot/conditions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="104">
-              <caret line="58" column="58" selection-start-line="58" selection-start-column="58" selection-end-line="58" selection-end-column="58" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/builders/pylon_builder.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="104">
-              <caret line="45" column="36" selection-start-line="45" selection-start-column="36" selection-end-line="45" selection-end-column="36" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/strategy/macro.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="21" column="47" selection-start-line="21" selection-start-column="47" selection-end-line="21" selection-end-column="47" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/strategy/bio.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="21" column="47" selection-start-line="21" selection-start-column="47" selection-end-line="21" selection-end-column="47" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/builders/forge_builder.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="358">
-              <caret line="41" column="90" selection-start-line="41" selection-start-column="90" selection-end-line="41" selection-end-column="90" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/strategy/two_base_archons.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="337">
-              <caret line="105" column="49" selection-start-line="105" selection-start-column="49" selection-end-line="105" selection-end-column="49" />
+            <state relative-caret-position="280">
+              <caret line="15" column="63" selection-start-line="15" selection-start-column="63" selection-end-line="15" selection-end-column="63" />
             </state>
           </provider>
         </entry>
@@ -139,26 +152,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/strategy/two_base_colossus.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="105" column="49" selection-start-line="105" selection-start-column="49" selection-end-line="105" selection-end-column="49" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bot/player_vs.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="214">
-              <caret line="105" column="51" selection-start-line="105" selection-start-column="51" selection-end-line="105" selection-end-column="51" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bot/coords.py">
-          <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="212">
-              <caret line="79" column="33" selection-start-line="79" selection-start-column="33" selection-end-line="79" selection-end-column="33" />
+              <caret line="90" column="27" lean-forward="true" selection-start-line="90" selection-start-column="27" selection-end-line="90" selection-end-column="27" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/army/micro.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="374">
+              <caret line="608" column="58" lean-forward="true" selection-start-line="608" selection-start-column="58" selection-end-line="608" selection-end-column="58" />
             </state>
           </provider>
         </entry>
@@ -174,8 +178,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>ability.TRAINWARP_ADEPT</find>
-      <find>queue</find>
       <find>ai.</find>
       <find>ai</find>
       <find>self</find>
@@ -204,6 +206,8 @@
       <find>adept_hun</find>
       <find>sca</find>
       <find>defend</find>
+      <find>blink</find>
+      <find>nexus_buff</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -217,7 +221,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/strategy/rush.py" />
         <option value="$PROJECT_DIR$/strategy/proxy_void.py" />
         <option value="$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/client.py" />
         <option value="$PROJECT_DIR$/builders/robotics_bay_builder.py" />
@@ -236,10 +239,8 @@
         <option value="$PROJECT_DIR$/trainers.py" />
         <option value="$PROJECT_DIR$/plot.py" />
         <option value="$PROJECT_DIR$/conditions.py" />
-        <option value="$PROJECT_DIR$/neural/deep_craft.py" />
         <option value="$PROJECT_DIR$/neural/dqn.py" />
         <option value="$PROJECT_DIR$/neural/model.py" />
-        <option value="$PROJECT_DIR$/strategy/__init__.py" />
         <option value="$PROJECT_DIR$/strategy/manager.py" />
         <option value="$PROJECT_DIR$/builders/__init__.py" />
         <option value="$PROJECT_DIR$/strategy/dt.py" />
@@ -255,18 +256,21 @@
         <option value="$PROJECT_DIR$/builders/assimilator_builder.py" />
         <option value="$PROJECT_DIR$/strategy/carrier_madness.py" />
         <option value="$PROJECT_DIR$/strategy/call_of_void.py" />
-        <option value="$PROJECT_DIR$/army/micro.py" />
         <option value="$PROJECT_DIR$/strategy/adept_defend.py" />
         <option value="$PROJECT_DIR$/bot/enemy_info.py" />
         <option value="$PROJECT_DIR$/strategy/two_base_colossus.py" />
         <option value="$PROJECT_DIR$/strategy/two_base_archons.py" />
         <option value="$PROJECT_DIR$/bot/player_vs.py" />
         <option value="$PROJECT_DIR$/bot/coords.py" />
-        <option value="$PROJECT_DIR$/bot/conditions.py" />
-        <option value="$PROJECT_DIR$/builders/pylon_builder.py" />
         <option value="$PROJECT_DIR$/builders/forge_builder.py" />
         <option value="$PROJECT_DIR$/strategy/macro.py" />
         <option value="$PROJECT_DIR$/strategy/bio.py" />
+        <option value="$PROJECT_DIR$/neural/deep_craft.py" />
+        <option value="$PROJECT_DIR$/builders/pylon_builder.py" />
+        <option value="$PROJECT_DIR$/bot/conditions.py" />
+        <option value="$PROJECT_DIR$/strategy/blinkers.py" />
+        <option value="$PROJECT_DIR$/strategy/__init__.py" />
+        <option value="$PROJECT_DIR$/army/micro.py" />
         <option value="$PROJECT_DIR$/main.py" />
       </list>
     </option>
@@ -301,7 +305,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -309,15 +312,21 @@
               <item name="sc2_bot_v2" type="b2602c69:ProjectViewProjectNode" />
               <item name="sc2_bot_v2" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="sc2_bot_v2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="sc2_bot_v2" type="462c0819:PsiDirectoryNode" />
+              <item name="strategy" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SearchEverywhereHistoryKey" value="bookmar&#9;ACTION&#9;EditBookmarksGroup&#10;may be static&#9;null&#9;null&#10;typo&#9;null&#9;null" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/bot/player_vs.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="Errors" />
   </component>
   <component name="RecentsManager">
@@ -439,13 +448,13 @@
       <window_info active="true" content_ui="combo" id="Project" order="2" visible="true" weight="0.13831478" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.6708185" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.3594306" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.5658363" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39679715" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3291815" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.7633452" />
-      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.3291815" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" weight="0.3291815" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="bottom" id="Messages" order="11" />
@@ -515,48 +524,15 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="413">
-          <caret line="252" column="57" selection-start-line="252" selection-start-column="57" selection-end-line="252" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/coords.py" />
-    <entry file="file://$PROJECT_DIR$/builders/dark_shrine.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="3" column="24" lean-forward="true" selection-start-line="3" selection-start-column="24" selection-end-line="3" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/unit.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="94">
-          <caret line="413" column="8" selection-start-line="413" selection-start-column="8" selection-end-line="413" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/plot.py" />
     <entry file="file://$PROJECT_DIR$/trainers.py" />
     <entry file="file://$PROJECT_DIR$/enemy_info.py" />
     <entry file="file://$PROJECT_DIR$/micro.py" />
     <entry file="file://$PROJECT_DIR$/visual.py" />
     <entry file="file://$PROJECT_DIR$/conditions.py" />
-    <entry file="file://$PROJECT_DIR$/neural/deep_craft.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1880">
-          <caret line="94" column="73" lean-forward="true" selection-start-line="94" selection-start-column="73" selection-end-line="94" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/neural/dqn.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/bot/plot.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bot/upgraders.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/neural/model.py">
@@ -575,13 +551,6 @@
     <entry file="file://$PROJECT_DIR$/army/numbers.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/strategy/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="17" selection-start-column="17" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/builders/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="260">
@@ -593,13 +562,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="20">
           <caret line="6" selection-start-line="6" selection-end-line="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/strategy/stalker_defend.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="314">
-          <caret line="101" column="54" selection-start-line="101" selection-start-column="54" selection-end-line="101" selection-end-column="54" />
         </state>
       </provider>
     </entry>
@@ -674,13 +636,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/strategy/stalker_proxy.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="19" column="42" selection-start-line="19" selection-start-column="42" selection-end-line="19" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/strategy/carrier_madness.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="234">
@@ -709,13 +664,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/army/micro.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="705" column="50" selection-start-line="705" selection-start-column="50" selection-end-line="705" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/strategy/adept_defend.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="297">
@@ -730,73 +678,150 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/strategy/two_base_colossus.py">
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="105" column="49" selection-start-line="105" selection-start-column="49" selection-end-line="105" selection-end-column="49" />
+        <state relative-caret-position="20">
+          <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/strategy/two_base_archons.py">
+    <entry file="file://$PROJECT_DIR$/venv/constants.py" />
+    <entry file="file://$PROJECT_DIR$/neural/deep_craft.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="337">
-          <caret line="105" column="49" selection-start-line="105" selection-start-column="49" selection-end-line="105" selection-end-column="49" />
+        <state relative-caret-position="260">
+          <caret line="13" column="28" lean-forward="true" selection-start-line="13" selection-start-column="28" selection-end-line="13" selection-end-column="28" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bot/player_vs.py">
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/position.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="214">
-          <caret line="105" column="51" selection-start-line="105" selection-start-column="51" selection-end-line="105" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bot/coords.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
-          <caret line="79" column="33" selection-start-line="79" selection-start-column="33" selection-end-line="79" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bot/conditions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="58" column="58" selection-start-line="58" selection-start-column="58" selection-end-line="58" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/builders/pylon_builder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="45" column="36" selection-start-line="45" selection-start-column="36" selection-end-line="45" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/builders/forge_builder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="358">
-          <caret line="41" column="90" selection-start-line="41" selection-start-column="90" selection-end-line="41" selection-end-column="90" />
+        <state relative-caret-position="474">
+          <caret line="191" column="8" selection-start-line="191" selection-start-column="8" selection-end-line="191" selection-end-column="8" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/strategy/macro.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
+        <state relative-caret-position="420">
           <caret line="21" column="47" selection-start-line="21" selection-start-column="47" selection-end-line="21" selection-end-column="47" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/strategy/bio.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
+        <state relative-caret-position="420">
           <caret line="21" column="47" selection-start-line="21" selection-start-column="47" selection-end-line="21" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/builders/forge_builder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="474">
+          <caret line="41" column="90" selection-start-line="41" selection-start-column="90" selection-end-line="41" selection-end-column="90" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/strategy/two_base_archons.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="474">
+          <caret line="105" column="49" selection-start-line="105" selection-start-column="49" selection-end-line="105" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bot/player_vs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="474">
+          <caret line="105" column="51" selection-start-line="105" selection-start-column="51" selection-end-line="105" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bot/coords.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="474">
+          <caret line="79" column="33" selection-start-line="79" selection-start-column="33" selection-end-line="79" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/builders/pylon_builder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="474">
+          <caret line="56" column="98" selection-start-line="56" selection-start-column="98" selection-end-line="56" selection-end-column="98" />
+          <folding>
+            <element signature="e#0#50#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bot/conditions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="280">
+          <caret line="15" column="63" selection-start-line="15" selection-start-column="63" selection-end-line="15" selection-end-column="63" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/strategy/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="12" column="38" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sc2/client.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="353">
+          <caret line="188" column="14" selection-start-line="188" selection-start-column="14" selection-end-line="188" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/strategy/stalker_defend.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="337">
+          <caret line="101" column="54" selection-start-line="101" selection-start-column="54" selection-end-line="101" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/strategy/stalker_proxy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="89" column="29" lean-forward="true" selection-start-line="89" selection-start-column="26" selection-end-line="89" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bot/upgraders.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="128">
+          <caret line="109" column="14" selection-start-line="109" selection-start-column="14" selection-end-line="109" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/strategy/two_base_colossus.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="212">
+          <caret line="90" column="27" lean-forward="true" selection-start-line="90" selection-start-column="27" selection-end-line="90" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/strategy/blinkers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="261">
+          <caret line="89" column="40" selection-start-line="89" selection-start-column="40" selection-end-line="89" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/army/micro.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="608" column="58" lean-forward="true" selection-start-line="608" selection-start-column="58" selection-end-line="608" selection-end-column="58" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="915" lean-forward="true" selection-start-line="915" selection-end-line="915" />
+        <state relative-caret-position="154">
+          <caret line="150" column="16" lean-forward="true" selection-start-line="150" selection-start-column="16" selection-end-line="150" selection-end-column="16" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>

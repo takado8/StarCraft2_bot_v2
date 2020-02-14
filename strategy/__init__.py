@@ -10,4 +10,4 @@ from strategy.adept_proxy import AdeptProxy
 from strategy.adept_defend import AdeptDefend
 from strategy.stalker_defend import StalkerDefend
 from strategy.dt import Dt
-
+from strategy.blinkers import Blinkers

@@ -76,7 +76,7 @@ class Octopus(sc2.BotAI):
         try:
             # enemy_info
             self.enemy_info = EnemyInfo(self)
-            strategy_name = await self.enemy_info.pre_analysis()
+            strategy_name = 'blinkers'  # await self.enemy_info.pre_analysis()
             if not strategy_name:
                 strategy_name = 'stalker_proxy'
 
@@ -86,7 +86,7 @@ class Octopus(sc2.BotAI):
             map_name = str(self.game_info.map_name)
             print('map_name: ' + map_name)
             # print('start location: ' + str(self.start_location.position))
-            self.coords = cd[map_name][self.start_location.position]
+            # self.coords = cd[map_name][self.start_location.position]
             self.compute_coeficients_for_buliding_validation()
         except Exception as ex:
             print(ex)
@@ -98,13 +98,14 @@ class Octopus(sc2.BotAI):
 
     async def on_end(self, game_result: Result):
         try:
+            self.print_stats()
             if game_result == Result.Victory:
                 score = 1
             else:
                 score = 0
             # plot(self.times,self.y1,self.y2)
             self.enemy_info.post_analysis(score)
-            self.print_stats()
+
         except Exception as ex:
             print(ex)
             try:
@@ -148,10 +149,10 @@ class Octopus(sc2.BotAI):
 
         if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS) or self.minerals > 400:
             try:
+                await self.twilight_upgrades()
                 await self.templar_archives_upgrades()
                 await self.fleet_beacon_upgrades()
                 self.cybernetics_core_upgrades()
-                await self.twilight_upgrades()
                 self.forge_upgrades()
                 await self.twilight_council_build()
                 await self.dark_shrine_build()
@@ -174,7 +175,7 @@ class Octopus(sc2.BotAI):
                 self.robotics_train()
                 self.strategy.stargate_train()
                 self.gate_train()
-                await self.strategy.warpgate_train()
+                await self.warpgate_train()
             except Exception as ex:
                 print(ex)
                 await self.chat_send('on_step error 7')
@@ -217,6 +218,8 @@ class Octopus(sc2.BotAI):
         await self.chat_send('Setting strategy: '+ strategy_name)
         if strategy_name == 'adept_defend':
             self.strategy = AdeptDefend(self)
+        elif strategy_name == 'blinkers':
+            self.strategy = Blinkers(self)
         elif strategy_name == 'dt':
             self.strategy = Dt(self)
         elif strategy_name == 'adept_proxy':
@@ -652,13 +655,19 @@ class Octopus(sc2.BotAI):
                                         buff.CHRONOBOOSTENERGYCOST))
                                 if target.exists:
                                     target = target.random
-
-                                # else:
-                                #     target = self.structures().filter(lambda x: (x.type_id == unit.GATEWAY or x.type_id == unit.WARPGATE)
-                                #                                            and x.is_ready and not x.is_idle and not x.has_buff(
-                                #         buff.CHRONOBOOSTENERGYCOST))
-                                #     if target.exists:
-                                #         target = target.random
+                                else:
+                                    target = self.structures().filter(lambda x: x.type_id == unit.GATEWAY
+                                                                           and x.is_ready and not x.is_idle and not x.has_buff(
+                                        buff.CHRONOBOOSTENERGYCOST))
+                                    if target.exists:
+                                        target = target.random
+                                    else:
+                                        target = self.structures().filter(
+                                            lambda x: x.type_id == unit.TWILIGHTCOUNCIL
+                                                      and x.is_ready and not x.is_idle and not x.has_buff(
+                                                buff.CHRONOBOOSTENERGYCOST))
+                                        if target.exists:
+                                            target = target.random
                 if target:
                     self.do(nexus(ability.EFFECT_CHRONOBOOSTENERGYCOST,target))
 
@@ -763,10 +772,13 @@ class Octopus(sc2.BotAI):
                 self.do(shadow.move(destination))
 
     async def blink(self, stalker, target):
-        abilities = await self.get_available_abilities(stalker)
-        if ability.EFFECT_BLINK_STALKER in abilities:
-            self.do(stalker(ability.EFFECT_BLINK_STALKER, target))
-            return True
+        if stalker.type_id == unit.STALKER:
+            abilities = await self.get_available_abilities(stalker)
+            if ability.EFFECT_BLINK_STALKER in abilities:
+                self.do(stalker(ability.EFFECT_BLINK_STALKER, target))
+                return True
+            else:
+                return False
         else:
             return False
 
@@ -923,11 +935,11 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[3]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[2], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=real_time)
     return res, build, races[race_index]
 # CheatMoney   VeryHard
 
 
 if __name__ == '__main__':
-    test(real_time=0)
+    test(real_time=1)
