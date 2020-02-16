@@ -48,7 +48,7 @@ class Blinkers(Strategy):
         await self._robotics_builder.none()
 
     async def expand(self):
-        await self._expander.two_bases()
+        await self._expander.none()
 
     # =======================================================  Upgraders
 
@@ -87,7 +87,7 @@ class Blinkers(Strategy):
     # =======================================================  Army
 
     async def micro(self):
-        await self._micro.personal_with_blink()
+        await self._micro.group_with_blink()
 
     async def movements(self):
         await self._movements.rush()

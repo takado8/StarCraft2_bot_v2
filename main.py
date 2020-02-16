@@ -86,7 +86,7 @@ class Octopus(sc2.BotAI):
             map_name = str(self.game_info.map_name)
             print('map_name: ' + map_name)
             # print('start location: ' + str(self.start_location.position))
-            # self.coords = cd[map_name][self.start_location.position]
+            self.coords = cd[map_name][self.start_location.position]
             self.compute_coeficients_for_buliding_validation()
         except Exception as ex:
             print(ex)
@@ -196,11 +196,7 @@ class Octopus(sc2.BotAI):
         except Exception as ex:
             print(ex)
             await self.chat_send('on_step error 8')
-        try:
-            await self.micro_units()
-        except Exception as ex:
-            print(ex)
-            await self.chat_send('on_step error 9 -> micro_units')
+
         try:
             if self.attack:
                 await self.attack_formation()
@@ -211,6 +207,13 @@ class Octopus(sc2.BotAI):
         except Exception as ex:
             print(ex)
             await self.chat_send('on_step error 10')
+        try:
+            await self.micro_units()
+        except Exception as ex:
+            print(ex)
+            await self.chat_send('on_step error 9 -> micro_units')
+
+
 
     # =============================================
 
@@ -415,7 +418,7 @@ class Octopus(sc2.BotAI):
 
     def scan(self):
         scouts = self.units(unit.PHOENIX).filter(lambda z: z.is_hallucination)
-        if scouts.amount < 2:
+        if scouts.amount < 3:
             snts = self.army(unit.SENTRY)
             if snts.exists:
                 snts = self.army(unit.SENTRY).filter(lambda z: z.energy >= 75)
@@ -929,17 +932,17 @@ def botVsComputer(real_time):
     # computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Timing]
     # computer_builds = [AIBuild.Air]
-    computer_builds = [AIBuild.Power, AIBuild.Macro]
+    computer_builds = [AIBuild.Power]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[3]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[2], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=real_time)
     return res, build, races[race_index]
 # CheatMoney   VeryHard
 
 
 if __name__ == '__main__':
-    test(real_time=1)
+    test(real_time=0)
