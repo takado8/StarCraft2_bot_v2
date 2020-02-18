@@ -196,7 +196,7 @@ class Octopus(sc2.BotAI):
         except Exception as ex:
             print(ex)
             await self.chat_send('on_step error 8')
-
+        await self.probes_micro()
         try:
             if self.attack:
                 await self.attack_formation()
@@ -212,6 +212,8 @@ class Octopus(sc2.BotAI):
         except Exception as ex:
             print(ex)
             await self.chat_send('on_step error 9 -> micro_units')
+            raise ex
+
 
 
 
@@ -409,6 +411,39 @@ class Octopus(sc2.BotAI):
 
     # async def on_unit_created(self, _unit):
     #     self.units_tags.append((_unit.tag, _unit.type_id))
+
+    async def probes_micro(self):
+        probes = self.units(unit.PROBE)
+        for probe in probes:
+            enemy = self.enemy_units().filter(lambda x: x.can_attack_ground and x.distance_to(probe) < 9)
+            if enemy.amount > 1:
+                if self.time < 180:  # rush -> fight
+                    closest_enemy = enemy.closest_to(probe)
+                    if probe.shield < 10 and probe.health < 10:  # want to flee
+                        nexus = self.structures(unit.NEXUS).closest_to(probe)
+                        position = nexus.position.towards(closest_enemy, -7)
+                        path = await self._client.query_pathing(probe,position)
+                        if path:  # flee if possible and gather
+                            self.do(probe.move(position))
+                            self.do(probe.gather(self.mineral_field.closest_to(probe),queue=True))
+                    else:  # ready to fight
+                        path = await self._client.query_pathing(probe,closest_enemy.position)
+                        if path and path < 9:  # attack if possible
+                            self.do(probe.attack(closest_enemy))
+                else:  # flee
+                    self.do(probe.move(self.start_location.position.random_on_distance(5)))
+            else:  # fight or ignore
+                if enemy.exists:
+                    closest_nex = self.structures(unit.NEXUS).closest_to(probe)
+                    closest_enemy = enemy.closest_to(probe)
+                    if probe.distance_to(closest_nex.position.random_on_distance(5)) > 9 and \
+                            probe.is_attacking:  # too far away, return
+                        self.do(probe.move(closest_nex.position.random_on_distance(5)))
+                    else:
+                        if probe.shield > 5:
+                            path = await self._client.query_pathing(probe,closest_enemy.position)
+                            if path and path < 7:  # attack
+                                self.do(probe.attack(closest_enemy))
 
     def set_game_step(self):
         if self.enemy_units().exists:
@@ -929,10 +964,11 @@ def botVsComputer(real_time):
                 'World of Sleepers LE','Zen LE']
     races = [Race.Protoss, Race.Zerg, Race.Terran]
 
-    # computer_builds = [AIBuild.Rush]
+    computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Timing]
     # computer_builds = [AIBuild.Air]
-    computer_builds = [AIBuild.Power]
+    # computer_builds = [AIBuild.Power]
+    # computer_builds = [AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)

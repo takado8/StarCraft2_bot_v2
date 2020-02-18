@@ -405,7 +405,7 @@ class Micro:
                                 self.ai.do(st.move(st.position.towards(pos,d)))
                         else:
                             highground = (target.position3d.z - st.position3d.z > 1.2) or\
-                                         self.ai._client.query_pathing(st,target) is None
+                                         await self.ai._client.query_pathing(st,target.position) is None
                             if highground or st.distance_to(
                                     target) > 7:  # blink forwards and attack
                                 print('want to blink!')
