@@ -4,6 +4,7 @@ from sc2 import run_game, maps, Race, Difficulty, Result, AIBuild
 import sc2
 from sc2.ids.ability_id import AbilityId as ability
 from sc2.ids.unit_typeid import UnitTypeId as unit
+from sc2.ids.effect_id import EffectId as effect
 from sc2.player import Bot, Computer
 from sc2.ids.buff_id import BuffId as buff
 from sc2.ids.upgrade_id import UpgradeId as upgrade
@@ -46,7 +47,7 @@ class Octopus(sc2.BotAI):
     enemy_tags = []
     proxy_worker = None
     observer_scouting_index = 0
-    observer_scounting_points = []
+    observer_scouting_points = []
     psi_storm_wait = 0
     nova_wait = 0
 
@@ -76,7 +77,7 @@ class Octopus(sc2.BotAI):
         try:
             # enemy_info
             self.enemy_info = EnemyInfo(self)
-            strategy_name = 'blinkers'  # await self.enemy_info.pre_analysis()
+            strategy_name = await self.enemy_info.pre_analysis()
             if not strategy_name:
                 strategy_name = 'stalker_proxy'
 
@@ -85,9 +86,14 @@ class Octopus(sc2.BotAI):
 
             map_name = str(self.game_info.map_name)
             print('map_name: ' + map_name)
-            # print('start location: ' + str(self.start_location.position))
-            self.coords = cd[map_name][self.start_location.position]
-            self.compute_coeficients_for_buliding_validation()
+            print('start location: ' + str(self.start_location.position))
+            if map_name in cd and self.start_location.position in cd[map_name]:
+                    self.coords = cd[map_name][self.start_location.position]
+                    print('getting coords successful.')
+            else:
+                print('getting coords failed')
+                await self.chat_send('getting coords failed')
+            self.compute_coefficients_for_building_validation()
         except Exception as ex:
             print(ex)
             try:
@@ -213,6 +219,7 @@ class Octopus(sc2.BotAI):
             print(ex)
             await self.chat_send('on_step error 9 -> micro_units')
             raise ex
+        self.avoid_aoe()
 
 
 
@@ -402,15 +409,21 @@ class Octopus(sc2.BotAI):
     async def transformation(self):
         await self.strategy.transformation()
 
-    # ============================================= none
-
-    # async def on_unit_destroyed(self, unit_tag):
-    #     for ut in self.units_tags:
-    #         if ut[0] == unit_tag:
-    #             # friendly unit died
-
-    # async def on_unit_created(self, _unit):
-    #     self.units_tags.append((_unit.tag, _unit.type_id))
+    def avoid_aoe(self):
+        aoes_ids = [effect.RAVAGERCORROSIVEBILECP, effect.PSISTORMPERSISTENT, effect.NUKEPERSISTENT,
+                    effect.LIBERATORTARGETMORPHDELAYPERSISTENT, effect.LIBERATORTARGETMORPHPERSISTENT]
+        purification_novas = self.enemy_units(unit.DISRUPTORPHASED)
+        purification_novas.extend(self.units(unit.DISRUPTORPHASED))
+        for man in self.army:
+            if purification_novas.exists and purification_novas.closer_than(3, man).exists:
+                self.do(man.move(purification_novas.closest_to(man, -4)))
+                continue
+            for eff in self.state.effects:
+                if eff.id in aoes_ids:
+                    positions = eff.positions
+                    for position in positions:
+                        if man.distance_to(position) < eff.radius + 2:
+                            self.do(man.move(man.position.towards(position, -3)))
 
     async def probes_micro(self):
         probes = self.units(unit.PROBE)
@@ -468,16 +481,16 @@ class Octopus(sc2.BotAI):
                     if not scouts.exists:
                         scouts = self.units(unit.PROBE).closest_n_units(self.enemy_start_locations[0],3)
         if scouts:
-            if len(self.observer_scounting_points) == 0:
+            if len(self.observer_scouting_points) == 0:
                 for exp in self.expansion_locations:
                     if not self.structures().closer_than(12,exp).exists:
-                        self.observer_scounting_points.append(exp)
-                self.observer_scounting_points = sorted(self.observer_scounting_points,
-                                                        key=lambda x: self.enemy_start_locations[0].distance_to(x))
+                        self.observer_scouting_points.append(exp)
+                self.observer_scouting_points = sorted(self.observer_scouting_points,
+                                                       key=lambda x: self.enemy_start_locations[0].distance_to(x))
             for px in scouts.idle:
-                self.do(px.move(self.observer_scounting_points[self.observer_scouting_index]))
+                self.do(px.move(self.observer_scouting_points[self.observer_scouting_index]))
                 self.observer_scouting_index += 1
-                if self.observer_scouting_index == len(self.observer_scounting_points):
+                if self.observer_scouting_index == len(self.observer_scouting_points):
                     self.observer_scouting_index = 0
                     
 
@@ -820,7 +833,7 @@ class Octopus(sc2.BotAI):
         else:
             return False
 
-    def compute_coeficients_for_buliding_validation(self):
+    def compute_coefficients_for_building_validation(self):
         self.n = self.structures(unit.NEXUS).closest_to(self.start_location).position
         vespenes = self.vespene_geyser.closer_than(9,self.n)
         self.g1 = vespenes.pop(0).position
@@ -964,11 +977,11 @@ def botVsComputer(real_time):
                 'World of Sleepers LE','Zen LE']
     races = [Race.Protoss, Race.Zerg, Race.Terran]
 
-    computer_builds = [AIBuild.Rush]
+    # computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Timing]
     # computer_builds = [AIBuild.Air]
     # computer_builds = [AIBuild.Power]
-    # computer_builds = [AIBuild.Macro]
+    computer_builds = [AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
@@ -981,4 +994,4 @@ def botVsComputer(real_time):
 
 
 if __name__ == '__main__':
-    test(real_time=0)
+    test(real_time=1)
