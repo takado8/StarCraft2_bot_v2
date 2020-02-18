@@ -29,6 +29,7 @@ class EnemyInfo:
 
     async def pre_analysis(self):
         try:
+            print('starting pre-analysis...')
             self.opponent_id = await self.get_opponent_id()
             if self.opponent_id:
                 dir_ = os.path.realpath(sys.argv[0]) if sys.argv[0] else None
@@ -61,11 +62,14 @@ class EnemyInfo:
                     await self.ai.chat_send("new opponent.")
             else:
                 await self.ai.chat_send("opponent_id is None")
+            print('done.')
         except Exception as ex:
+            print('error.')
             await self.ai.chat_send('recognition error')
             print(ex)
 
     def post_analysis(self, score):
+        print('starting post-analysis')
         if self.enemy is None:
             self.enemy = {
                 'id': self.opponent_id,
@@ -124,3 +128,4 @@ class EnemyInfo:
 
         with open(general_stats_path,'w+') as file:
             json.dump(general_stats, file)
+        print('done.')

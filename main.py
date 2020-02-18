@@ -221,9 +221,6 @@ class Octopus(sc2.BotAI):
             raise ex
         self.avoid_aoe()
 
-
-
-
     # =============================================
 
     async def set_strategy(self, strategy_name):
