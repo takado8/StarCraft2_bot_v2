@@ -11,7 +11,7 @@ from sc2.position import Point2
 import numpy as np
 import cv2
 # from dqn import DQN
-import constants
+from neural import constants
 from collections import deque
 
 reward_val = {'kill': 0.1,'die': -0.1,'win': 0.3,'loose': -0.3}

@@ -12,6 +12,9 @@ class ConditionAttack:
     def rush(self):
         return (not self.ai.first_attack) and upgrade.WARPGATERESEARCH in self.ai.state.upgrades
 
+    def blink_complete(self):
+        return (not self.ai.first_attack) and upgrade.BLINKTECH in self.ai.state.upgrades
+
     def defend(self):
         return (not self.ai.first_attack) and self.ai.time > 420
 

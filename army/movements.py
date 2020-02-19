@@ -101,12 +101,11 @@ class Movements:
             if not self.ai.enemy_main_base_down:
                 self.ai.enemy_main_base_down = True
             self.ai.scan()
-            await self.ai.chat_send('scouting')
-            enemy_units.extend(self.ai.enemy_structures())
-            if enemy_units.exists:
-                for man in self.ai.army.exclude_type(unit.OBSERVER):
-                    self.ai.do(man.attack(enemy_units.closest_to(man)))
-            return
+            # enemy_units.extend(self.ai.enemy_structures())
+            # if enemy_units.exists:
+            #     for man in self.ai.army.exclude_type(unit.OBSERVER):
+            #         self.ai.do(man.attack(enemy_units.closest_to(man)))
+            # return
         if enemy.amount > 2:
             if enemy.closer_than(25,self.ai.start_location).amount > 5:
                 destination = enemy.closest_to(self.ai.start_location).position
