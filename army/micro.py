@@ -408,23 +408,18 @@ class Micro:
                                          await self.ai._client.query_pathing(st,target.position) is None
                             if highground or st.distance_to(
                                     target) > 7:  # blink forwards and attack
-                                print('want to blink!')
                                 if highground:
-                                    print('highground')
                                     position = target.position.towards(st, -3)
                                 else:
                                     position = target.position.towards(st,6)
                                 if not await self.ai.blink(st,position):
-                                    print('no blink')
                                     self.ai.do(st.attack(target))
                                 else:
-                                    print('blink2')
                                     self.ai.do(st.attack(target,queue=True))
                                 # else:
                                 #     print('blink1')
                                 #     self.ai.do(man.attack(target, queue=True))
                             else:
-                                print('just attack')
                                 self.ai.do(st.attack(target))
 
         #  Sentry region  #
@@ -936,18 +931,11 @@ class Micro:
                         self.ai.do(man.move(man.position.towards(pos,d)))
                 else:
                     if self.ai._client.query_pathing(man, target) is None or man.distance_to(target) > 7:  # blink forwards and attack
-                        print('want to blink!')
                         if not await self.ai.blink(man,target.position.towards(man, 6)):
-                            print('no blink')
                             self.ai.do(man.attack(target))
                         else:
-                            print('blink2')
                             self.ai.do(man.attack(target,queue=True))
-                        # else:
-                        #     print('blink1')
-                        #     self.ai.do(man.attack(target, queue=True))
                     else:
-                        print('just attack')
                         self.ai.do(man.attack(target))
 
                 #  Sentry region  #

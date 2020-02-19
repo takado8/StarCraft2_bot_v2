@@ -11,7 +11,7 @@ class Blinkers(Strategy):
     # =======================================================  Builders
 
     async def gate_build(self):
-        await self._gate_builder.macro()
+        await self._gate_builder.three_blinkers()
 
     async def stargate_build(self):
         pass

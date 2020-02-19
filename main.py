@@ -77,7 +77,7 @@ class Octopus(sc2.BotAI):
         try:
             # enemy_info
             self.enemy_info = EnemyInfo(self)
-            strategy_name = await self.enemy_info.pre_analysis()
+            strategy_name = 'blinkers' # await self.enemy_info.pre_analysis()
             if not strategy_name:
                 strategy_name = 'stalker_proxy'
 
@@ -977,18 +977,18 @@ def botVsComputer(real_time):
     # computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Timing]
     # computer_builds = [AIBuild.Air]
-    # computer_builds = [AIBuild.Power]
-    computer_builds = [AIBuild.Macro]
+    computer_builds = [AIBuild.Power]
+    # computer_builds = [AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
-    res = run_game(map_settings=maps.get(maps_set[3]), players=[
+    res = run_game(map_settings=maps.get(maps_set[5]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=real_time)
     return res, build, races[race_index]
 # CheatMoney   VeryHard
 
 
 if __name__ == '__main__':
-    test(real_time=1)
+    test(real_time=0)
