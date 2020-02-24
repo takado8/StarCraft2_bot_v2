@@ -104,5 +104,7 @@ class Dt(Strategy):
         return self._condition_attack.counter_attack()
 
     def retreat_condition(self):
-        return self._condition_retreat.stalker_proxy()
+        return self._condition_retreat.dt()
 
+    async def transformation(self):
+        await self._condition_transform.macro()

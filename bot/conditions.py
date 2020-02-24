@@ -58,6 +58,9 @@ class ConditionRetreat:
     def stalker_proxy(self):
         return self.ai.attack and self.ai.army.amount < (2 if self.ai.time < 300 else 5)
 
+    def dt(self):
+        return self.ai.attack and self.ai.army.amount < (2 if self.ai.time < 300 else 7)
+
     def macro(self):
         return self.ai.attack and self.ai.army.amount < 17
 

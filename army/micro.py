@@ -49,11 +49,11 @@ class Micro:
                                   unit_.type_id not in self.ai.units_to_ignore)
                 if self.ai.attack:
                     threats.extend(self.ai.enemy_structures().filter(lambda _x: _x.can_attack_ground or _x.can_attack_air or
-                                                                     _x.type_id in self.ai.bases_ids))
+                                                                     _x.type_id == unit.BUNKER))
                 if threats.exists:
                     closest_enemy = threats.closest_to(leader)
                     priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR,
-                        unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.SIEGETANK, unit.THOR])
+                        unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.SIEGETANK, unit.THOR, unit.BUNKER])
                     if priority.exists:
                         targets = priority.sorted(lambda x1: x1.health + x1.shield)
                         if self.ai.enemy_race == Race.Protoss:
@@ -353,7 +353,7 @@ class Micro:
                     closest_enemy = threats.closest_to(leader)
                     priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS,unit.DISRUPTOR,unit.HIGHTEMPLAR,
                                                                         unit.MEDIVAC,unit.SIEGETANKSIEGED, unit.CYCLONE,
-                                                                        unit.SIEGETANK,unit.THOR])
+                                                                        unit.SIEGETANK,unit.THOR, unit.BUNKER])
                     if priority.exists:
                         targets = priority.sorted(lambda x1: x1.health + x1.shield)
                         if self.ai.enemy_race == Race.Protoss:
@@ -650,12 +650,11 @@ class Micro:
                 lambda unit_: unit_.can_attack_ground and unit_.distance_to(man) <= dist and
                               unit_.type_id not in self.ai.units_to_ignore)
             if self.ai.attack:
-                threats.extend(self.ai.enemy_structures().filter(lambda _x: _x.can_attack_ground or _x.type_id in
-                                                                    [unit.NEXUS, unit.HATCHERY, unit.COMMANDCENTER]))
+                threats.extend(self.ai.enemy_structures().filter(lambda _x: _x.can_attack_ground or _x.type_id == unit.BUNKER))
             if threats.exists:
                 closest_enemy = threats.closest_to(man)
                 priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR,
-                    unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.SIEGETANK, unit.THOR])
+                    unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.SIEGETANK, unit.THOR, unit.BUNKER])
                 if priority.exists:
                     targets = priority.sorted(lambda x1: x1.health + x1.shield)
                     if self.ai.enemy_race == Race.Protoss:
@@ -880,7 +879,7 @@ class Micro:
             if threats.exists:
                 closest_enemy = threats.closest_to(man)
                 priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR,
-                    unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.IMMORTAL, unit.SIEGETANK, unit.THOR])
+                    unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.IMMORTAL, unit.SIEGETANK, unit.THOR, unit.BUNKER])
                 if priority.exists:
                     print('priority exists:')
                     targets = priority.sorted(lambda x1: x1.health + x1.shield)
@@ -1109,12 +1108,11 @@ class Micro:
                 lambda unit_: unit_.can_attack_ground and unit_.distance_to(man) <= dist and
                               unit_.type_id not in self.ai.units_to_ignore)
             if self.ai.attack:
-                threats.extend(self.ai.enemy_structures().filter(lambda _x: _x.can_attack_ground or _x.type_id in
-                                                                    [unit.NEXUS, unit.HATCHERY, unit.COMMANDCENTER]))
+                threats.extend(self.ai.enemy_structures().filter(lambda _x: _x.can_attack_ground or _x.type_id == unit.BUNKER))
             if threats.exists:
                 closest_enemy = threats.closest_to(man)
                 priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR,
-                    unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.SIEGETANK, unit.THOR])
+                    unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.SIEGETANK, unit.THOR, unit.BUNKER])
                 if priority.exists:
                     targets = priority.sorted(lambda x1: x1.health + x1.shield)
                     if self.ai.enemy_race == Race.Protoss:

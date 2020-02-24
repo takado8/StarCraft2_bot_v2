@@ -465,7 +465,7 @@ class Octopus(sc2.BotAI):
         scouts = self.units(unit.PHOENIX).filter(lambda z: z.is_hallucination)
         if scouts.amount < 3:
             snts = self.army(unit.SENTRY)
-            if snts.exists:
+            if snts.exists and self.time < 1800:
                 snts = self.army(unit.SENTRY).filter(lambda z: z.energy >= 75)
                 if snts:
                     for se in snts:
@@ -477,10 +477,12 @@ class Octopus(sc2.BotAI):
                     scouts = self.army.filter(lambda z: z.is_flying)
                     if not scouts.exists:
                         scouts = self.units(unit.PROBE).closest_n_units(self.enemy_start_locations[0],3)
-        if scouts:
+                        if not scouts.exists:
+                            scouts = self.units().closest_n_units(self.enemy_start_locations[0], 3)
+        if scouts.exists:
             if len(self.observer_scouting_points) == 0:
                 for exp in self.expansion_locations:
-                    if not self.structures().closer_than(12,exp).exists:
+                    if not self.structures().closer_than(7,exp).exists:
                         self.observer_scouting_points.append(exp)
                 self.observer_scouting_points = sorted(self.observer_scouting_points,
                                                        key=lambda x: self.enemy_start_locations[0].distance_to(x))
