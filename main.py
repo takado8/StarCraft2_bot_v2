@@ -51,7 +51,7 @@ class Octopus(sc2.BotAI):
     psi_storm_wait = 0
     nova_wait = 0
 
-    # linear function coefficients for bulid spot validation
+    # linear function coefficients for build spot validation
     coe_a1 = None
     coe_a2 = None
     coe_b1 = None
@@ -77,7 +77,7 @@ class Octopus(sc2.BotAI):
         try:
             # enemy_info
             self.enemy_info = EnemyInfo(self)
-            strategy_name = 'blinkers' # await self.enemy_info.pre_analysis()
+            strategy_name = await self.enemy_info.pre_analysis()
             if not strategy_name:
                 strategy_name = 'stalker_proxy'
 
@@ -839,17 +839,17 @@ class Octopus(sc2.BotAI):
         self.g2 = vespenes.pop(0).position
 
         delta1 = (self.g1.x - self.n.x)
-        if delta1 != 0:
-            self.coe_a1 = (self.g1.y - self.n.y) / delta1
-            self.coe_b1 = self.n.y - self.coe_a1 * self.n.x
-        else:
-            raise ZeroDivisionError
+        if delta1 == 0:
+            delta1 = 1
+        self.coe_a1 = (self.g1.y - self.n.y) / delta1
+        self.coe_b1 = self.n.y - self.coe_a1 * self.n.x
+
         delta2 = (self.g2.x - self.n.x)
-        if delta2 != 0:
-            self.coe_a2 = (self.g2.y - self.n.y) / delta2
-            self.coe_b2 = self.n.y - self.coe_a2 * self.n.x
-        else:
-            raise ZeroDivisionError
+        if delta2 == 0:
+            delta2 = 1
+        self.coe_a2 = (self.g2.y - self.n.y) / delta2
+        self.coe_b2 = self.n.y - self.coe_a2 * self.n.x
+
         max_ = 0
         minerals = self.mineral_field.closer_than(9,self.n)
         minerals.append(self.g1)

@@ -7,8 +7,10 @@ class Movements:
 
     async def attack_formation_brand_new_newest_thee_most_new_shit_in_whole_wide_world(self):
         enemy_units = self.ai.enemy_units()
-        enemy = enemy_units.filter(lambda x: x.type_id not in self.ai.units_to_ignore and (x.can_attack_ground or x.can_attack_air))
-        enemy.extend(self.ai.enemy_structures().filter(lambda b: b.type_id in self.ai.bases_ids or b.can_attack_ground or b.can_attack_air))
+        enemy = enemy_units.filter(lambda x: x.type_id not in self.ai.units_to_ignore and (x.can_attack_ground
+                                                                                           or x.can_attack_air))
+        enemy.extend(self.ai.enemy_structures().filter(lambda b: b.type_id in self.ai.bases_ids
+                                            or b.can_attack_ground or b.can_attack_air or b.type_id == unit.BUNKER))
         if self.ai.enemy_main_base_down or (self.ai.army.closer_than(20,self.ai.enemy_start_locations[0]).amount > 17 and
                 not self.ai.enemy_structures().exists):
             if not self.ai.enemy_main_base_down:
@@ -20,11 +22,11 @@ class Movements:
                 for man in self.ai.army.exclude_type(unit.OBSERVER):
                     self.ai.do(man.attack(enemy_units.closest_to(man)))
             return
-        if enemy.amount > 2:
-            if enemy.closer_than(25,self.ai.start_location).amount > 5:
+        if enemy.amount > 1:
+            if enemy.closer_than(25,self.ai.start_location).amount > 1:
                 destination = enemy.closest_to(self.ai.start_location).position
             else:
-                destination = enemy.further_than(30, self.ai.start_location)
+                destination = enemy.further_than(25, self.ai.start_location)
                 if destination:
                     destination = destination.closest_to(self.ai.start_location).position
                 elif self.ai.enemy_structures().exists:

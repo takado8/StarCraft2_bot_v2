@@ -1,2 +1,0 @@
-add try/except to on_step before uploading to ladder
-map coords
