@@ -403,11 +403,11 @@ class StargateTrainer:
             if self.ai.structures(unit.FLEETBEACON).ready.exists:
                 if self.ai.can_afford(unit.CARRIER):
                     self.ai.train(unit_type=unit.CARRIER)
-                elif self.ai.can_afford(unit.TEMPEST) and self.ai.army(unit.TEMPEST).amount < 4 and\
-                        self.ai.army(unit.TEMPEST).amount * 2 < self.ai.army(unit.CARRIER).amount:
+                elif self.ai.can_afford(unit.TEMPEST) and\
+                        self.ai.army(unit.TEMPEST).amount < self.ai.army(unit.CARRIER).amount:
                     self.ai.train(unit.TEMPEST)
                 elif self.ai.can_afford(unit.VOIDRAY) and self.ai.army(unit.VOIDRAY).amount < 7 and \
-                        self.ai.army(unit.CARRIER).amount > 5:
+                        self.ai.army(unit.CARRIER).amount > 1:
                     self.ai.train(unit.VOIDRAY)
             elif self.ai.can_afford(unit.VOIDRAY):
                 self.ai.train(unit.VOIDRAY)

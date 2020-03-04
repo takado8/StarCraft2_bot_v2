@@ -315,6 +315,72 @@ class Micro:
                     else:
                         self.ai.do(zl.attack(target))
 
+    async def air(self):
+        # Carrier
+        for cr in self.ai.army({unit.CARRIER, unit.TEMPEST}).filter(lambda x: not x.is_attacking):
+            threats = self.ai.enemy_units().filter(
+                lambda z: z.distance_to(cr) < 12 and z.type_id not in self.ai.units_to_ignore)
+            threats.extend(
+                self.ai.enemy_structures().filter(lambda z: z.can_attack_air))
+            if threats.exists:
+                # target2 = None
+                priority = threats.filter(lambda z: z.can_attack_air or z.type_id == unit.VOIDRAY).sorted(lambda z: z.health + z.shield,reverse=False)
+                if priority.exists:
+                    target2 = priority[0]
+                else:
+                    target2 = threats.sorted(lambda z: z.health + z.shield)[0]
+                if target2 is not None:
+                    self.ai.do(cr.attack(target2))
+        for vr in self.ai.army(unit.VOIDRAY):
+            threats = self.ai.enemy_units().filter(
+                lambda z: z.distance_to(vr) < 12 and z.type_id not in self.ai.units_to_ignore or z.type_id is unit.VOIDRAY)
+            threats.extend(
+                self.ai.enemy_structures().filter(lambda z: z.can_attack_air))
+            if threats.exists:
+                # target2 = None
+                priority = threats.filter(lambda z: z.can_attack_air).sorted(lambda z: z.health + z.shield,reverse=False)
+                if priority.exists:
+                    # closest = priority.closest_to(cr)
+                    # if cr.distance_to(closest) < 7:
+                    #     self.ai.do(cr.move(cr.position.towards(closest,-3)))
+                    # else:
+                    # if priority.amount > 2:
+                    #     priority = sorted(priority[:int(len(priority) / 2)],key=lambda z: z.health + z.shield)
+                    target2 = priority[0]
+                else:
+                    target2 = threats.sorted(lambda z: z.health + z.shield)[0]
+                if target2 is not None:
+                    queue = False
+                    if target2.is_armored and target2.distance_to(vr) < 7:
+                        abilities = await self.ai.get_available_abilities(vr)
+                        if ability.EFFECT_VOIDRAYPRISMATICALIGNMENT in abilities:
+                            self.ai.do(vr(ability.EFFECT_VOIDRAYPRISMATICALIGNMENT))
+                            queue = True
+                    self.ai.do(vr.attack(target2, queue=queue))
+
+        # zealot
+        zealots = self.ai.army(unit.ZEALOT)
+        for zl in zealots.filter(lambda z: not z.is_attacking):
+            threats = self.ai.enemy_units().filter(lambda x2: x2.distance_to(zl) < 7).sorted(
+                lambda _x: _x.health + _x.shield)
+            if threats.exists:
+                closest = threats.closest_to(zl)
+                if self.ai.enemy_race == Race.Protoss:
+                    a = threats[0].shield_percentage
+                else:
+                    a = 1
+                dist = await self.ai._client.query_pathing(zl.position,threats[0].position)
+                if threats[0].health_percentage * a == 1 or dist is None or dist > closest.distance_to(zl) + 4:
+                    target = closest
+                else:
+                    target = threats[0]
+                if not zl.is_attacking:
+                    if ability.EFFECT_CHARGE in await self.ai.get_available_abilities(zl):
+                        self.ai.do(zl(ability.EFFECT_CHARGE,target))
+                    else:
+                        self.ai.do(zl.attack(target))
+
+
     async def group_with_blink(self):
         enemy = self.ai.enemy_units()
         if not enemy.exists:

@@ -59,7 +59,7 @@ class ConditionRetreat:
         return self.ai.attack and self.ai.army.amount < (2 if self.ai.time < 300 else 5)
 
     def dt(self):
-        return self.ai.attack and self.ai.army.amount < (2 if self.ai.time < 300 else 7)
+        return self.ai.attack and self.ai.army.amount < (2 if self.ai.time < 320 else 5)
 
     def macro(self):
         return self.ai.attack and self.ai.army.amount < 17
@@ -94,14 +94,14 @@ class ConditionTransform:
 
     async def stalker_proxy(self):
         if self.ai.after_first_attack and self.ai.army.amount > 7:
-            self.ai.after_first_attack = False
-            self.ai.first_attack = False
+            # self.ai.after_first_attack = False
+            # self.ai.first_attack = False
             await self.ai.set_strategy('2b_colossus')
 
     async def adept_proxy(self):
         if self.ai.after_first_attack and self.ai.army.amount > 7:
-            self.ai.after_first_attack = False
-            self.ai.first_attack = False
+            # self.ai.after_first_attack = False
+            # self.ai.first_attack = False
             await self.ai.set_strategy('2b_archons')
 
     async def two_base_colossus(self):

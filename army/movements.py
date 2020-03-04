@@ -86,9 +86,9 @@ class Movements:
                     h = army.filter(lambda x: x.is_attacking)
                     if h.exists:
                         self.ai.do(man.attack(enemy.closest_to(h.closest_to(man))))
-            else:   # away. join army
+            elif man.type_id != unit.ZEALOT:   # away. join army
                 self.ai.do(man.move(pos))
-        if len(nearest) > len(self.ai.army) * 0.55:  # take next position
+        if len(nearest) > len(self.ai.army) * 0.70:  # take next position
             if enemy and enemy.closer_than(11, leader).exists:
                 return
             for man in army:
@@ -172,7 +172,7 @@ class Movements:
                     h = army.filter(lambda x: x.is_attacking)
                     if h.exists:
                         self.ai.do(man.attack(enemy.closest_to(h.closest_to(man))))
-            else:   # away. join army
+            elif man.type_id != unit.ZEALOT:   # away. join army
                 self.ai.do(man.attack(pos))
         if len(nearest) > len(self.ai.army) * 0.55:
             if enemy and enemy.closer_than(11, leader).exists:
@@ -214,9 +214,11 @@ class Movements:
             destination = self.ai.enemy_start_locations[0].position
 
         if self.ai.leader_tag is None or self.ai.army.find_by_tag(self.ai.leader_tag) is None:
-            self.ai.leader_tag = self.ai.army.closest_to(destination).tag
+            self.ai.leader_tag = self.ai.army.exclude_type({unit.ZEALOT, unit.SENTRY, unit.OBSERVER,
+                unit.WARPPRISM, unit.WARPPRISMPHASING, unit.HIGHTEMPLAR}).closest_to(destination).tag
 
         leader = self.ai.army.find_by_tag(self.ai.leader_tag)     # self.ai.army.closest_to(destination)
+        print(leader.type_id)
         self.ai.destination = destination
 
         # point halfway
@@ -237,7 +239,10 @@ class Movements:
                 return
         # if everybody's here, we can go
         army = self.ai.army
-        _range = 7 if army.amount < 20 else 12
+        if self.ai.strategy.type == 'air':
+            _range = 16
+        else:
+            _range = 7 if army.amount < 20 else 12
         nearest = []
         i = 3
         pos = leader.position
@@ -257,7 +262,7 @@ class Movements:
                     h = army.filter(lambda x: x.is_attacking)
                     if h.exists:
                         self.ai.do(man.attack(enemy.closest_to(h.closest_to(man))))
-            else:   # away. join army
+            elif man.type_id != unit.ZEALOT:   # away. join army
                 self.ai.do(man.attack(pos))
         if len(nearest) > len(self.ai.army) * 0.3:
             if enemy and enemy.closer_than(7, leader).exists:

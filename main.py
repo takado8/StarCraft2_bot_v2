@@ -203,22 +203,40 @@ class Octopus(sc2.BotAI):
             print(ex)
             await self.chat_send('on_step error 8')
         await self.probes_micro()
-        try:
-            if self.attack:
-                await self.attack_formation()
-            else:
-                await self.defend()
+        if self.strategy.type == 'rush' or self.strategy.type == 'air':
+            try:
+                if self.attack:
+                    await self.attack_formation()
+                else:
+                    await self.defend()
 
-            await self.warp_prism()
-        except Exception as ex:
-            print(ex)
-            await self.chat_send('on_step error 10')
-        try:
-            await self.micro_units()
-        except Exception as ex:
-            print(ex)
-            await self.chat_send('on_step error 9 -> micro_units')
-            raise ex
+                await self.warp_prism()
+            except Exception as ex:
+                print(ex)
+                await self.chat_send('on_step error 10')
+            try:
+                await self.micro_units()
+            except Exception as ex:
+                print(ex)
+                await self.chat_send('on_step error 9 -> micro_units')
+                raise ex
+        else:
+            try:
+                await self.micro_units()
+            except Exception as ex:
+                print(ex)
+                await self.chat_send('on_step error 9 -> micro_units')
+                raise ex
+            try:
+                if self.attack:
+                    await self.attack_formation()
+                else:
+                    await self.defend()
+
+                await self.warp_prism()
+            except Exception as ex:
+                print(ex)
+                await self.chat_send('on_step error 10')
         self.avoid_aoe()
 
     # =============================================
@@ -425,23 +443,23 @@ class Octopus(sc2.BotAI):
     async def probes_micro(self):
         probes = self.units(unit.PROBE)
         for probe in probes:
-            enemy = self.enemy_units().filter(lambda x: x.can_attack_ground and x.distance_to(probe) < 9)
-            if enemy.amount > 1:
+            enemy = self.enemy_units().filter(lambda x: x.can_attack_ground and x.distance_to(probe) < 7)
+            if enemy.amount > 2:
+                nexus = self.structures(unit.NEXUS).closest_to(probe)
+                closest_enemy = enemy.closest_to(probe)
+                position = nexus.position.towards(closest_enemy,-9)
                 if self.time < 180:  # rush -> fight
-                    closest_enemy = enemy.closest_to(probe)
                     if probe.shield < 10 and probe.health < 10:  # want to flee
-                        nexus = self.structures(unit.NEXUS).closest_to(probe)
-                        position = nexus.position.towards(closest_enemy, -7)
                         path = await self._client.query_pathing(probe,position)
                         if path:  # flee if possible and gather
                             self.do(probe.move(position))
                             self.do(probe.gather(self.mineral_field.closest_to(probe),queue=True))
                     else:  # ready to fight
                         path = await self._client.query_pathing(probe,closest_enemy.position)
-                        if path and path < 9:  # attack if possible
+                        if path and path < 7:  # attack if possible
                             self.do(probe.attack(closest_enemy))
                 else:  # flee
-                    self.do(probe.move(self.start_location.position.random_on_distance(5)))
+                    self.do(probe.move(position))
             else:  # fight or ignore
                 if enemy.exists:
                     closest_nex = self.structures(unit.NEXUS).closest_to(probe)
@@ -452,7 +470,7 @@ class Octopus(sc2.BotAI):
                     else:
                         if probe.shield > 5:
                             path = await self._client.query_pathing(probe,closest_enemy.position)
-                            if path and path < 7:  # attack
+                            if path and path < 6:  # attack
                                 self.do(probe.attack(closest_enemy))
 
     def set_game_step(self):
@@ -585,7 +603,10 @@ class Octopus(sc2.BotAI):
                 else:
                     regular.append(man)
             for hunter in hunters:
-                self.do(hunter.attack(enemy.closest_to(hunter)))
+                if hunter.distance_to(self.defend_position) < 20:
+                    self.do(hunter.attack(enemy.closest_to(hunter)))
+                else:
+                    self.do(hunter.move(self.defend_position))
             dist = 7
             for man in regular:
                 position = Point2(self.defend_position).towards(self.game_info.map_center,3) if \
@@ -593,7 +614,7 @@ class Octopus(sc2.BotAI):
                 if man.distance_to(self.defend_position) > dist:
                     self.do(man.move(position.random_on_distance(random.randint(1,2))))
         elif enemy.amount > 2:
-            dist = 11
+            dist = 13
             for man in self.army:
                 position = Point2(self.defend_position).towards(self.game_info.map_center,3) if \
                     man.type_id == unit.ZEALOT else Point2(self.defend_position)
@@ -605,7 +626,7 @@ class Octopus(sc2.BotAI):
                 position = Point2(self.defend_position).towards(self.game_info.map_center,3) if \
                     man.type_id == unit.ZEALOT else Point2(self.defend_position)
                 if man.distance_to(self.defend_position) > dist:
-                    self.do(man.move(position.random_on_distance(random.randint(1,2))))
+                    self.do(man.attack(position.random_on_distance(random.randint(1,2))))
 
     def assign_defend_position(self):
         nex = self.structures(unit.NEXUS)
@@ -624,28 +645,8 @@ class Octopus(sc2.BotAI):
             self.defend_position = enemy.closest_to(self.enemy_start_locations[0]).position
         elif nex.amount < 2:
             self.defend_position = self.main_base_ramp.top_center.towards(self.main_base_ramp.bottom_center, -6)
-        # elif nex.amount == 2:
-        #     self.defend_position = self.coords['defend_pos']
         else:
             self.defend_position = nex.closest_to(self.enemy_start_locations[0]).position.towards(self.game_info.map_center,5)
-
-            # c = 0
-            # total_dists = []
-            # for nx1 in nex:
-            #     for nx2 in nex:
-            #         c += nx1.distance_to(nx2)
-            #     total_dists.append(c)
-            #     c = 0
-            # i = 0
-            # idx = 0
-            # _min = 999
-            # for d in total_dists:
-            #     if d < _min:
-            #         _min = d
-            #         idx = i
-            #     i += 1
-            # self.defend_position = nex[idx].position.towards(self.game_info.map_center,5)
-
 
     def get_proper_pylon(self):
         properPylons = self.structures().filter(lambda unit_: unit_.type_id == unit.PYLON and unit_.is_ready and
@@ -670,7 +671,7 @@ class Octopus(sc2.BotAI):
                 self.do(gateway(ability.MORPH_WARPGATE))
 
     async def nexus_buff(self):
-        if not self.structures(unit.NEXUS).exists:
+        if not self.structures(unit.NEXUS).exists or not self.structures(unit.PYLON).ready.exists:
             return
         for nexus in self.structures(unit.NEXUS).ready:
             abilities = await self.get_available_abilities(nexus)
@@ -978,13 +979,13 @@ def botVsComputer(real_time):
 
     # computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Timing]
-    # computer_builds = [AIBuild.Air]
-    computer_builds = [AIBuild.Power]
+    computer_builds = [AIBuild.Air]
+    # computer_builds = [AIBuild.Power]
     # computer_builds = [AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
-    res = run_game(map_settings=maps.get(maps_set[5]), players=[
+    res = run_game(map_settings=maps.get(maps_set[3]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
         Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=real_time)
