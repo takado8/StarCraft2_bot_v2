@@ -67,6 +67,9 @@ class ConditionRetreat:
     def two_base(self):
         return self.ai.attack and self.ai.army.amount < 13
 
+    def air(self):
+        return self.ai.supply_used < 170
+
 
 class ConditionTransform:
     def __init__(self,ai):

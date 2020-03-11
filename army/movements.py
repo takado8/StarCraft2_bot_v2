@@ -218,7 +218,6 @@ class Movements:
                 unit.WARPPRISM, unit.WARPPRISMPHASING, unit.HIGHTEMPLAR}).closest_to(destination).tag
 
         leader = self.ai.army.find_by_tag(self.ai.leader_tag)     # self.ai.army.closest_to(destination)
-        print(leader.type_id)
         self.ai.destination = destination
 
         # point halfway

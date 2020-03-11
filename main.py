@@ -14,6 +14,7 @@ from sc2.unit import Unit
 from typing import Union
 from bot.enemy_info import EnemyInfo
 from strategy import *
+from datetime import datetime
 
 
 class Octopus(sc2.BotAI):
@@ -23,6 +24,7 @@ class Octopus(sc2.BotAI):
     first_attack = False
     attack = False
     after_first_attack = False
+    retreat = False
     bases_ids = [unit.NEXUS, unit.COMMANDCENTER, unit.COMMANDCENTERFLYING, unit.ORBITALCOMMAND, unit.ORBITALCOMMANDFLYING,
                  unit.PLANETARYFORTRESS, unit.HIVE, unit.HATCHERY, unit.LAIR]
     army_ids = [unit.ADEPT, unit.STALKER, unit.ZEALOT, unit.SENTRY, unit.OBSERVER, unit.IMMORTAL, unit.ARCHON,
@@ -76,17 +78,25 @@ class Octopus(sc2.BotAI):
     async def on_start(self):
         try:
             # enemy_info
+            print('----------------------- new game ---------------------------------')
+            now = datetime.now()
+            current_time = now.strftime("%Y-%m-%d %H:%M:%S")
+            print(current_time)
+            print('getting enemy info...')
             self.enemy_info = EnemyInfo(self)
             strategy_name = await self.enemy_info.pre_analysis()
+            print('getting enemy info done.')
             if not strategy_name:
+                print('enemy is None. default strat')
                 strategy_name = 'stalker_proxy'
-
+            print('setting strat: ' + str(strategy_name))
             self.starting_strategy = strategy_name
             await self.set_strategy(strategy_name)
-
+            print('setting strat done.')
             map_name = str(self.game_info.map_name)
             print('map_name: ' + map_name)
             print('start location: ' + str(self.start_location.position))
+            print('getting coords...')
             if map_name in cd and self.start_location.position in cd[map_name]:
                     self.coords = cd[map_name][self.start_location.position]
                     print('getting coords successful.')
@@ -105,13 +115,14 @@ class Octopus(sc2.BotAI):
     async def on_end(self, game_result: Result):
         try:
             self.print_stats()
+            print('starting post-analysis...')
             if game_result == Result.Victory:
                 score = 1
             else:
                 score = 0
             # plot(self.times,self.y1,self.y2)
             self.enemy_info.post_analysis(score)
-
+            print('done.')
         except Exception as ex:
             print(ex)
             try:
@@ -188,21 +199,26 @@ class Octopus(sc2.BotAI):
         try:
             await self.nexus_buff()
 
-            # counter attack
+            # attack
             if (not self.attack) and (not self.retreat_condition()) and (self.counter_attack_condition() or self.attack_condition()):
                 # await self.chat_send('Attack!  army len: ' + str(len(self.army)))
                 self.first_attack = True
                 self.attack = True
-
+                self.retreat = False
             # retreat
             if self.retreat_condition():
                 # await self.chat_send('Retreat! army len: ' + str(len(self.army)))
+                self.retreat = True
                 self.attack = False
                 self.after_first_attack = True
         except Exception as ex:
             print(ex)
             await self.chat_send('on_step error 8')
-        await self.probes_micro()
+        try:
+            await self.probes_micro()
+        except Exception as ex:
+            print(ex)
+            await self.chat_send('on step error - probes micro')
         if self.strategy.type == 'rush' or self.strategy.type == 'air':
             try:
                 if self.attack:
@@ -237,12 +253,17 @@ class Octopus(sc2.BotAI):
             except Exception as ex:
                 print(ex)
                 await self.chat_send('on_step error 10')
-        self.avoid_aoe()
+        try:
+            self.avoid_aoe()
+        except Exception as ex:
+            print(ex)
+            await self.chat_send('on_step error -> avoid aoe')
+
 
     # =============================================
 
     async def set_strategy(self, strategy_name):
-        await self.chat_send('Setting strategy: '+ strategy_name)
+        await self.chat_send('Setting new strategy.')
         if strategy_name == 'adept_defend':
             self.strategy = AdeptDefend(self)
         elif strategy_name == 'blinkers':
@@ -445,7 +466,10 @@ class Octopus(sc2.BotAI):
         for probe in probes:
             enemy = self.enemy_units().filter(lambda x: x.can_attack_ground and x.distance_to(probe) < 7)
             if enemy.amount > 2:
-                nexus = self.structures(unit.NEXUS).closest_to(probe)
+                nex = self.structures(unit.NEXUS)
+                if not nex.exists:
+                    return
+                nexus = nex.closest_to(probe)
                 closest_enemy = enemy.closest_to(probe)
                 position = nexus.position.towards(closest_enemy,-9)
                 if self.time < 180:  # rush -> fight
@@ -462,7 +486,10 @@ class Octopus(sc2.BotAI):
                     self.do(probe.move(position))
             else:  # fight or ignore
                 if enemy.exists:
-                    closest_nex = self.structures(unit.NEXUS).closest_to(probe)
+                    nex = self.structures(unit.NEXUS)
+                    if not nex.exists:
+                        return
+                    closest_nex = nex.closest_to(probe)
                     closest_enemy = enemy.closest_to(probe)
                     if probe.distance_to(closest_nex.position.random_on_distance(5)) > 9 and \
                             probe.is_attacking:  # too far away, return
@@ -614,12 +641,16 @@ class Octopus(sc2.BotAI):
                 if man.distance_to(self.defend_position) > dist:
                     self.do(man.move(position.random_on_distance(random.randint(1,2))))
         elif enemy.amount > 2:
-            dist = 13
+            dist = 12
             for man in self.army:
                 position = Point2(self.defend_position).towards(self.game_info.map_center,3) if \
                     man.type_id == unit.ZEALOT else Point2(self.defend_position)
-                if man.distance_to(self.defend_position) > dist:
-                    self.do(man.attack(position.random_on_distance(random.randint(1,2))))
+                distance = man.distance_to(self.defend_position)
+                if distance > dist:
+                    if self.retreat and distance > 2 * dist:
+                        self.do(man.move(position.random_on_distance(random.randint(1,2))))
+                    else:
+                        self.do(man.attack(position.random_on_distance(random.randint(1,2))))
         else:
             dist = 7
             for man in self.army:
@@ -958,13 +989,13 @@ class Octopus(sc2.BotAI):
         print('start pos: ' + str(self.start_location.position))
 
 
-def test(real_time):
-    r = 1
+def test(real_time=0, n=1):
     if real_time == 1:
         real_time = True
     else:
         real_time = False
-    for i in range(r):
+    for i in range(n):
+        print('==============================================================================================================--> ' + str(i))
         # try:
         botVsComputer(real_time)
         # except Exception as ex:
@@ -979,8 +1010,8 @@ def botVsComputer(real_time):
 
     # computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Timing]
-    computer_builds = [AIBuild.Air]
-    # computer_builds = [AIBuild.Power]
+    # computer_builds = [AIBuild.Air]
+    computer_builds = [AIBuild.Power]
     # computer_builds = [AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
@@ -994,4 +1025,4 @@ def botVsComputer(real_time):
 
 
 if __name__ == '__main__':
-    test(real_time=0)
+    test(real_time=0, n=1)
