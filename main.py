@@ -258,8 +258,10 @@ class Octopus(sc2.BotAI):
         except Exception as ex:
             print(ex)
             await self.chat_send('on_step error -> avoid aoe')
-
-
+        try:
+            await self.cancel_builds()
+        except:
+            await self.chat_send('on_step error 11')
     # =============================================
 
     async def set_strategy(self, strategy_name):
@@ -315,6 +317,14 @@ class Octopus(sc2.BotAI):
         # print('dmg_taken_life: ' + str(dmg_taken_life))
         # print('dmg_dealt_life: ' + str(dmg_dealt_life))
 
+    async def cancel_builds(self):
+        enemy = self.enemy_units()
+        if enemy.amount > 1:
+            for build in self.structures().not_ready:
+                if build.health < 50:
+                    threats = enemy.filter(lambda x: x.distance_to(build) < 8 and x.can_attack_ground)
+                    if threats.amount > 1:
+                        self.do(build(ability.CANCEL_BUILDINPROGRESS))
 
     async def gate_guard(self):
         if 300 > self.time > 115:
@@ -447,7 +457,7 @@ class Octopus(sc2.BotAI):
 
     def avoid_aoe(self):
         aoes_ids = [effect.RAVAGERCORROSIVEBILECP, effect.PSISTORMPERSISTENT, effect.NUKEPERSISTENT,
-                    effect.LIBERATORTARGETMORPHDELAYPERSISTENT, effect.LIBERATORTARGETMORPHPERSISTENT]
+                    effect.LIBERATORTARGETMORPHDELAYPERSISTENT]
         purification_novas = self.enemy_units(unit.DISRUPTORPHASED)
         purification_novas.extend(self.units(unit.DISRUPTORPHASED))
         for man in self.army:
@@ -464,14 +474,14 @@ class Octopus(sc2.BotAI):
     async def probes_micro(self):
         probes = self.units(unit.PROBE)
         for probe in probes:
-            enemy = self.enemy_units().filter(lambda x: x.can_attack_ground and x.distance_to(probe) < 7)
+            enemy = self.enemy_units().filter(lambda x: x.can_attack_ground and x.distance_to(probe) < 5)
             if enemy.amount > 2:
                 nex = self.structures(unit.NEXUS)
                 if not nex.exists:
                     return
                 nexus = nex.closest_to(probe)
                 closest_enemy = enemy.closest_to(probe)
-                position = nexus.position.towards(closest_enemy,-9)
+                position = nexus.position.towards(closest_enemy,-11)
                 if self.time < 180:  # rush -> fight
                     if probe.shield < 10 and probe.health < 10:  # want to flee
                         path = await self._client.query_pathing(probe,position)
@@ -491,13 +501,13 @@ class Octopus(sc2.BotAI):
                         return
                     closest_nex = nex.closest_to(probe)
                     closest_enemy = enemy.closest_to(probe)
-                    if probe.distance_to(closest_nex.position.random_on_distance(5)) > 9 and \
+                    if probe.distance_to(closest_nex.position.random_on_distance(5)) > 7 and \
                             probe.is_attacking:  # too far away, return
                         self.do(probe.move(closest_nex.position.random_on_distance(5)))
                     else:
                         if probe.shield > 5:
                             path = await self._client.query_pathing(probe,closest_enemy.position)
-                            if path and path < 6:  # attack
+                            if path and path < 5:  # attack
                                 self.do(probe.attack(closest_enemy))
 
     def set_game_step(self):
@@ -630,7 +640,7 @@ class Octopus(sc2.BotAI):
                 else:
                     regular.append(man)
             for hunter in hunters:
-                if hunter.distance_to(self.defend_position) < 20:
+                if hunter.distance_to(self.start_location) < 50:
                     self.do(hunter.attack(enemy.closest_to(hunter)))
                 else:
                     self.do(hunter.move(self.defend_position))

@@ -25,19 +25,19 @@ class ConditionAttack:
         return (not self.ai.first_attack) and self.ai.army(unit.VOIDRAY).amount > 1
 
     def colossus(self):
-        return (not self.ai.first_attack) and self.ai.army(unit.COLOSSUS).amount > 1
+        return (not self.ai.first_attack) and self.ai.army(unit.COLOSSUS).amount > 2
 
     def archons(self):
-        return (not self.ai.first_attack) and self.ai.army(unit.ARCHON).amount > 2
+        return (not self.ai.first_attack) and self.ai.army(unit.ARCHON).amount > 3
 
     def macro(self):
-        return upgrade.PROTOSSGROUNDWEAPONSLEVEL3 in self.ai.state.upgrades and\
-            upgrade.PROTOSSGROUNDARMORSLEVEL3 in self.ai.state.upgrades and\
+        return upgrade.PROTOSSGROUNDWEAPONSLEVEL2 in self.ai.state.upgrades and\
+            upgrade.PROTOSSGROUNDARMORSLEVEL1 in self.ai.state.upgrades and\
             self.ai.supply_used > 195
 
     def air(self):
         return upgrade.PROTOSSAIRWEAPONSLEVEL3 in self.ai.state.upgrades and\
-            upgrade.PROTOSSAIRARMORSLEVEL3 in self.ai.state.upgrades and\
+            upgrade.PROTOSSAIRARMORSLEVEL1 in self.ai.state.upgrades and\
             self.ai.supply_used > 195
 
     def counter_attack(self):

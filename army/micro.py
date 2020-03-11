@@ -52,7 +52,7 @@ class Micro:
                 if threats.exists:
                     closest_enemy = threats.closest_to(leader)
                     priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR,
-                        unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.SIEGETANK, unit.THOR, unit.BUNKER, unit.QUEEN])
+                        unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.SIEGETANK, unit.THOR, unit.BUNKER, unit.QUEEN, unit.LIBERATOR])
                     if priority.exists:
                         targets = priority.sorted(lambda x1: x1.health + x1.shield)
                         if self.ai.enemy_race == Race.Protoss:
@@ -397,7 +397,7 @@ class Micro:
             if threats.exists:
                 closest_enemy = threats.closest_to(man)
                 priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR,
-                    unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.SIEGETANK, unit.THOR, unit.BUNKER, unit.QUEEN])
+                    unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.SIEGETANK, unit.LIBERATOR, unit.THOR, unit.BUNKER, unit.QUEEN])
                 if priority.exists:
                     targets = priority.sorted(lambda x1: x1.health + x1.shield)
                     if self.ai.enemy_race == Race.Protoss:
@@ -622,7 +622,7 @@ class Micro:
             if threats.exists:
                 closest_enemy = threats.closest_to(man)
                 priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR,
-                    unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.IMMORTAL, unit.SIEGETANK, unit.THOR, unit.BUNKER])
+                    unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.LIBERATOR, unit.IMMORTAL, unit.SIEGETANK, unit.THOR, unit.BUNKER])
                 if priority.exists:
                     print('priority exists:')
                     targets = priority.sorted(lambda x1: x1.health + x1.shield)
@@ -1068,7 +1068,7 @@ class Micro:
                 if threats.exists:
                     closest_enemy = threats.closest_to(leader)
                     priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS,unit.DISRUPTOR,unit.HIGHTEMPLAR,
-                                                                        unit.MEDIVAC,unit.SIEGETANKSIEGED, unit.CYCLONE,
+                                              unit.LIBERATOR, unit.MEDIVAC,unit.SIEGETANKSIEGED, unit.CYCLONE,
                                                                         unit.SIEGETANK,unit.THOR, unit.BUNKER])
                     if priority.exists:
                         targets = priority.sorted(lambda x1: x1.health + x1.shield)
