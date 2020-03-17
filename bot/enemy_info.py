@@ -118,7 +118,6 @@ class EnemyInfo:
             general_stats[self.ai.starting_strategy]['win'] += 1
             general_stats['total']['win'] += 1
 
-
         self.enemy['last_game']['strategy'] = self.ai.starting_strategy
         self.enemy['last_game']['result'] = score
 

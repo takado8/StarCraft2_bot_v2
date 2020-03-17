@@ -25,6 +25,8 @@ class Octopus(sc2.BotAI):
     attack = False
     after_first_attack = False
     retreat = False
+    proxy_gate = False
+    proxy_pylon = False
     bases_ids = [unit.NEXUS, unit.COMMANDCENTER, unit.COMMANDCENTERFLYING, unit.ORBITALCOMMAND, unit.ORBITALCOMMANDFLYING,
                  unit.PLANETARYFORTRESS, unit.HIVE, unit.HATCHERY, unit.LAIR]
     army_ids = [unit.ADEPT, unit.STALKER, unit.ZEALOT, unit.SENTRY, unit.OBSERVER, unit.IMMORTAL, unit.ARCHON,
@@ -84,7 +86,7 @@ class Octopus(sc2.BotAI):
             print(current_time)
             print('getting enemy info...')
             self.enemy_info = EnemyInfo(self)
-            strategy_name = await self.enemy_info.pre_analysis()
+            strategy_name = 'adept_proxy'#await self.enemy_info.pre_analysis()
             print('getting enemy info done.')
             if not strategy_name:
                 print('enemy is None. default strat')
@@ -474,20 +476,26 @@ class Octopus(sc2.BotAI):
     async def probes_micro(self):
         probes = self.units(unit.PROBE)
         for probe in probes:
-            enemy = self.enemy_units().filter(lambda x: x.can_attack_ground and x.distance_to(probe) < 5)
-            if enemy.amount > 2:
+            enemy_total = self.enemy_units().filter(lambda x: x.can_attack_ground and x.distance_to(probe) < 9)
+            if enemy_total.exists:
+                enemy = enemy_total.closer_than(4, probe)
+            else:
+                return
+            if enemy_total.amount > 2:
                 nex = self.structures(unit.NEXUS)
-                if not nex.exists:
+                if not nex.exists or not enemy.exists:
                     return
                 nexus = nex.closest_to(probe)
+
                 closest_enemy = enemy.closest_to(probe)
+
                 position = nexus.position.towards(closest_enemy,-11)
-                if self.time < 180:  # rush -> fight
+                if self.time < 300:  # rush -> fight
                     if probe.shield < 10 and probe.health < 10:  # want to flee
                         path = await self._client.query_pathing(probe,position)
                         if path:  # flee if possible and gather
                             self.do(probe.move(position))
-                            self.do(probe.gather(self.mineral_field.closest_to(probe),queue=True))
+                            self.do(probe.gather(self.mineral_field.closest_to(nexus),queue=True))
                     else:  # ready to fight
                         path = await self._client.query_pathing(probe,closest_enemy.position)
                         if path and path < 7:  # attack if possible
@@ -501,13 +509,13 @@ class Octopus(sc2.BotAI):
                         return
                     closest_nex = nex.closest_to(probe)
                     closest_enemy = enemy.closest_to(probe)
-                    if probe.distance_to(closest_nex.position.random_on_distance(5)) > 7 and \
+                    if probe.distance_to(closest_nex) > 7 and \
                             probe.is_attacking:  # too far away, return
                         self.do(probe.move(closest_nex.position.random_on_distance(5)))
                     else:
                         if probe.shield > 5:
                             path = await self._client.query_pathing(probe,closest_enemy.position)
-                            if path and path < 5:  # attack
+                            if path and path < 4:  # attack
                                 self.do(probe.attack(closest_enemy))
 
     def set_game_step(self):
@@ -1021,8 +1029,8 @@ def botVsComputer(real_time):
     # computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Timing]
     # computer_builds = [AIBuild.Air]
-    computer_builds = [AIBuild.Power]
-    # computer_builds = [AIBuild.Macro]
+    # computer_builds = [AIBuild.Power]
+    computer_builds = [AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)

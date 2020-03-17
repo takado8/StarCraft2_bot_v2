@@ -10,6 +10,11 @@ from sc2 import Race
 class Micro:
     def __init__(self, ai):
         self.ai = ai
+        self.enemy_base_idx = 0
+        self.expansions = sorted(self.ai.expansion_locations, key=lambda x:
+            self.ai.enemy_start_locations[0].distance_to(x))
+        self.mineral_lines = [self.ai.mineral_field.closest_to(x).position for x in self.expansions]
+
 
     def __in_grid(self, pos):
         try:
@@ -550,34 +555,34 @@ class Micro:
             for ad in self.ai.army(unit.ADEPT):
                 workers = self.ai.enemy_units().filter(lambda x: x.distance_to(ad) < 17 and x.type_id in
                                                                  self.ai.workers_ids)
-                threats = self.ai.enemy_units().filter(lambda x: x.distance_to(ad) < 10 and x.type_id not in
+                threats = self.ai.enemy_units().filter(lambda x: x.distance_to(ad) < 9 and x.type_id not in
                                                        self.ai.workers_ids)
-                if workers.amount < 4 or threats.amount > 3:
+                if workers.amount < 3 or threats.amount > 3:
                     if ability.ADEPTPHASESHIFT_ADEPTPHASESHIFT in await self.ai.get_available_abilities(ad):
                         self.ai.do(ad(ability.ADEPTPHASESHIFT_ADEPTPHASESHIFT, ad.position))
-                elif workers.amount > 3:
-                    self.ai.do(ad.attack(workers.closest_to(ad)))
+                elif workers.amount > 2:
+                    workers_in_range = workers.closer_than(5, ad)
+                    if workers_in_range.exists:
+                        workers_in_range = sorted(workers_in_range, key=lambda x: x.health + x.shield)
+                        target3 = workers_in_range[0]
+                    else:
+                        target3 = workers.closest_to(ad)
+                    if ad.weapon_cooldown == 0:
+                        self.ai.do(ad.attack(target3))
             for shadow in self.ai.units(unit.ADEPTPHASESHIFT):
-                workers = self.ai.enemy_units().filter(lambda x: x.distance_to(shadow) < 11 and x.type_id in
+                workers = self.ai.enemy_units().filter(lambda x: x.distance_to(shadow) < 12 and x.type_id in
                                                        self.ai.workers_ids)
-                if workers.amount > 3:
-                    self.ai.do(shadow.move(workers.closest_to(shadow)))
-                # else:
-                #     bases = self.ai.enemy_structures().filter(lambda x: x.type_id in self.ai.bases_ids)
-                #     if bases.exists:
-                #         base = bases.closest_to(shadow).position
-                #         workers = self.ai.enemy_units().filter(lambda x: x.distance_to(base) < 11 and x.type_id in
-                #                                                          self.ai.workers_ids)
-                #         if shadow.distance_to(base) < 4 and (workers.amount < 5 or self.ai.enemy_units().filter(lambda x:
-                #             x.distance_to(shadow) < 7 and x.type_id not in self.ai.workers_ids).amount > 4):
-                #             self.ai.do(shadow.move(self.ai.enemy_start_locations[0]))
-                #             print('going to main base case1')
-                #         else:
-                #             print('going to near base')
-                #             self.ai.do(shadow.move(base))
+                threats = self.ai.enemy_units().filter(lambda x: x.distance_to(shadow) < 9 and x.type_id not in
+                                                                 self.ai.workers_ids)
+                if workers.amount > 3 and threats.amount < 5:
+                    workers = sorted(workers, key=lambda x: x.health + x.shield)
+                    self.ai.do(shadow.move(workers[0]))
                 else:
-                    self.ai.do(shadow.move(self.ai.enemy_start_locations[0]))
-                    # print('going to main base case2')
+                    self.ai.do(shadow.move(self.mineral_lines[self.enemy_base_idx]))
+                    if shadow.distance_to(self.mineral_lines[self.enemy_base_idx]) < 2:
+                        self.enemy_base_idx += 1
+                        if self.enemy_base_idx > 2:
+                            self.enemy_base_idx = 0
 
         # zealot
         for zl in self.ai.army(unit.ZEALOT):
