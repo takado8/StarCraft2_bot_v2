@@ -48,22 +48,25 @@ class PylonBuilder:
 
     async def proxy(self):
         pylons = self.ai.structures(unit.PYLON)
-        if pylons.exists and self.ai.structures(unit.CYBERNETICSCORE).exists:
-            if pylons.further_than(40, self.ai.start_location.position).amount == 0 and not\
-                self.ai.already_pending(unit.PYLON):
-                if self.ai.coords is None:
-                    pos = self.ai.game_info.map_center.towards_with_random_angle(self.ai.enemy_start_locations[0],
-                        self.ai.start_location.distance_to(self.ai.game_info.map_center) / 2,
-                                                                          max_difference=math.pi/4)
-                else:
-                    pos = Point2(self.ai.coords['proxy'])
-                c = 0
-                placement = None
-                while placement is None and c < 10:
-                    c += 1
-                    placement = await self.ai.find_placement(unit.PYLON, near=pos, max_distance=20, placement_step=2,
-                                                     random_alternative=False)
-                if placement is not None:
-                    worker = self.ai.units(unit.PROBE).closest_to(placement)
-                    await self.ai.build(unit.PYLON, near=placement, build_worker=worker)
-                    self.ai.do(worker.hold_position(queue=True))
+        if not self.ai.proxy_pylon and pylons.exists and self.ai.structures(unit.CYBERNETICSCORE).exists and self.ai.can_afford(unit.PYLON):
+            if pylons.further_than(40, self.ai.start_location.position).amount == 0:
+                if not self.ai.already_pending(unit.PYLON):
+                    if self.ai.coords is None:
+                        pos = self.ai.game_info.map_center.towards_with_random_angle(self.ai.enemy_start_locations[0],
+                            self.ai.start_location.distance_to(self.ai.game_info.map_center) / 2,
+                                                                              max_difference=math.pi/4)
+                    else:
+                        pos = Point2(self.ai.coords['proxy'])
+                    c = 0
+                    placement = None
+                    while placement is None and c < 10:
+                        c += 1
+                        placement = await self.ai.find_placement(unit.PYLON, near=pos, max_distance=20, placement_step=2,
+                                                         random_alternative=False)
+                    if placement is not None:
+                        worker = self.ai.units(unit.PROBE).closest_to(placement)
+                        done = await self.ai.build(unit.PYLON, near=placement, build_worker=worker)
+                        if done:
+                            self.ai.do(worker.hold_position(queue=True))
+            else:
+                self.ai.proxy_pylon = True

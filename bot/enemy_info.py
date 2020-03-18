@@ -29,7 +29,6 @@ class EnemyInfo:
 
     async def pre_analysis(self):
         try:
-            print('starting pre-analysis...')
             self.opponent_id = await self.get_opponent_id()
             if self.opponent_id:
                 dir_ = os.path.realpath(sys.argv[0]) if sys.argv[0] else None
@@ -38,6 +37,8 @@ class EnemyInfo:
                 else:
                     await self.ai.chat_send('dir error')
                     return
+                print('opponent id: '+ str(self.opponent_id))
+                # await self.ai.chat_send('opponent id: '+ str(self.opponent_id))
                 self.opponent_file_path = os.path.join(self.dir_path,'data','enemy_info',self.opponent_id + '.json')
                 if os.path.isfile(self.opponent_file_path):
                     # enemy = None
@@ -53,7 +54,12 @@ class EnemyInfo:
                             if strategy != self.enemy['last_game']['strategy']:
                                 win = self.enemy['scoreboard'][strategy]['win']
                                 total = self.enemy['scoreboard'][strategy]['total']
-                                win_rate = win / total if total != 0 else 1
+                                if total == 0:
+                                    win_rate = 1
+                                elif win == 0:
+                                    win_rate = 0.3 / total
+                                else:
+                                    win_rate = win / total
                                 if win_rate > max_:
                                     max_ = win_rate
                                     strategy_chosen = strategy
@@ -62,14 +68,12 @@ class EnemyInfo:
                     await self.ai.chat_send("new opponent.")
             else:
                 await self.ai.chat_send("opponent_id is None")
-            print('done.')
         except Exception as ex:
             print('error.')
             await self.ai.chat_send('recognition error')
             print(ex)
 
     def post_analysis(self, score):
-        print('starting post-analysis')
         if self.enemy is None:
             self.enemy = {
                 'id': self.opponent_id,
@@ -119,7 +123,6 @@ class EnemyInfo:
             general_stats[self.ai.starting_strategy]['win'] += 1
             general_stats['total']['win'] += 1
 
-
         self.enemy['last_game']['strategy'] = self.ai.starting_strategy
         self.enemy['last_game']['result'] = score
 
@@ -128,4 +131,3 @@ class EnemyInfo:
 
         with open(general_stats_path,'w+') as file:
             json.dump(general_stats, file)
-        print('done.')

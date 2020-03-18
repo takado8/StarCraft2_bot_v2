@@ -26,7 +26,7 @@ class GateBuilder:
 
     async def proxy(self):
         pylons = self.ai.structures(unit.PYLON).ready
-        if pylons.exists and self.ai.structures(unit.CYBERNETICSCORE).ready.exists:
+        if not self.ai.proxy_gate and pylons.exists and self.ai.structures(unit.CYBERNETICSCORE).ready.exists and self.ai.can_afford(unit.GATEWAY):
             pylon = pylons.further_than(40, self.ai.start_location.position)
             if pylon.ready.exists:
                 pylon = pylon.furthest_to(self.ai.start_location.position)
@@ -35,9 +35,13 @@ class GateBuilder:
                     gates = gates.closer_than(9,pylon)
                 else:
                     return
-                if gates.amount < 1 and not self.ai.already_pending(unit.GATEWAY):
-                    worker = self.ai.units(unit.PROBE).closest_to(pylon)
-                    await self.ai.build(unit.GATEWAY, near=pylon, build_worker=worker)
+                if gates.amount < 1:
+                    if not self.ai.already_pending(unit.GATEWAY):
+                        worker = self.ai.units(unit.PROBE).closest_to(pylon)
+                        await self.ai.build(unit.GATEWAY, near=pylon, build_worker=worker)
+                else:
+                    self.ai.proxy_gate = True
+
 
     async def three_standard(self):
         gates = self.ai.structures(unit.GATEWAY)

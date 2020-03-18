@@ -25,19 +25,19 @@ class ConditionAttack:
         return (not self.ai.first_attack) and self.ai.army(unit.VOIDRAY).amount > 1
 
     def colossus(self):
-        return (not self.ai.first_attack) and self.ai.army(unit.COLOSSUS).amount > 1
+        return (not self.ai.first_attack) and self.ai.army(unit.COLOSSUS).amount > 2
 
     def archons(self):
-        return (not self.ai.first_attack) and self.ai.army(unit.ARCHON).amount > 2
+        return (not self.ai.first_attack) and self.ai.army(unit.ARCHON).amount > 3
 
     def macro(self):
-        return upgrade.PROTOSSGROUNDWEAPONSLEVEL3 in self.ai.state.upgrades and\
-            upgrade.PROTOSSGROUNDARMORSLEVEL3 in self.ai.state.upgrades and\
+        return upgrade.PROTOSSGROUNDWEAPONSLEVEL2 in self.ai.state.upgrades and\
+            upgrade.PROTOSSGROUNDARMORSLEVEL1 in self.ai.state.upgrades and\
             self.ai.supply_used > 195
 
     def air(self):
         return upgrade.PROTOSSAIRWEAPONSLEVEL3 in self.ai.state.upgrades and\
-            upgrade.PROTOSSAIRARMORSLEVEL3 in self.ai.state.upgrades and\
+            upgrade.PROTOSSAIRARMORSLEVEL1 in self.ai.state.upgrades and\
             self.ai.supply_used > 195
 
     def counter_attack(self):
@@ -58,11 +58,17 @@ class ConditionRetreat:
     def stalker_proxy(self):
         return self.ai.attack and self.ai.army.amount < (2 if self.ai.time < 300 else 5)
 
+    def dt(self):
+        return self.ai.attack and self.ai.army.amount < (2 if self.ai.time < 320 else 5)
+
     def macro(self):
         return self.ai.attack and self.ai.army.amount < 17
 
     def two_base(self):
         return self.ai.attack and self.ai.army.amount < 13
+
+    def air(self):
+        return self.ai.supply_used < 170
 
 
 class ConditionTransform:
@@ -91,14 +97,14 @@ class ConditionTransform:
 
     async def stalker_proxy(self):
         if self.ai.after_first_attack and self.ai.army.amount > 7:
-            self.ai.after_first_attack = False
-            self.ai.first_attack = False
+            # self.ai.after_first_attack = False
+            # self.ai.first_attack = False
             await self.ai.set_strategy('2b_colossus')
 
     async def adept_proxy(self):
         if self.ai.after_first_attack and self.ai.army.amount > 7:
-            self.ai.after_first_attack = False
-            self.ai.first_attack = False
+            # self.ai.after_first_attack = False
+            # self.ai.first_attack = False
             await self.ai.set_strategy('2b_archons')
 
     async def two_base_colossus(self):
