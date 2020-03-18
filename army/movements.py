@@ -21,7 +21,7 @@ class Movements:
             if enemy_units.exists:
                 for man in self.ai.army.exclude_type(unit.OBSERVER):
                     self.ai.do(man.attack(enemy_units.closest_to(man)))
-            return
+
         if enemy.amount > 1:
             if enemy.closer_than(25,self.ai.start_location).amount > 1:
                 destination = enemy.closest_to(self.ai.start_location).position
@@ -40,7 +40,21 @@ class Movements:
             destination = enemy.closest_to(self.ai.start_location).position
         else:
             enemy = None
-            destination = self.ai.enemy_start_locations[0].position
+            if self.ai.enemy_main_base_down:
+                if len(self.ai.observer_scouting_points) == 0:
+                    for exp in self.ai.expansion_locations:
+                        if not self.ai.structures().closer_than(7,exp).exists:
+                            self.ai.observer_scouting_points.append(exp)
+                    self.ai.observer_scouting_points = sorted(self.ai.observer_scouting_points,
+                                                           key=lambda x: self.ai.enemy_start_locations[0].distance_to(x))
+                if self.ai.army() and self.ai.army().closer_than(12,self.ai.observer_scouting_points[self.ai.observer_scouting_index]).amount > 12\
+                        and self.ai.enemy_structures().amount < 1:
+                    self.ai.observer_scouting_index += 1
+                    if self.ai.observer_scouting_index == len(self.ai.observer_scouting_points):
+                        self.ai.observer_scouting_index = 0
+                destination = self.ai.observer_scouting_points[self.ai.observer_scouting_index]
+            else:
+                destination = self.ai.enemy_start_locations[0].position
 
         if self.ai.leader_tag is None or self.ai.army.find_by_tag(self.ai.leader_tag) is None:
             self.ai.leader_tag = self.ai.army.closest_to(destination).tag
@@ -126,7 +140,21 @@ class Movements:
             destination = enemy.closest_to(self.ai.start_location).position
         else:
             enemy = None
-            destination = self.ai.enemy_start_locations[0].position
+            if self.ai.enemy_main_base_down:
+                if len(self.ai.observer_scouting_points) == 0:
+                    for exp in self.ai.expansion_locations:
+                        if not self.ai.structures().closer_than(7,exp).exists:
+                            self.ai.observer_scouting_points.append(exp)
+                    self.ai.observer_scouting_points = sorted(self.ai.observer_scouting_points,
+                                                           key=lambda x: self.ai.enemy_start_locations[0].distance_to(x))
+                if self.ai.army() and self.ai.army().closer_than(12,self.ai.observer_scouting_points[self.ai.observer_scouting_index]).amount > 12\
+                        and self.ai.enemy_structures().amount < 1:
+                    self.ai.observer_scouting_index += 1
+                    if self.ai.observer_scouting_index == len(self.ai.observer_scouting_points):
+                        self.ai.observer_scouting_index = 0
+                destination = self.ai.observer_scouting_points[self.ai.observer_scouting_index]
+            else:
+                destination = self.ai.enemy_start_locations[0].position
 
         if self.ai.leader_tag is None or self.ai.army.find_by_tag(self.ai.leader_tag) is None:
             self.ai.leader_tag = self.ai.army.closest_to(destination).tag
@@ -211,7 +239,21 @@ class Movements:
             # destination = enemy.closest_to(self.ai.start_location).position
         else:
             enemy = None
-            destination = self.ai.enemy_start_locations[0].position
+            if self.ai.enemy_main_base_down:
+                if len(self.ai.observer_scouting_points) == 0:
+                    for exp in self.ai.expansion_locations:
+                        if not self.ai.structures().closer_than(7,exp).exists:
+                            self.ai.observer_scouting_points.append(exp)
+                    self.ai.observer_scouting_points = sorted(self.ai.observer_scouting_points,
+                                                           key=lambda x: self.ai.enemy_start_locations[0].distance_to(x))
+                if self.ai.army() and self.ai.army().closer_than(12,self.ai.observer_scouting_points[self.ai.observer_scouting_index]).amount > 12\
+                        and self.ai.enemy_structures().amount < 1:
+                    self.ai.observer_scouting_index += 1
+                    if self.ai.observer_scouting_index == len(self.ai.observer_scouting_points):
+                        self.ai.observer_scouting_index = 0
+                destination = self.ai.observer_scouting_points[self.ai.observer_scouting_index]
+            else:
+                destination = self.ai.enemy_start_locations[0].position
 
         if self.ai.leader_tag is None or self.ai.army.find_by_tag(self.ai.leader_tag) is None:
             self.ai.leader_tag = self.ai.army.exclude_type({unit.ZEALOT, unit.SENTRY, unit.OBSERVER,
@@ -299,7 +341,21 @@ class Movements:
             # destination = enemy.closest_to(self.ai.start_location).position
         else:
             enemy = None
-            destination = self.ai.enemy_start_locations[0].position
+            if self.ai.enemy_main_base_down:
+                if len(self.ai.observer_scouting_points) == 0:
+                    for exp in self.ai.expansion_locations:
+                        if not self.ai.structures().closer_than(7,exp).exists:
+                            self.ai.observer_scouting_points.append(exp)
+                    self.ai.observer_scouting_points = sorted(self.ai.observer_scouting_points,
+                                                           key=lambda x: self.ai.enemy_start_locations[0].distance_to(x))
+                if self.ai.army() and self.ai.army().closer_than(12,self.ai.observer_scouting_points[self.ai.observer_scouting_index]).amount > 12\
+                        and self.ai.enemy_structures().amount < 1:
+                    self.ai.observer_scouting_index += 1
+                    if self.ai.observer_scouting_index == len(self.ai.observer_scouting_points):
+                        self.ai.observer_scouting_index = 0
+                destination = self.ai.observer_scouting_points[self.ai.observer_scouting_index]
+            else:
+                destination = self.ai.enemy_start_locations[0].position
 
         if self.ai.leader_tag is None or self.ai.army.find_by_tag(self.ai.leader_tag) is None:
             self.ai.leader_tag = self.ai.army.closest_to(destination).tag

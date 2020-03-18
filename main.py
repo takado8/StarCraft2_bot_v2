@@ -75,6 +75,7 @@ class Octopus(sc2.BotAI):
     times = []
     y1 = []
     y2 = []
+    enemy_info_displayed = False
 
 
     async def on_start(self):
@@ -86,7 +87,7 @@ class Octopus(sc2.BotAI):
             print(current_time)
             print('getting enemy info...')
             self.enemy_info = EnemyInfo(self)
-            strategy_name = 'adept_proxy'#await self.enemy_info.pre_analysis()
+            strategy_name = await self.enemy_info.pre_analysis()
             print('getting enemy info done.')
             if not strategy_name:
                 print('enemy is None. default strat')
@@ -127,12 +128,18 @@ class Octopus(sc2.BotAI):
             print('done.')
         except Exception as ex:
             print(ex)
-            try:
-                await self.chat_send('on_end() error.')
-            except:
-                print('cant send chat msg')
 
     async def on_step(self, iteration):
+        try:
+            if not self.enemy_info_displayed and iteration > 20:
+                enemy_name = str(self.enemy_info.opponent_id)
+                await self.chat_send(self.strategy.name[0] + self.strategy.name[-1])
+                await self.chat_send(enemy_name)
+
+                self.enemy_info_displayed = True
+        except Exception as ex:
+            print(ex)
+            await self.chat_send("on_step error: opponent id")
         try:
             self.set_game_step()
         except:
@@ -1036,7 +1043,7 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(maps_set[3]), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[1], difficulty=Difficulty.CheatMoney, ai_build=build)
     ], realtime=real_time)
     return res, build, races[race_index]
 # CheatMoney   VeryHard

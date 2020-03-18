@@ -38,7 +38,7 @@ class EnemyInfo:
                     await self.ai.chat_send('dir error')
                     return
                 print('opponent id: '+ str(self.opponent_id))
-                await self.ai.chat_send('opponent id: '+ str(self.opponent_id))
+                # await self.ai.chat_send('opponent id: '+ str(self.opponent_id))
                 self.opponent_file_path = os.path.join(self.dir_path,'data','enemy_info',self.opponent_id + '.json')
                 if os.path.isfile(self.opponent_file_path):
                     # enemy = None
@@ -54,7 +54,12 @@ class EnemyInfo:
                             if strategy != self.enemy['last_game']['strategy']:
                                 win = self.enemy['scoreboard'][strategy]['win']
                                 total = self.enemy['scoreboard'][strategy]['total']
-                                win_rate = win / total if total != 0 else 1
+                                if total == 0:
+                                    win_rate = 1
+                                elif win == 0:
+                                    win_rate = 0.3 / total
+                                else:
+                                    win_rate = win / total
                                 if win_rate > max_:
                                     max_ = win_rate
                                     strategy_chosen = strategy
