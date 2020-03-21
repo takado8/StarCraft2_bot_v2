@@ -34,7 +34,7 @@ class ForgeBuilder:
                         await self.ai.build(unit.FORGE,near=placement,placement_step=3)
 
     async def double_late(self):
-        if self.ai.time > 160:
+        if self.ai.time > 180:
             if self.ai.time > 600:
                 am = 2
             else:

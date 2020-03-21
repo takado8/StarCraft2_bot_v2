@@ -11,10 +11,9 @@ class Micro:
     def __init__(self, ai):
         self.ai = ai
         self.enemy_base_idx = 0
-        self.expansions = sorted(self.ai.expansion_locations, key=lambda x:
-            self.ai.enemy_start_locations[0].distance_to(x))
+        self.expansions = sorted(self.ai.expansion_locations,
+                                 key=lambda x: self.ai.enemy_start_locations[0].distance_to(x))
         self.mineral_lines = [self.ai.mineral_field.closest_to(x).position for x in self.expansions]
-
 
     def __in_grid(self, pos):
         try:
@@ -506,7 +505,6 @@ class Micro:
                 priority = threats.filter(lambda z: z.can_attack_air).sorted(lambda z: z.air_dps, reverse=True)
                 arm = False
                 if priority.exists:
-
                     armored = priority.filter(lambda z: z.is_armored)
                     if armored.exists:
                         arm = True

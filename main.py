@@ -91,7 +91,7 @@ class Octopus(sc2.BotAI):
             print('getting enemy info done.')
             if not strategy_name:
                 print('enemy is None. default strat')
-                strategy_name = 'stalker_proxy'
+                strategy_name = 'bio'
             print('setting strat: ' + str(strategy_name))
             self.starting_strategy = strategy_name
             await self.set_strategy(strategy_name)
