@@ -88,6 +88,14 @@ class Expander:
         #         self.ai.proper_nexus_count = 3
         #         await self._expand_now2()
 
+    async def expand_in_push(self):
+        if self.ai.attack and self.ai.time > 360 and self.ai.minerals > 400:
+            nexuses = self.ai.structures(unit.NEXUS).ready
+            if nexuses.amount < 2:
+                self.ai.proper_nexus_count = 2
+                if self.ai.can_afford(unit.NEXUS) and not self.ai.already_pending(unit.NEXUS):
+                    await self._expand_now2()
+
     async def none(self):
         pass
 

@@ -52,6 +52,9 @@ class ConditionRetreat:
     def none(self):
         pass
 
+    def defend_rush(self):
+        return self.ai.attack and self.ai.army.amount < (5 if self.ai.time < 260 else 7)
+
     def adept_proxy(self):
         return self.ai.attack and self.ai.army.amount < (3 if self.ai.time < 300 else 5)
 
@@ -75,19 +78,20 @@ class ConditionTransform:
     def __init__(self,ai):
         self.ai = ai
 
-    def none(self):
+    async def none(self):
         pass
 
     async def adept_defend(self):
-        if ((not self.ai.first_attack) and self.ai.time > 340) or (self.ai.first_attack and self.ai.army.amount > 4):
-            enemy = self.ai.enemy_units()
-            if enemy.exists:
-                enemy_in_base = enemy.closer_than(30, self.ai.defend_position)
-                if enemy_in_base.amount > 3:
-                    return
-            self.ai.after_first_attack = False
-            self.ai.first_attack = False
-            await self.ai.set_strategy('adept_proxy')
+        if ((not self.ai.first_attack) and self.ai.time > 340) or (self.ai.first_attack and self.ai.army_supply > 12):
+            if upgrade.WARPGATERESEARCH in self.ai.state.upgrades:
+                enemy = self.ai.enemy_units()
+                if enemy.exists:
+                    enemy_in_base = enemy.closer_than(30, self.ai.defend_position)
+                    if enemy_in_base.amount > 1:
+                        return
+                self.ai.after_first_attack = False
+                self.ai.first_attack = False
+                await self.ai.set_strategy('stalker_proxy')
 
     async def stalker_defend(self):
         if ((not self.ai.first_attack) and self.ai.time > 300) or (self.ai.after_first_attack and self.ai.army.amount > 4):

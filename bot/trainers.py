@@ -1,6 +1,6 @@
 from sc2.ids.unit_typeid import UnitTypeId as unit
 from sc2.ids.ability_id import AbilityId as ability
-
+from sc2 import Race
 
 class NexusTrainer:
     def __init__(self, ai):
@@ -47,6 +47,25 @@ class GateTrainer:
             for gateway in gateways:
                 if self.ai.can_afford(unit.ADEPT):
                     self.ai.do(gateway.train(unit.ADEPT))
+
+    def defend_rush(self):
+        if self.ai.structures(unit.CYBERNETICSCORE).ready.exists and self.ai.can_afford(unit.STALKER):
+            u = unit.STALKER
+        elif self.ai.can_afford(unit.ZEALOT):
+            if self.ai.enemy_race == Race.Zerg:
+                amount = 3
+            else:
+                amount = 1
+            if self.ai.army(unit.ZEALOT).amount + self.ai.already_pending(unit.ZEALOT) < amount:
+                u = unit.ZEALOT
+            else:
+                return
+        else:
+            return
+        gateways = self.ai.structures(unit.GATEWAY).ready.idle
+        for gateway in gateways:
+            if self.ai.can_afford(u):
+                self.ai.do(gateway.train(u))
 
     def adepts_defend(self):
         if self.ai.structures(unit.CYBERNETICSCORE).ready.exists:
@@ -140,6 +159,47 @@ class WarpgateTrainer:
                         self.ai.do(warpgate.warp_in(unit.SENTRY,placement))
                     elif self.ai.can_afford(unit.ADEPT):
                         self.ai.do(warpgate.warp_in(unit.ADEPT, placement))
+
+    async def defend_rush(self):
+        warpgates = self.ai.structures(unit.WARPGATE).ready.idle
+        if warpgates.exists and self.ai.minerals >= 100:
+            if self.ai.attack:
+                prisms = self.ai.units(unit.WARPPRISMPHASING)
+                if prisms.exists:
+                    pos = prisms.furthest_to(self.ai.start_location).position
+                else:
+                    # furthest_pylon = self.ai.structures(unit.PYLON).ready.furthest_to(self.ai.start_location.position)
+                    # pos = furthest_pylon.position
+                    pos = self.ai.get_super_pylon()
+                    if pos:
+                        pos = pos.position
+                    else:
+                        print('defend_rush warpgate trainer: pos is none')
+                        return
+            else:
+                pos = self.ai.get_super_pylon()
+                if pos:
+                    pos = pos.position
+                else:
+                    print('defend_rush warpgate trainer: pos is none')
+                    return
+            for warpgate in warpgates:
+                abilities = await self.ai.get_available_abilities(warpgate)
+                if ability.WARPGATETRAIN_ZEALOT in abilities:
+                    placement = None
+                    i = 0
+                    while placement is None:
+                        i += 1
+                        placement = await self.ai.find_placement(ability.TRAINWARP_ADEPT,near=pos.random_on_distance(5),
+                                                                 max_distance=5,placement_step=2,
+                                                                 random_alternative=False)
+                        if i > 5:
+                            print("can't find position for warpin.")
+                            break
+                    if self.ai.can_afford(unit.STALKER):
+                        self.ai.do(warpgate.warp_in(unit.STALKER,placement))
+                    elif self.ai.supply_left > 1 and self.ai.minerals > 200 and self.ai.vespene < 40:
+                        self.ai.do(warpgate.warp_in(unit.ZEALOT,placement))
 
     async def adept_stalker(self):
         warpgates = self.ai.structures(unit.WARPGATE).ready.idle

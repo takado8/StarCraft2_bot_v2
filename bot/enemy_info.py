@@ -20,10 +20,11 @@ class EnemyInfo:
             if args.OpponentId:
                 return str(args.OpponentId)
             else:
+                print('opponent id is none.')
                 await self.ai.chat_send('opponent id is none.')
                 return None
         except Exception as ex:
-            await self.ai.chat_send('Cannot read opponent id.')
+            print('error: Cannot read opponent id.')
             print(ex)
             return None
 
@@ -31,23 +32,25 @@ class EnemyInfo:
         try:
             self.opponent_id = await self.get_opponent_id()
             if self.opponent_id:
+                self.opponent_id = self.opponent_id[:7]
                 dir_ = os.path.realpath(sys.argv[0]) if sys.argv[0] else None
                 if dir_:
                     self.dir_path = os.path.dirname(os.path.abspath(dir_))
                 else:
-                    await self.ai.chat_send('dir error')
+                    print('dir error')
                     return
                 print('opponent id: '+ str(self.opponent_id))
-                # await self.ai.chat_send('opponent id: '+ str(self.opponent_id))
                 self.opponent_file_path = os.path.join(self.dir_path,'data','enemy_info',self.opponent_id + '.json')
+                print('opponent_file_path: ' + self.opponent_file_path)
                 if os.path.isfile(self.opponent_file_path):
+                    print('file exists.')
                     # enemy = None
                     with open(self.opponent_file_path, 'r') as file:
                         self.enemy = json.load(file)
                     # await self.ai.chat_send(str(self.enemy))
-                    if self.enemy['last_game']['result'] is 1:
+                    if self.enemy['last_game']['result'] is 1:   # last game won, play the same strategy
                         strategy_chosen = self.enemy['last_game']['strategy']
-                    else:
+                    else:    # last game lost
                         max_ = -1
                         strategy_chosen = None
                         for strategy in self.enemy['scoreboard']:
@@ -65,8 +68,11 @@ class EnemyInfo:
                                     strategy_chosen = strategy
                     return strategy_chosen
                 else:
+                    print('file does not exist')
+                    print('new opponent')
                     await self.ai.chat_send("new opponent.")
             else:
+                print("opponent_id is None")
                 await self.ai.chat_send("opponent_id is None")
         except Exception as ex:
             print('error.')
@@ -80,17 +86,15 @@ class EnemyInfo:
                 'last_game': {'strategy': '', 'result': 0},
                 'scoreboard': {
                     'stalker_proxy': {'win': 0,'total': 0},
-                    'dt': {'win': 0,'total': 0},
-                    'blinkers': {'win': 0,'total': 0},
-                    'macro': {'win': 0,'total': 0},
                     'adept_defend': {'win': 0,'total': 0},
-                    'bio': {'win': 0,'total': 0},
-                    'stalker_defend': {'win': 0,'total': 0},
+                    '2b_archons': {'win': 0,'total': 0},
                     'adept_proxy': {'win': 0,'total': 0},
                     'air': {'win': 0,'total': 0},
                     '2b_colossus': {'win': 0,'total': 0},
-                    'void': {'win': 0,'total': 0},
-                    '2b_archons': {'win': 0,'total': 0}
+                    'macro': {'win': 0,'total': 0},
+                    'bio': {'win': 0,'total': 0},
+                    'dt': {'win': 0,'total': 0},
+                    'stalker_defend': {'win': 0,'total': 0}
                 }
             }
         # load general stats file
@@ -102,17 +106,15 @@ class EnemyInfo:
             general_stats = {
                     'total': {'win': 0,'total': 0},
                     'stalker_proxy': {'win': 0,'total': 0},
-                    'dt': {'win': 0,'total': 0},
-                    'blinkers': {'win': 0,'total': 0},
-                    'macro': {'win': 0,'total': 0},
                     'adept_defend': {'win': 0,'total': 0},
-                    'bio': {'win': 0,'total': 0},
-                    'stalker_defend': {'win': 0,'total': 0},
+                    '2b_archons': {'win': 0,'total': 0},
                     'adept_proxy': {'win': 0,'total': 0},
                     'air': {'win': 0,'total': 0},
                     '2b_colossus': {'win': 0,'total': 0},
-                    'void': {'win': 0,'total': 0},
-                    '2b_archons': {'win': 0,'total': 0}
+                    'macro': {'win': 0,'total': 0},
+                    'bio': {'win': 0,'total': 0},
+                    'dt': {'win': 0,'total': 0},
+                    'stalker_defend': {'win': 0,'total': 0}
             }
         # update scoreboard
         self.enemy['scoreboard'][self.ai.starting_strategy]['total'] += 1
@@ -125,9 +127,11 @@ class EnemyInfo:
 
         self.enemy['last_game']['strategy'] = self.ai.starting_strategy
         self.enemy['last_game']['result'] = score
-
+        print('writing enemy info to ' + self.opponent_file_path)
         with open(self.opponent_file_path,'w+') as file:
             json.dump(self.enemy, file)
-
+        print('done.')
+        print('writing general stats to ' + general_stats_path)
         with open(general_stats_path,'w+') as file:
             json.dump(general_stats, file)
+        print('done.')

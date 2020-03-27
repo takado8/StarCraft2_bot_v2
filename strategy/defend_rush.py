@@ -1,16 +1,16 @@
 from strategy.manager import Strategy
 
 
-class AdeptDefend(Strategy):
+class DefendRush(Strategy):
     def __init__(self, ai):
         super().__init__(ai)
-        self.type = 'rush'
+        self.type = 'defend'
         self.name = 'adept_defend'
 
     # =======================================================  Builders
 
     async def gate_build(self):
-        await self._gate_builder.upper_wall_plus_3()
+        await self._gate_builder.upper_wall_plus_1()
 
     async def stargate_build(self):
         pass
@@ -65,7 +65,7 @@ class AdeptDefend(Strategy):
         self._nexus_trainer.probes_standard()
 
     def gate_train(self):
-        self._gate_trainer.adepts_defend()
+        self._gate_trainer.defend_rush()
 
     def stargate_train(self):
         self._stargate_trainer.none()
@@ -74,7 +74,7 @@ class AdeptDefend(Strategy):
         self._robotics_trainer.none()
 
     async def warpgate_train(self):
-        await self._warpgate_trainer.adepts()
+        await self._warpgate_trainer.defend_rush()
 
     async def templar_archives_upgrades(self):
         pass
@@ -99,7 +99,7 @@ class AdeptDefend(Strategy):
         return self._condition_attack.counter_attack()
 
     def retreat_condition(self):
-        return self._condition_retreat.adept_proxy()
+        return self._condition_retreat.defend_rush()
 
     async def transformation(self):
         await self._condition_transform.adept_defend()

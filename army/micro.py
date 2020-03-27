@@ -326,7 +326,8 @@ class Micro:
             threats.extend(
                 self.ai.enemy_structures().filter(lambda z: z.can_attack_air))
             if threats.exists:
-                priority = threats.filter(lambda z: z.can_attack_air or z.type_id == unit.VOIDRAY).sorted(lambda z: z.health + z.shield,reverse=False)
+                priority = threats.filter(lambda z: z.can_attack_air or z.type_id in [unit.VOIDRAY, unit.WIDOWMINE, unit.BUNKER]).sorted(
+                    lambda z: z.health + z.shield,reverse=False)
                 if priority.exists:
                     queens = priority.filter(lambda z: z.type_id == unit.QUEEN)
                     if queens.exists:
@@ -339,7 +340,7 @@ class Micro:
                     self.ai.do(cr.attack(target2))
         for vr in self.ai.army(unit.VOIDRAY):
             threats = self.ai.enemy_units().filter(
-                lambda z: z.distance_to(vr) < 12 and z.type_id not in self.ai.units_to_ignore or z.type_id is unit.VOIDRAY)
+                lambda z: z.distance_to(vr) < 12 and z.type_id not in self.ai.units_to_ignore or z.type_id in [unit.VOIDRAY, unit.WIDOWMINE, unit.BUNKER])
             threats.extend(
                 self.ai.enemy_structures().filter(lambda z: z.can_attack_air))
             if threats.exists:
@@ -390,7 +391,7 @@ class Micro:
         enemy = self.ai.enemy_units()
         if not enemy.exists:
             return
-        whole_army = self.ai.army.exclude_type({unit.CARRIER, unit.TEMPEST, unit.VOIDRAY, unit.ZEALOT})
+        whole_army = self.ai.army.exclude_type({unit.CARRIER, unit.TEMPEST, unit.VOIDRAY, unit.ZEALOT, unit.DARKTEMPLAR})
         dist = 9
         for man in whole_army:
             threats = enemy.filter(
@@ -400,7 +401,7 @@ class Micro:
                 threats.extend(self.ai.enemy_structures().filter(lambda _x: _x.can_attack_ground or _x.type_id == unit.BUNKER))
             if threats.exists:
                 closest_enemy = threats.closest_to(man)
-                priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR,
+                priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR, unit.WIDOWMINE,
                     unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.SIEGETANK, unit.LIBERATOR, unit.THOR, unit.BUNKER, unit.QUEEN])
                 if priority.exists:
                     targets = priority.sorted(lambda x1: x1.health + x1.shield)
@@ -597,7 +598,7 @@ class Micro:
                     self.ai.do(zl(ability.EFFECT_CHARGE, target))
                 self.ai.do(zl.attack(target))
 
-        for dt in self.ai.army(unit.DARKTEMPLAR):
+        for dt in self.ai.army().filter(lambda x: x.type_id == unit.DARKTEMPLAR and not x.is_attacking):
             threats = self.ai.enemy_units().filter(lambda x2: x2.distance_to(dt) < 9 and not x2.is_flying and
                           x2.type_id not in self.ai.units_to_ignore).sorted(lambda _x: _x.health + _x.shield)
             if threats.exists:
@@ -624,7 +625,7 @@ class Micro:
                                and _x.distance_to(man) <= 7))
             if threats.exists:
                 closest_enemy = threats.closest_to(man)
-                priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR,
+                priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR, unit.WIDOWMINE,
                     unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.LIBERATOR, unit.IMMORTAL, unit.SIEGETANK, unit.THOR, unit.BUNKER])
                 if priority.exists:
                     print('priority exists:')
@@ -857,7 +858,7 @@ class Micro:
                 threats.extend(self.ai.enemy_structures().filter(lambda _x: _x.can_attack_ground or _x.type_id == unit.BUNKER))
             if threats.exists:
                 closest_enemy = threats.closest_to(man)
-                priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR,
+                priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS, unit.DISRUPTOR, unit.HIGHTEMPLAR, unit.WIDOWMINE,
                     unit.MEDIVAC, unit.SIEGETANKSIEGED, unit.SIEGETANK, unit.THOR, unit.BUNKER])
                 if priority.exists:
                     targets = priority.sorted(lambda x1: x1.health + x1.shield)
@@ -1071,7 +1072,7 @@ class Micro:
                 if threats.exists:
                     closest_enemy = threats.closest_to(leader)
                     priority = threats.filter(lambda x1: x1.type_id in [unit.COLOSSUS,unit.DISRUPTOR,unit.HIGHTEMPLAR,
-                                              unit.LIBERATOR, unit.MEDIVAC,unit.SIEGETANKSIEGED, unit.CYCLONE,
+                                              unit.LIBERATOR, unit.MEDIVAC,unit.SIEGETANKSIEGED, unit.CYCLONE, unit.WIDOWMINE,
                                                                         unit.SIEGETANK,unit.THOR, unit.BUNKER])
                     if priority.exists:
                         targets = priority.sorted(lambda x1: x1.health + x1.shield)

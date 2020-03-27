@@ -7,7 +7,7 @@ from strategy.two_base_colossus import TwoBaseColossus
 from strategy.two_base_archons import TwoBaseArchons
 from strategy.bio import Bio
 from strategy.adept_proxy import AdeptProxy
-from strategy.adept_defend import AdeptDefend
+from strategy.defend_rush import DefendRush
 from strategy.stalker_defend import StalkerDefend
 from strategy.dt import Dt
 from strategy.blinkers import Blinkers

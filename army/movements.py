@@ -100,7 +100,7 @@ class Movements:
                     h = army.filter(lambda x: x.is_attacking)
                     if h.exists:
                         self.ai.do(man.attack(enemy.closest_to(h.closest_to(man))))
-            elif man.type_id != unit.ZEALOT or (man.type_id == unit.ZEALOT and not man.is_attacking):   # away. join army
+            elif man.type_id not in [unit.ZEALOT, unit.DARKTEMPLAR] or not man.is_attacking:   # away. join army
                 self.ai.do(man.move(pos))
         if len(nearest) > len(self.ai.army) * 0.70:  # take next position
             if enemy and enemy.closer_than(11, leader).exists:

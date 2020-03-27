@@ -31,20 +31,24 @@ class PylonBuilder:
             pylons = self.ai.structures(unit.PYLON)
             if self.ai.supply_cap < 100:
                 pos = self.ai.start_location.position.towards(self.ai.main_base_ramp.top_center,5)
-                max_d = 20
+                max_d = 23
                 pending = 2 if self.ai.time > 180 else 1
                 left = 5
                 step = 7
             else:
-                pos = self.ai.structures(unit.NEXUS).ready.random
+                pos = self.ai.structures(unit.NEXUS).ready.random.position
                 max_d = 27
                 pending = 3
-                left = 8
+                left = 9
                 step = 5
-            if self.ai.supply_left < left or (pylons.amount < 1 and self.ai.structures(unit.GATEWAY).exists):
+            if self.ai.supply_left < left:  # or (pylons.amount < 1 and self.ai.structures(unit.GATEWAY).exists):
                 if self.ai.already_pending(unit.PYLON) < pending:
-                    await self.ai.build(unit.PYLON,max_distance=max_d, placement_step=step,
-                            near=pos)
+                    result = await self.ai.build(unit.PYLON,max_distance=max_d, placement_step=step, near=pos)
+                    i = 0
+                    while not result and i < 12:
+                        i+=1
+                        pos = pos.random_on_distance(2)
+                        result = await self.ai.build(unit.PYLON,max_distance=max_d,placement_step=step,near=pos)
 
     async def proxy(self):
         pylons = self.ai.structures(unit.PYLON)

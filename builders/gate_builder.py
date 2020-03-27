@@ -126,6 +126,27 @@ class GateBuilder:
                 await self.ai.build(unit.GATEWAY,near=placement,placement_step=0,max_distance=0,
                                     random_alternative=False)
 
+    async def upper_wall_plus_1(self):
+        gates_count = self.ai.structures(unit.GATEWAY).amount
+        gates_count += self.ai.structures(unit.WARPGATE).amount
+
+        if self.ai.structures(unit.PYLON).ready.exists:
+            placement = None
+            if gates_count < 1 and self.ai.already_pending(unit.GATEWAY) < 1:
+                placement = self.ai.main_base_ramp.protoss_wall_buildings[0]
+            elif 0 < gates_count < 2:
+                placement = self.ai.main_base_ramp.protoss_wall_buildings[1]
+            elif 1 < gates_count < 3 and self.ai.structures(unit.CYBERNETICSCORE).exists and \
+                    self.ai.already_pending(unit.GATEWAY) < 2:
+                p = self.ai.get_proper_pylon()
+                if p:
+                    await self.ai.build(unit.GATEWAY,near=p,placement_step=3,max_distance=22,
+                                        random_alternative=True)
+                    return
+            if placement:
+                await self.ai.build(unit.GATEWAY,near=placement,placement_step=0,max_distance=0,
+                                    random_alternative=False)
+
     async def one_in_upper(self):
         gates_count = self.ai.structures(unit.GATEWAY).amount
         gates_count += self.ai.structures(unit.WARPGATE).amount

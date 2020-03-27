@@ -48,7 +48,7 @@ class StalkerProxy(Strategy):
         await self._robotics_builder.none()
 
     async def expand(self):
-        await self._expander.none()
+        await self._expander.expand_in_push()
 
     # =======================================================  Upgraders
 
