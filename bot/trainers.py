@@ -295,8 +295,7 @@ class WarpgateTrainer:
                 furthest_pylon = self.ai.structures(unit.PYLON).ready.furthest_to(self.ai.start_location.position)
                 pos = furthest_pylon.position
         else:
-            pos = self.ai.structures(unit.PYLON).ready.closer_than(35,self.ai.start_location).furthest_to(
-                self.ai.start_location).position
+            pos = self.ai.get_super_pylon().position
         placement = None
         i = 0
         while placement is None:
@@ -310,13 +309,15 @@ class WarpgateTrainer:
         if archons == 0:
             archons = 1
         amount = 2 * archons
+        if amount > 4:
+            amount = 4
         for warpgate in self.ai.structures(unit.WARPGATE).ready:
             abilities = await self.ai.get_available_abilities(warpgate)
             if ability.WARPGATETRAIN_ZEALOT in abilities:
                 if self.ai.can_afford(unit.HIGHTEMPLAR) and self.ai.supply_left > 1 and self.ai.army(
                         unit.ARCHON).amount < 11 and self.ai.structures(unit.TEMPLARARCHIVE).ready.exists:
                     self.ai.do(warpgate.warp_in(unit.HIGHTEMPLAR,placement))
-                elif self.ai.can_afford(unit.SENTRY) and self.ai.units(unit.STALKER).amount > 5 and \
+                elif self.ai.can_afford(unit.SENTRY) and self.ai.units(unit.STALKER).amount > 3 and \
                         self.ai.structures(unit.CYBERNETICSCORE).ready.exists and self.ai.units(unit.SENTRY).amount < 3:
                     self.ai.do(warpgate.warp_in(unit.SENTRY,placement))
                 elif self.ai.can_afford(unit.STALKER) and self.ai.supply_left > 1 and self.ai.army(unit.STALKER).amount < amount:

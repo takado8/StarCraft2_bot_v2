@@ -21,7 +21,7 @@ class TwoBaseArchons(Strategy):
         await self._forge_builder.none()
 
     async def twilight_build(self):
-        await self._twilight_builder.early()
+        await self._twilight_builder.standard()
 
     async def templar_archives_build(self):
         await self._templar_archives_builder.standard()
@@ -74,7 +74,7 @@ class TwoBaseArchons(Strategy):
         self._nexus_trainer.probes_standard()
 
     def gate_train(self):
-        self._gate_trainer.adepts_defend()
+        self._gate_trainer.defend_rush()
 
     def stargate_train(self):
         pass

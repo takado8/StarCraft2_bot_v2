@@ -62,7 +62,7 @@ class ConditionRetreat:
         return self.ai.attack and self.ai.army.amount < (2 if self.ai.time < 300 else 5)
 
     def dt(self):
-        return self.ai.attack and self.ai.army.amount < (2 if self.ai.time < 320 else 5)
+        return self.ai.attack and self.ai.army.amount < (2 if self.ai.time < 360 else 4)
 
     def macro(self):
         return self.ai.attack and self.ai.army.amount < 17

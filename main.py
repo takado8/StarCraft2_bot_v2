@@ -44,6 +44,7 @@ class Octopus(sc2.BotAI):
     prev_nexus_count = 0
     coords = None
     change_position = False
+    first_chrono_casted = False
 
     strategy: Strategy = None
     starting_strategy = None
@@ -227,6 +228,7 @@ class Octopus(sc2.BotAI):
         try:
             await self.nexus_buff()
 
+
             # attack
             if (not self.attack) and (not self.retreat_condition()) and (self.counter_attack_condition() or self.attack_condition()):
                 # await self.chat_send('Attack!  army len: ' + str(len(self.army)))
@@ -313,7 +315,7 @@ class Octopus(sc2.BotAI):
         elif strategy_name == 'air':
             self.strategy = CarrierMadness(self)
         elif strategy_name == '2b_colossus':
-            self.strategy = TwoBaseColossus(self)
+            self.strategy = TwoBaseArchons(self)
         elif strategy_name == '2b_archons':
             self.strategy = TwoBaseArchons(self)
         elif strategy_name == 'macro':
@@ -508,7 +510,7 @@ class Octopus(sc2.BotAI):
             else:
                 return
             if enemy_total.amount > 2:
-                nex = self.structures(unit.NEXUS)
+                nex = self.structures(unit.NEXUS).ready
                 if not nex.exists or not enemy.exists:
                     return
                 nexus = nex.closest_to(probe)
@@ -751,6 +753,27 @@ class Octopus(sc2.BotAI):
             if ability.MORPH_WARPGATE in abilities and self.can_afford(ability.MORPH_WARPGATE):
                 self.do(gateway(ability.MORPH_WARPGATE))
 
+    chrono_queue = [unit.NEXUS,unit.ROBOTICSFACILITY,unit.GATEWAY,unit.CYBERNETICSCORE,unit.FORGE]
+
+    async def chronoboost(self):
+        if self.structures(unit.NEXUS).exists and self.structures(unit.PYLON).ready.exists:
+
+            nexuses = self.structures().filter(lambda x: x.type_id == unit.NEXUS and x.is_ready and x.energy >=50)
+            i=0
+            for nexus in nexuses:
+                targets = None
+                while not targets and i < len(self.chrono_queue):
+                    targets = self.structures().filter(lambda x: x.type_id == self.chrono_queue[i] and x.is_ready and
+                                                   not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
+                    if not targets:
+                        i+=1
+                if targets:
+                    target = targets.random
+                    if not self.first_chrono_casted:
+                        self.first_chrono_casted = True
+                        self.chrono_queue.remove(unit.NEXUS)
+                    self.do(nexus(ability.EFFECT_CHRONOBOOSTENERGYCOST, target))
+
     async def nexus_buff(self):
         if not self.structures(unit.NEXUS).exists or not self.structures(unit.PYLON).ready.exists:
             return
@@ -802,106 +825,6 @@ class Octopus(sc2.BotAI):
                                             target = target.random
                 if target:
                     self.do(nexus(ability.EFFECT_CHRONOBOOSTENERGYCOST,target))
-
-    async def nexus_buff2(self):
-        if not self.structures(unit.NEXUS).exists:
-            return
-        for nexus in self.structures(unit.NEXUS).ready:
-            abilities = await self.get_available_abilities(nexus)
-            if ability.EFFECT_CHRONOBOOSTENERGYCOST in abilities:
-                target = self.structures().filter(lambda x: x.type_id == unit.NEXUS
-                               and x.is_ready and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
-                if target.exists:
-                    target = target.random
-                else:
-                    target = self.structures().filter(lambda x: x.type_id == unit.STARGATE
-                        and x.is_ready and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
-                    if target.exists:
-                        target = target.random
-                    else:
-                        # target = self.structures().filter(lambda x: x.type_id == unit.CYBERNETICSCORE
-                        #                 and x.is_ready and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
-                        # if target.exists:
-                        #     target = target.random
-                        # else:
-                        target = self.structures().filter(
-                            lambda x: (x.type_id == unit.ROBOTICSFACILITY)
-                                      and x.is_ready and not x.is_idle and not x.has_buff(
-                                buff.CHRONOBOOSTENERGYCOST))
-                        if target.exists:
-                            target = target.random
-
-                        else:
-                            target = self.structures().filter(lambda x: x.type_id == unit.FORGE and x.is_ready
-                                                                        and not x.is_idle and not x.has_buff(
-                                buff.CHRONOBOOSTENERGYCOST))
-                            if target.exists:
-                                target = target.random
-                            else:
-                                target = self.structures().filter(lambda x: (x.type_id == unit.GATEWAY or
-                                                x.type_id == unit.WARPGATE) and x.is_ready
-                                                and not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
-                                if target.exists:
-                                    target = target.random
-                                # else:
-                                #     target = self.structures().filter(lambda x: (x.type_id == unit.GATEWAY or x.type_id == unit.WARPGATE)
-                                #                                            and x.is_ready and not x.is_idle and not x.has_buff(
-                                #         buff.CHRONOBOOSTENERGYCOST))
-                                #     if target.exists:
-                                #         target = target.random
-                if target:
-                    self.do(nexus(ability.EFFECT_CHRONOBOOSTENERGYCOST, target))
-
-    async def adept_hunt(self):
-        adepts = self.army(unit.ADEPT).ready
-        if adepts.amount > 1:
-            enemy = self.enemy_units()
-            targets = enemy.filter(lambda x: x.type_id in self.workers_ids)
-            if targets:
-                destination = targets.closest_to(self.defend_position)
-            else:
-                destination = self.enemy_start_locations[0]
-
-            for adept in adepts:
-                if enemy.exists:
-                    threats = enemy.filter(lambda x: x.can_attack_ground and x.distance_to(adept) < x.ground_range + 1)
-                    if threats.exists:
-                        # shadow
-                        if ability.ADEPTPHASESHIFT_ADEPTPHASESHIFT in await self.get_available_abilities(adept):
-                            self.do(adept(ability.ADEPTPHASESHIFT_ADEPTPHASESHIFT,destination))
-                        # closest_enemy = threats.closest_to(adept)
-                        # # micro
-                        # i = 3
-                        # pos = adept.position.towards(closest_enemy.position,-i)
-                        # while not self.in_pathing_grid(pos) and i < 12:
-                        #     # print('func i: ' + str(i))
-                        #     pos = adept.position.towards(closest_enemy.position,-i)
-                        #     i += 1
-                        #     j = 1
-                        #     while not self.in_pathing_grid(pos) and j < 9:
-                        #         # print('func j: ' + str(j))
-                        #         pos = pos.random_on_distance(j)
-                        #         j += 1
-                        # if not pos:
-                        pos = self.defend_position
-                        self.do(adept.move(pos))
-                    elif targets.exists:
-                        targets = targets.filter(lambda x: x.distance_to(adept) < 12)
-                        if targets.exists:
-                            closest = targets.closest_to(adept)
-                            target = targets.sorted(lambda x: x.health + x.shield)[0]
-                            if self.enemy_race == Race.Protoss:
-                                shield = target.shield_percentage
-                            else:
-                                shield = 1
-                            if target.health_percentage * shield == 1 or \
-                                    target.distance_to(adept) > closest.distance_to(adept) + 5:
-                                target = closest
-                            self.do(adept.attack(target))
-                else:
-                    self.do(adept.attack(destination))
-            for shadow in self.units(unit.ADEPTPHASESHIFT):
-                self.do(shadow.move(destination))
 
     async def blink(self, stalker, target):
         if stalker.type_id == unit.STALKER:
@@ -1075,15 +998,15 @@ def botVsComputer(real_time):
                 'World of Sleepers LE','Zen LE']
     races = [Race.Protoss, Race.Zerg, Race.Terran]
 
-    computer_builds = [AIBuild.Rush]
+    # computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Timing]
     # computer_builds = [AIBuild.Air]
-    # computer_builds = [AIBuild.Power]
+    computer_builds = [AIBuild.Power]
     # computer_builds = [AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
-    res = run_game(map_settings=maps.get(maps_set[0]), players=[
+    res = run_game(map_settings=maps.get(random.choice(maps_set)), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
         Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=real_time)
@@ -1092,4 +1015,4 @@ def botVsComputer(real_time):
 
 
 if __name__ == '__main__':
-    test(real_time=0, n=1)
+    test(real_time=1, n=1)
