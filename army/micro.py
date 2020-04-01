@@ -14,6 +14,13 @@ class Micro:
         self.expansions = sorted(self.ai.expansion_locations,
                                  key=lambda x: self.ai.enemy_start_locations[0].distance_to(x))
         self.mineral_lines = [self.ai.mineral_field.closest_to(x).position for x in self.expansions]
+        enemy_position = self.ai.enemy_start_locations[0]
+        if self.ai.start_location.position.y < enemy_position.position.y:
+            self.oracle_safe_position = Point2((0,0))
+        else:
+            self.oracle_safe_position = Point2((self.ai.game_info.map_size[1]
+                                                ,self.ai.game_info.map_size[1]))
+
 
     def __in_grid(self, pos):
         try:
@@ -319,6 +326,54 @@ class Micro:
                         self.ai.do(zl.attack(target))
 
     async def air(self):
+        # Oracle
+        for oracle in self.ai.units(unit.ORACLE):
+            abilities = await self.ai.get_available_abilities(oracle)
+            if (oracle.energy > 55 or ability.BEHAVIOR_PULSARBEAMOFF in abilities) and oracle.shield_percentage > 0.3:
+                workers = self.ai.enemy_units().filter(lambda x: x.distance_to(oracle) < 15 and x.type_id in
+                                                                 self.ai.workers_ids)
+                threats = self.ai.enemy_units().filter(lambda x: x.distance_to(oracle) < 11 and (x.can_attack_air or
+                    x.type_id in [unit.BUNKER, unit.SENTRY, unit.WIDOWMINE, unit.VOIDRAY]))
+                if workers.amount < 2 or threats.amount > 1:    # go to next base
+                    if threats.amount > 0:
+                        self.ai.do(oracle.move(oracle.position.towards(threats.closest_to(oracle), -5)))
+                        if oracle.distance_to(self.mineral_lines[self.enemy_base_idx]) < 11:
+                            self.enemy_base_idx += 1
+                            if self.enemy_base_idx > 4:
+                                self.enemy_base_idx = 0
+                            return
+                    if oracle.distance_to(self.mineral_lines[self.enemy_base_idx]) < 8:
+                        if threats.filter(lambda x: x.type_id in self.ai.anti_air_ids).amount > 1:
+                            self.mineral_lines.remove(self.mineral_lines[self.enemy_base_idx])
+                        self.enemy_base_idx +=1
+                        if self.enemy_base_idx > 4:
+                            self.enemy_base_idx = 0
+                    # if oracle.position.x > oracle.position.y:
+                    #     safe_pos = Point2((oracle.position.x, 0))
+                    # else:
+                    #     safe_pos = Point2((0, oracle.position.x))
+                    # self.ai.do(oracle.move(safe_pos))
+                    self.ai.do(oracle.move(self.mineral_lines[self.enemy_base_idx]))
+                elif workers.amount > 1:
+                    workers_in_range = workers.closer_than(5,oracle)
+                    if workers_in_range.exists:
+                        workers_in_range = sorted(workers_in_range,key=lambda x: x.health + x.shield)
+                        target3 = workers_in_range[0]
+                    else:
+                        target3 = workers.closest_to(oracle)
+                    if target3.distance_to(oracle) < 5 and ability.BEHAVIOR_PULSARBEAMON in abilities:
+                        self.ai.do(oracle(ability.BEHAVIOR_PULSARBEAMON))
+                        self.ai.do(oracle.attack(target3, queue=True))
+                    else:
+                        self.ai.do(oracle.attack(target3))
+            else:  # go home
+                if oracle.distance_to(self.oracle_safe_position) > 6:
+                    if ability.BEHAVIOR_PULSARBEAMOFF in abilities:
+                        self.ai.do(oracle(ability.BEHAVIOR_PULSARBEAMOFF))
+                        self.ai.do(oracle.move(self.oracle_safe_position, queue=True))
+                    else:
+                        self.ai.do(oracle.move(self.oracle_safe_position))
+
         # Carrier
         for cr in self.ai.army({unit.CARRIER, unit.TEMPEST}).filter(lambda x: not x.is_attacking):
             threats = self.ai.enemy_units().filter(
@@ -338,7 +393,8 @@ class Micro:
                     target2 = threats.sorted(lambda z: z.health + z.shield)[0]
                 if target2 is not None:
                     self.ai.do(cr.attack(target2))
-        for vr in self.ai.army(unit.VOIDRAY):
+
+        for vr in self.ai.army().filter(lambda x: x.type_id == unit.VOIDRAY and not x.is_attacking):
             threats = self.ai.enemy_units().filter(
                 lambda z: z.distance_to(vr) < 12 and z.type_id not in self.ai.units_to_ignore or z.type_id in [unit.VOIDRAY, unit.WIDOWMINE, unit.BUNKER])
             threats.extend(

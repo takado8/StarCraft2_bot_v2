@@ -27,6 +27,7 @@ class Octopus(sc2.BotAI):
     retreat = False
     proxy_gate = False
     proxy_pylon = False
+    anti_air_ids = [unit.MISSILETURRET, unit.PHOTONCANNON, unit.WIDOWMINE, unit.SPORECRAWLER]
     bases_ids = [unit.NEXUS, unit.COMMANDCENTER, unit.COMMANDCENTERFLYING, unit.ORBITALCOMMAND, unit.ORBITALCOMMANDFLYING,
                  unit.PLANETARYFORTRESS, unit.HIVE, unit.HATCHERY, unit.LAIR]
     army_ids = [unit.ADEPT, unit.STALKER, unit.ZEALOT, unit.SENTRY, unit.OBSERVER, unit.IMMORTAL, unit.ARCHON,
@@ -93,7 +94,7 @@ class Octopus(sc2.BotAI):
             print('getting enemy info done.')
             if not strategy_name:
                 print('enemy is None. default strat')
-                strategy_name = 'stalker_proxy'
+                strategy_name = 'air'
             print('setting strat: ' + str(strategy_name))
             self.starting_strategy = strategy_name
             await self.set_strategy(strategy_name)
@@ -753,78 +754,8 @@ class Octopus(sc2.BotAI):
             if ability.MORPH_WARPGATE in abilities and self.can_afford(ability.MORPH_WARPGATE):
                 self.do(gateway(ability.MORPH_WARPGATE))
 
-    chrono_queue = [unit.NEXUS,unit.ROBOTICSFACILITY,unit.GATEWAY,unit.CYBERNETICSCORE,unit.FORGE]
-
-    async def chronoboost(self):
-        if self.structures(unit.NEXUS).exists and self.structures(unit.PYLON).ready.exists:
-
-            nexuses = self.structures().filter(lambda x: x.type_id == unit.NEXUS and x.is_ready and x.energy >=50)
-            i=0
-            for nexus in nexuses:
-                targets = None
-                while not targets and i < len(self.chrono_queue):
-                    targets = self.structures().filter(lambda x: x.type_id == self.chrono_queue[i] and x.is_ready and
-                                                   not x.is_idle and not x.has_buff(buff.CHRONOBOOSTENERGYCOST))
-                    if not targets:
-                        i+=1
-                if targets:
-                    target = targets.random
-                    if not self.first_chrono_casted:
-                        self.first_chrono_casted = True
-                        self.chrono_queue.remove(unit.NEXUS)
-                    self.do(nexus(ability.EFFECT_CHRONOBOOSTENERGYCOST, target))
-
     async def nexus_buff(self):
-        if not self.structures(unit.NEXUS).exists or not self.structures(unit.PYLON).ready.exists:
-            return
-        for nexus in self.structures(unit.NEXUS).ready:
-            abilities = await self.get_available_abilities(nexus)
-            if ability.EFFECT_CHRONOBOOSTENERGYCOST in abilities:
-                target = self.structures().filter(lambda x: x.type_id == unit.NEXUS
-                                                            and x.is_ready and not x.is_idle and not x.has_buff(
-                    buff.CHRONOBOOSTENERGYCOST))
-                if target.exists:
-                    target = target.random
-                else:
-                    target = self.structures().filter(lambda x: x.type_id == unit.STARGATE
-                                                                and x.is_ready and not x.is_idle and not x.has_buff(
-                        buff.CHRONOBOOSTENERGYCOST))
-                    if target.exists:
-                        target = target.random
-                    else:
-                        target = self.structures().filter(lambda x: x.type_id == unit.CYBERNETICSCORE
-                                                                    and x.is_ready and not x.is_idle and not x.has_buff(
-                            buff.CHRONOBOOSTENERGYCOST))
-                        if target.exists:
-                            target = target.random
-                        else:
-                            target = self.structures().filter(lambda x: x.type_id == unit.FORGE and x.is_ready
-                                                                        and not x.is_idle and not x.has_buff(
-                                buff.CHRONOBOOSTENERGYCOST))
-                            if target.exists:
-                                target = target.random
-                            else:
-                                target = self.structures().filter(
-                                    lambda x: (x.type_id == unit.ROBOTICSFACILITY)
-                                              and x.is_ready and not x.is_idle and not x.has_buff(
-                                        buff.CHRONOBOOSTENERGYCOST))
-                                if target.exists:
-                                    target = target.random
-                                else:
-                                    target = self.structures().filter(lambda x: x.type_id == unit.GATEWAY
-                                                                           and x.is_ready and not x.is_idle and not x.has_buff(
-                                        buff.CHRONOBOOSTENERGYCOST))
-                                    if target.exists:
-                                        target = target.random
-                                    else:
-                                        target = self.structures().filter(
-                                            lambda x: x.type_id == unit.TWILIGHTCOUNCIL
-                                                      and x.is_ready and not x.is_idle and not x.has_buff(
-                                                buff.CHRONOBOOSTENERGYCOST))
-                                        if target.exists:
-                                            target = target.random
-                if target:
-                    self.do(nexus(ability.EFFECT_CHRONOBOOSTENERGYCOST,target))
+        await self.strategy.chronoboost()
 
     async def blink(self, stalker, target):
         if stalker.type_id == unit.STALKER:
@@ -1001,18 +932,18 @@ def botVsComputer(real_time):
     # computer_builds = [AIBuild.Rush]
     # computer_builds = [AIBuild.Timing]
     # computer_builds = [AIBuild.Air]
-    computer_builds = [AIBuild.Power]
-    # computer_builds = [AIBuild.Macro]
+    # computer_builds = [AIBuild.Power]
+    computer_builds = [AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(random.choice(maps_set)), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[1], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
     ], realtime=real_time)
     return res, build, races[race_index]
 # CheatMoney   VeryHard
 
 
 if __name__ == '__main__':
-    test(real_time=1, n=1)
+    test(real_time=0, n=1)

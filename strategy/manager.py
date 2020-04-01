@@ -1,4 +1,5 @@
 from builders import *
+from bot.chronobooster import *
 from bot.upgraders import *
 from bot.trainers import *
 from bot.conditions import *
@@ -45,6 +46,8 @@ class Strategy:
         self._condition_attack = ConditionAttack(ai)
         self._condition_retreat = ConditionRetreat(ai)
         self._condition_transform = ConditionTransform(ai)
+        # chronoboost
+        self._chronobooster = Chronobooster(ai)
 
     # =======================================================  Builders
 
@@ -148,3 +151,6 @@ class Strategy:
 
     async def transformation(self):
         pass
+
+    async def chronoboost(self):
+        raise NotImplementedError

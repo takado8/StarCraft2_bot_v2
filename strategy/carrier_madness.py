@@ -10,7 +10,7 @@ class CarrierMadness(Strategy):
     # =======================================================  Builders
 
     async def gate_build(self):
-        await self._gate_builder.one_standard()
+        await self._gate_builder.one_in_upper()
 
     async def stargate_build(self):
         await self._stargate_builder.carrier_madness()
@@ -25,16 +25,16 @@ class CarrierMadness(Strategy):
         await self._twilight_builder.none()
 
     async def pylon_first_build(self):
-        await self._pylon_builder.none()
+        await self._pylon_builder.first_in_upper_wall()
 
     async def pylon_next_build(self):
-        await self._pylon_builder.first_and_next_standard()
+        await self._pylon_builder.next_standard()
 
     async def proxy(self):
         pass
 
     async def cybernetics_build(self):
-        await self._cybernetics_builder.standard()
+        await self._cybernetics_builder.upper_wall()
 
     async def robotics_build(self):
         await self._robotics_builder.none()
@@ -46,7 +46,7 @@ class CarrierMadness(Strategy):
         pass
 
     async def expand(self):
-        await self._expander.standard()
+        await self._expander.air()
 
     # =======================================================  Upgraders
 
@@ -102,3 +102,7 @@ class CarrierMadness(Strategy):
     def retreat_condition(self):
         return self._condition_retreat.air()
 
+    # ======================================================== Buffs
+
+    async def chronoboost(self):
+        await self._chronobooster.standard()
