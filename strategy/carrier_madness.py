@@ -35,6 +35,7 @@ class CarrierMadness(Strategy):
 
     async def cybernetics_build(self):
         await self._cybernetics_builder.upper_wall()
+        await self._cybernetics_builder.second()
 
     async def robotics_build(self):
         await self._robotics_builder.none()

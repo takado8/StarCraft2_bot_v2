@@ -228,8 +228,6 @@ class Octopus(sc2.BotAI):
                 await self.chat_send('on_step error 7')
         try:
             await self.nexus_buff()
-
-
             # attack
             if (not self.attack) and (not self.retreat_condition()) and (self.counter_attack_condition() or self.attack_condition()):
                 # await self.chat_send('Attack!  army len: ' + str(len(self.army)))
@@ -926,7 +924,7 @@ def test(real_time=0, n=1):
 
 def botVsComputer(real_time):
     maps_set = ["TritonLE","Ephemeron",'DiscoBloodbathLE','Eternal Empire LE','Nightshade LE','Simulacrum LE',
-                'World of Sleepers LE','Zen LE']
+                'World of Sleepers LE','Zen LE', 'AcropolisLE', 'ThunderbirdLE', 'WintersGateLE']
     races = [Race.Protoss, Race.Zerg, Race.Terran]
 
     # computer_builds = [AIBuild.Rush]

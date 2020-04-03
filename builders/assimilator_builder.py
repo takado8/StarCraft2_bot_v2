@@ -18,7 +18,8 @@ class AssimilatorBuilder:
                             self.ai.do(worker.build(unit.ASSIMILATOR, vaspene))
 
     def more_vespene(self):
-        if self.ai.structures(unit.NEXUS).ready.amount > 1 and self.ai.vespene > self.ai.minerals:
+        if self.ai.structures().filter(lambda x: x.type_id in [unit.GATEWAY, unit.WARPGATE]).amount == 0 or\
+                (self.ai.structures(unit.NEXUS).ready.amount > 1 and self.ai.vespene > self.ai.minerals):
             return
         nexuses = self.ai.structures(unit.NEXUS)
         if nexuses.amount < 4:

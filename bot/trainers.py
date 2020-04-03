@@ -473,7 +473,7 @@ class StargateTrainer:
                 elif self.ai.can_afford(unit.VOIDRAY) and self.ai.army(unit.VOIDRAY).amount < 7 and \
                         self.ai.army(unit.CARRIER).amount > 1:
                     self.ai.train(unit.VOIDRAY)
-            elif self.ai.can_afford(unit.ORACLE) and self.ai.units(unit.ORACLE).amount < 2:
+            elif self.ai.can_afford(unit.ORACLE) and self.ai.units(unit.ORACLE).amount < 1:
                 self.ai.train(unit.ORACLE)
 
     def voidray(self):

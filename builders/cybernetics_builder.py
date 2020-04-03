@@ -1,5 +1,6 @@
 from sc2.ids.unit_typeid import UnitTypeId as unit
 from sc2.position import Point2
+from sc2.ids.upgrade_id import UpgradeId as upgrade
 
 
 class CyberneticsBuilder:
@@ -13,6 +14,14 @@ class CyberneticsBuilder:
             if cybernetics_position:
                 await self.ai.build(unit.CYBERNETICSCORE, near=cybernetics_position, placement_step=0,
                                  random_alternative=False, max_distance=0)
+
+    async def second(self):
+        if self.ai.structures(unit.CYBERNETICSCORE).amount == 1 and not self.ai.already_pending(unit.CYBERNETICSCORE)\
+                and upgrade.PROTOSSAIRWEAPONSLEVEL1 in self.ai.state.upgrades:
+            cybernetics_position = self.ai.get_proper_pylon()
+            if cybernetics_position:
+                await self.ai.build(unit.CYBERNETICSCORE, near=cybernetics_position, placement_step=3,
+                                 random_alternative=True, max_distance=20)
 
     async def upper_wall(self):
         if self.ai.structures(unit.CYBERNETICSCORE).amount < 1 and not self.ai.already_pending(unit.CYBERNETICSCORE) and \

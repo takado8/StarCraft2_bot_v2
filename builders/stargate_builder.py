@@ -7,17 +7,18 @@ class StargateBuilder:
 
     async def carrier_madness(self):
         stargates = self.ai.structures(unit.STARGATE)
-        if stargates.idle.exists:
-            return
         beacon = self.ai.structures(unit.FLEETBEACON)
-        if self.ai.vespene > 400:
+        if stargates.idle.exists and beacon.exists:
+            return
+        if self.ai.vespene > 450:
             amount = 6
         elif beacon.exists:
             amount = 3
         else:
             amount = 1
 
-        if not beacon.exists and stargates.ready.exists:
+        if not beacon.exists and stargates.ready.exists and (self.ai.already_pending(unit.ORACLE) or\
+                self.ai.units(unit.ORACLE).exists or self.ai.time > 300):
             await self.ai.build(unit.FLEETBEACON,near=self.ai.get_proper_pylon())
         elif self.ai.structures(unit.CYBERNETICSCORE).ready.exists \
                 and self.ai.can_afford(unit.STARGATE) and self.ai.already_pending(unit.STARGATE) < 1 and \

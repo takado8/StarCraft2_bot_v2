@@ -73,8 +73,8 @@ class Expander:
                     await self._expand_now2()
 
     async def air(self):
-        stargate = self.ai.structures(unit.STARGATE)
-        if stargate.amount < 1:
+        cyber = self.ai.structures(unit.CYBERNETICSCORE)
+        if cyber.amount < 1:
             return
         nexuses = self.ai.structures(unit.NEXUS).ready
         if nexuses.amount < 2:
