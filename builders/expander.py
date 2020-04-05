@@ -81,8 +81,8 @@ class Expander:
             self.ai.proper_nexus_count = 2
             if self.ai.can_afford(unit.NEXUS) and not self.ai.already_pending(unit.NEXUS):
                 await self._expand_now2()
-        elif 3 > nexuses.amount > 1 and self.ai.units(
-                unit.PROBE).amount >= 34 and len(self.ai.army) > 7:
+        elif 3 > nexuses.amount > 1 and ((self.ai.units(unit.PROBE).amount >= 34 and len(self.ai.army) > 7) or
+                self.ai.minerals > 650):
             if self.ai.proper_nexus_count == 2:
                 self.ai.proper_nexus_count = 3
             if self.ai.can_afford(unit.NEXUS) and not self.ai.already_pending(unit.NEXUS):

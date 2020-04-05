@@ -923,8 +923,8 @@ def test(real_time=0, n=1):
 
 
 def botVsComputer(real_time):
-    maps_set = ["TritonLE","Ephemeron",'DiscoBloodbathLE','Eternal Empire LE','Nightshade LE','Simulacrum LE',
-                'World of Sleepers LE','Zen LE', 'AcropolisLE', 'ThunderbirdLE', 'WintersGateLE']
+    maps_set = ["TritonLE","Ephemeron",#'DiscoBloodbathLE',      #'Eternal Empire LE','Nightshade LE','Simulacrum LE',
+                'World of Sleepers LE', 'AcropolisLE', 'ThunderbirdLE', 'WintersGateLE']
     races = [Race.Protoss, Race.Zerg, Race.Terran]
 
     # computer_builds = [AIBuild.Rush]
@@ -944,4 +944,4 @@ def botVsComputer(real_time):
 
 
 if __name__ == '__main__':
-    test(real_time=0, n=1)
+    test(real_time=1, n=1)

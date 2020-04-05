@@ -36,9 +36,8 @@ class ConditionAttack:
             self.ai.supply_used > 195
 
     def air(self):
-        return upgrade.PROTOSSAIRWEAPONSLEVEL3 in self.ai.state.upgrades and\
-            upgrade.PROTOSSAIRARMORSLEVEL1 in self.ai.state.upgrades and\
-            self.ai.supply_used > 195
+        return upgrade.PROTOSSAIRWEAPONSLEVEL2 in self.ai.state.upgrades and\
+            self.ai.supply_used > 193
 
     def counter_attack(self):
         en = self.ai.enemy_units()
