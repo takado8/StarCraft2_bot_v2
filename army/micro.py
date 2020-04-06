@@ -13,13 +13,14 @@ class Micro:
         self.enemy_base_idx = 0
         expansions = sorted(self.ai.expansion_locations,
                                  key=lambda x: self.ai.enemy_start_locations[0].distance_to(x))
-        self.mineral_lines = [self.ai.mineral_field.closer_than(9, exp).center for exp in expansions][:5]
+        self.mineral_lines = [self.ai.mineral_field.closer_than(9, exp).center.towards(exp, -3) for exp in expansions][:5]
 
         enemy_position = self.ai.enemy_start_locations[0]
-        max_dist = self.ai.game_info.map_size[0] - 5
-        short_dist = max_dist
+        self.max_dist = min(self.ai.game_info.map_size) - 5
+        short_dist = self.max_dist
         min_dist = 999999
-        corners = [Point2((5,5)), Point2((5,max_dist)), Point2((max_dist, 5)), Point2((max_dist,max_dist))]
+        corners = [Point2((5,5)), Point2((5,self.max_dist)), Point2((self.max_dist, 5)),
+                   Point2((self.max_dist,self.max_dist))]
         for position in corners:
             dist = enemy_position.distance_to(position)
             if dist < min_dist:
@@ -35,12 +36,14 @@ class Micro:
                 self.oracle_first_position = Point2((5, 5))
             else:
                 self.oracle_first_position = Point2((short_dist, 5))
-        self.oracle_safe_position = self.oracle_safe_position.towards(self.oracle_first_position,max_dist/2)
+        self.oracle_safe_position = Point2(self.oracle_safe_position.towards(self.oracle_first_position,self.max_dist/2))
         self.oracle_first_position = self.oracle_safe_position
         self.oracle_first_position_visited = False
         self.oracle_safe_position_visited = False
         self.oracle_last_dist = None
-        self.oracle_ready = 0
+        self.oracle_on_harassment = True
+        self.set_new_first_pos = False
+
 
     def __in_grid(self, pos):
         try:
@@ -348,100 +351,103 @@ class Micro:
     async def air(self):
         # Oracle
         oracles = self.ai.units(unit.ORACLE)
-        oracle_ready = True
         for oracle in oracles:
-            abilities = await self.ai.get_available_abilities(oracle)
-            if not ((oracle.energy > 50 or ability.BEHAVIOR_PULSARBEAMOFF in abilities) and oracle.shield_percentage > 0.8):
-                oracle_ready = False
-                break
-
-        for oracle in oracles:
-            abilities = await self.ai.get_available_abilities(oracle)
-            if oracle_ready:
-            # if (oracle.energy > 50 or ability.BEHAVIOR_PULSARBEAMOFF in abilities) and oracle.shield_percentage > 0.8:
+            if self.oracle_on_harassment:
+                abilities = await self.ai.get_available_abilities(oracle)
                 workers = self.ai.enemy_units().filter(lambda x: x.distance_to(oracle) < 15 and x.type_id in
                                                                  self.ai.workers_ids)
                 threats = self.ai.enemy_units().filter(lambda x: x.distance_to(oracle) < 10 and (x.can_attack_air or
-                    x.type_id in [unit.SENTRY, unit.WIDOWMINE, unit.VOIDRAY]))
-                threats.extend(self.ai.enemy_structures().filter(lambda x: x.distance_to(oracle) < 9 and x.can_attack_air and x.is_ready))
-                if threats.amount > 0 and threats.filter(lambda x: x.type_id in self.ai.anti_air_ids).amount > 0 and\
-                    oracle.distance_to(self.mineral_lines[self.enemy_base_idx]) < 17:
-                        print('anti-air detected')
-                        if len(self.mineral_lines) > 1:
-                            self.mineral_lines.remove(self.mineral_lines[self.enemy_base_idx])
-                        self.enemy_base_idx += 1
-                        if self.enemy_base_idx == len(self.mineral_lines):
-                            self.enemy_base_idx = 0
-                if workers.amount < 1:
-                    if oracle.distance_to(self.mineral_lines[self.enemy_base_idx]) < 7:
-                        if self.ai.enemy_structures().filter(lambda x: x.type_id in self.ai.bases_ids).amount < 1:
-                            if len(self.mineral_lines) > 1:
-                                self.mineral_lines.remove(self.mineral_lines[self.enemy_base_idx])
-                            self.enemy_base_idx += 1
-                            if self.enemy_base_idx == len(self.mineral_lines):
-                                self.enemy_base_idx = 0
-                    if not self.oracle_first_position_visited:
-                        dist = oracle.distance_to(self.oracle_first_position)
-                        if dist > 60 or (self.oracle_last_dist and dist < self.oracle_last_dist):
-                            print('going first pos dist: ' + str(dist))
+                                                 x.type_id in [unit.SENTRY,unit.WIDOWMINE,unit.VOIDRAY]))
+                threats.extend(self.ai.enemy_structures().filter(
+                    lambda x: x.distance_to(oracle) < 11 and x.can_attack_air and x.is_ready))
+                if threats.amount > 0 and threats.filter(lambda x: x.type_id in self.ai.anti_air_ids).amount > 0 and \
+                        oracle.distance_to(self.mineral_lines[self.enemy_base_idx]) < 19:
+                    print('anti-air detected')
+                    if len(self.mineral_lines) > 1:
+                        print('removing mineral line: ' + str(self.mineral_lines[self.enemy_base_idx]))
+                        self.mineral_lines.remove(self.mineral_lines[self.enemy_base_idx])
+                    self.enemy_base_idx += 1
+                    if self.enemy_base_idx == len(self.mineral_lines):
+                        self.enemy_base_idx = 0
+                    self.set_new_first_pos = True
+                    # x2 = self.oracle_first_position.x
+                    # y2 = self.oracle_first_position.y
+                    # if y2 == 5:
+                    #     y2 = self.max_dist
+                    # else:
+                    #     y2 = 5
+                    # self.oracle_first_position = Point2((y2,x2))
+                    self.oracle_first_position_visited = False
+                if (oracle.energy > 45 or ability.BEHAVIOR_PULSARBEAMOFF in abilities) and oracle.shield_percentage > 0.8:
+                    if workers.amount < 1:
+                        if oracle.distance_to(self.mineral_lines[self.enemy_base_idx]) < 7:
+                            print('close!')
+                            if self.ai.enemy_structures().filter(lambda x1: x1.type_id in self.ai.bases_ids and
+                                                                 x1.distance_to(oracle) < 10).amount < 1:
+                                print('no base here')
+                                if len(self.mineral_lines) > 1:
+                                    self.mineral_lines.remove(self.mineral_lines[self.enemy_base_idx])
+                                self.enemy_base_idx += 1
+                                if self.enemy_base_idx == len(self.mineral_lines):
+                                    self.enemy_base_idx = 0
+                        if not self.oracle_first_position_visited:
+                            dist = oracle.distance_to(self.oracle_first_position)
+                            if dist > 60 or (self.oracle_last_dist and dist < self.oracle_last_dist):
+                                # print('going first pos dist: ' + str(dist) + '  pos: ' + str(self.oracle_first_position))
+                                self.ai.do(oracle.move(self.oracle_first_position))
+                                self.oracle_last_dist = dist
+                            else:
+                                self.oracle_first_position_visited = True
+                        else:
+                            # print('attack lines')
+                            attack_position = self.mineral_lines[self.enemy_base_idx].towards(self.oracle_first_position, 3)
+                            if oracle.distance_to(attack_position) > 17 and\
+                                    self.mineral_lines[self.enemy_base_idx].distance_to(self.ai.enemy_start_locations[0]) < 7:
+                                self.ai.do(oracle.move(self.mineral_lines[self.enemy_base_idx].towards(self.ai.enemy_start_locations[0], -22)))
+                            else:
+                                self.ai.do(oracle.move(attack_position))
+                    elif workers.amount > 1 and oracle.is_idle:
+                        self.oracle_first_position_visited = False
+                        workers_in_range = workers.closer_than(5,oracle)
+                        if workers_in_range.exists:
+                            workers_in_range = sorted(workers_in_range,key=lambda x1: x1.health + x1.shield)
+                            target3 = workers_in_range[0]
+                        else:
+                            target3 = workers.closest_to(oracle)
+                        if target3.distance_to(oracle) < 5:
+                            if ability.BEHAVIOR_PULSARBEAMON in abilities:
+                                self.ai.do(oracle(ability.BEHAVIOR_PULSARBEAMON))
+                                self.ai.do(oracle.attack(target3, queue=True))
+                            else:
+                                self.ai.do(oracle.attack(target3))
+                        else:
+                            self.ai.do(oracle.move(oracle.position.towards(target3,5)))
+                else:  # go safe
+                    dist = oracle.distance_to(self.oracle_first_position)
+                    # print('want go safe')
+                    if dist > 30 or dist < self.oracle_last_dist:
+                        # print('go safe')
+                        if ability.BEHAVIOR_PULSARBEAMOFF in abilities:
+                            self.ai.do(oracle(ability.BEHAVIOR_PULSARBEAMOFF))
+                            self.ai.do(oracle.move(self.oracle_first_position, queue=True))
+                        else:
                             self.ai.do(oracle.move(self.oracle_first_position))
-                            self.oracle_last_dist = dist
-                        else:
-                            self.oracle_first_position_visited = True
-                    # elif not self.oracle_safe_position_visited:
-                    #     if oracle.distance_to(self.oracle_safe_position) > 7:
-                    #         print(oracle.distance_to(self.oracle_safe_position))
-                    #         self.ai.do(oracle.move(self.oracle_safe_position))
-                    #     else:
-                    #         self.oracle_safe_position_visited = True
-                    else:
-                        attack_position = self.mineral_lines[self.enemy_base_idx].towards(self.ai.enemy_start_locations[0], -1)
-                        if oracle.distance_to(attack_position) > 25:
-                            self.ai.do(oracle.move(self.mineral_lines[self.enemy_base_idx].towards(self.ai.enemy_start_locations[0], -20)))
-                        else:
-                            self.ai.do(oracle.move(attack_position))
-                elif workers.amount > 1 and oracle.is_idle:
-                    self.oracle_first_position_visited = False
-                    workers_in_range = workers.closer_than(5,oracle)
-                    if workers_in_range.exists:
-                        workers_in_range = sorted(workers_in_range,key=lambda x: x.health + x.shield)
-                        target3 = workers_in_range[0]
-                    else:
-                        target3 = workers.closest_to(oracle)
-                    if target3.distance_to(oracle) < 5:
-                        if ability.BEHAVIOR_PULSARBEAMON in abilities:
-                            self.ai.do(oracle(ability.BEHAVIOR_PULSARBEAMON))
-                            self.ai.do(oracle.attack(target3, queue=True))
-                        else:
-                            self.ai.do(oracle.attack(target3))
-                    else:
-                        self.ai.do(oracle.move(oracle.position.towards(target3,5)))
-            else:  # go home
-                dist = oracle.distance_to(self.oracle_first_position)
-                if dist > 50 or dist < self.oracle_last_dist:
-                    print('go safe')
-                    if ability.BEHAVIOR_PULSARBEAMOFF in abilities:
-                        self.ai.do(oracle(ability.BEHAVIOR_PULSARBEAMOFF))
-                        self.ai.do(oracle.move(self.oracle_first_position, queue=True))
-                    else:
-                        self.ai.do(oracle.move(self.oracle_first_position))
-                    self.oracle_last_dist = dist
-                else:
-                    self.oracle_first_position_visited = False
-                # else:
-                #     print('is in safe')
-                #     threats = self.ai.enemy_units().filter(lambda x: x.distance_to(oracle) < 10 and (x.can_attack_air or
-                #                                                 x.type_id in [unit.SENTRY,unit.WIDOWMINE,unit.VOIDRAY]))
-                #     threats.extend(
-                #         self.ai.enemy_structures().filter(lambda x: x.distance_to(oracle) < 8 and x.can_attack_air))
-                #     if threats.amount > 1:
-                #         self.oracle_safe_position = self.oracle_safe_position.towards(self.oracle_first_position, 40)
-                #         self.mineral_lines.remove(self.mineral_lines[self.enemy_base_idx])
-                #         self.enemy_base_idx += 1
-                #         if self.enemy_base_idx == len(self.mineral_lines):
-                #             self.enemy_base_idx = 0
-                #         print('new safe ...')
-
+                        self.oracle_last_dist = dist
+                    else:     # is in safe
+                        if self.set_new_first_pos:
+                            self.set_new_first_pos = False
+                            x2 = self.oracle_first_position.x
+                            y2 = self.oracle_first_position.y
+                            if y2 == 5:
+                                y2 = self.max_dist
+                            else:
+                                y2 = 5
+                            self.oracle_first_position = Point2((y2,x2))
+                        if oracle.health_percentage < 0.15:
+                            self.oracle_on_harassment = False
+                        self.oracle_first_position_visited = False
+            else:       # end of harassment
+                self.ai.do(oracle.move(self.ai.defend_position))
         # Carrier
         for cr in self.ai.army().filter(lambda x: x.type_id in [unit.CARRIER, unit.TEMPEST] and not x.is_attacking):
             threats = self.ai.enemy_units().filter(

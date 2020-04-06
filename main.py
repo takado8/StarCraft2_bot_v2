@@ -83,6 +83,8 @@ class Octopus(sc2.BotAI):
 
     async def on_start(self):
         try:
+
+
             # enemy_info
             print('----------------------- new game ---------------------------------')
             now = datetime.now()

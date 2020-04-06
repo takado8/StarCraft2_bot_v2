@@ -72,7 +72,7 @@ class CarrierMadness(Strategy):
         self._nexus_trainer.probes_standard()
 
     def gate_train(self):
-        self._gate_trainer.zealots()
+        self._gate_trainer.zealots_and_stalker()
 
     def stargate_train(self):
         self._stargate_trainer.carriers()
