@@ -107,3 +107,8 @@ class TwoBaseColossus(Strategy):
 
     async def transformation(self):
         await self._condition_transform.two_base_colossus()
+
+ # ======================================================== Buffs
+
+    async def chronoboost(self):
+        await self._chronobooster.standard()

@@ -153,4 +153,5 @@ class Strategy:
         pass
 
     async def chronoboost(self):
-        raise NotImplementedError
+        # raise NotImplementedError
+        pass

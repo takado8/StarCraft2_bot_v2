@@ -108,3 +108,8 @@ class Dt(Strategy):
 
     async def transformation(self):
         await self._condition_transform.adept_proxy()
+
+    # ======================================================== Buffs
+
+    async def chronoboost(self):
+        await self._chronobooster.standard()

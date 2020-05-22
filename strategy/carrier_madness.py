@@ -38,7 +38,7 @@ class CarrierMadness(Strategy):
         # await self._cybernetics_builder.second()
 
     async def robotics_build(self):
-        await self._robotics_builder.none()
+        await self._robotics_builder.air()
 
     async def robotics_bay_build(self):
         await self._robotics_bay_builder.none()
@@ -78,7 +78,7 @@ class CarrierMadness(Strategy):
         self._stargate_trainer.carriers()
 
     def robotics_train(self):
-        self._robotics_trainer.none()
+        self._robotics_trainer.observer()
 
     async def warpgate_train(self):
         await self._warpgate_trainer.stargate_priority()

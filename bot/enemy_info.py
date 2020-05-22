@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import sys
+from sc2 import Race
 
 
 class EnemyInfo:
@@ -51,10 +52,14 @@ class EnemyInfo:
                     if self.enemy['last_game']['result'] is 1:   # last game won, play the same strategy
                         strategy_chosen = self.enemy['last_game']['strategy']
                     else:    # last game lost
+                        if self.ai.enemy_race == Race.Zerg:
+                            available_strats = ['adept_defend', 'adept_proxy', 'air']
+                        else:
+                            available_strats = ['stalker_proxy', 'air']
                         max_ = -1
                         strategy_chosen = None
                         for strategy in self.enemy['scoreboard']:
-                            if strategy != self.enemy['last_game']['strategy']:
+                            if strategy != self.enemy['last_game']['strategy'] and strategy in available_strats:
                                 win = self.enemy['scoreboard'][strategy]['win']
                                 total = self.enemy['scoreboard'][strategy]['total']
                                 if total == 0:

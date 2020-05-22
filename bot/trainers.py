@@ -317,6 +317,8 @@ class WarpgateTrainer:
                 return
         archons = self.ai.army(unit.ARCHON).amount
         if archons == 0:
+            archons = self.ai.army(unit.IMMORTAL).amount * 0.66
+        if archons == 0:
             archons = 1
         amount = 2 * archons
         if amount > 4:
@@ -483,10 +485,10 @@ class StargateTrainer:
                     self.ai.train(unit.TEMPEST)
                 elif self.ai.can_afford(unit.VOIDRAY) and carrier_amount + tempest_amount > voidray_amount < 3:
                     self.ai.train(unit.VOIDRAY)
-            elif self.ai.units(unit.ORACLE).amount < 1:
-                if self.ai.can_afford(unit.ORACLE):
-                    self.ai.train(unit.ORACLE)
-            elif self.ai.can_afford(unit.VOIDRAY) and self.ai.army(unit.VOIDRAY).amount < 1:
+            # elif self.ai.units(unit.ORACLE).amount < 1:
+            #     if self.ai.can_afford(unit.ORACLE):
+            #         self.ai.train(unit.ORACLE)
+            elif self.ai.can_afford(unit.VOIDRAY) and self.ai.army(unit.VOIDRAY).amount < 2:
                 self.ai.train(unit.VOIDRAY)
 
     def voidray(self):
@@ -501,6 +503,14 @@ class RoboticsTrainer:
 
     def none(self):
         pass
+
+    def observer(self):
+        robotics = self.ai.structures(unit.ROBOTICSFACILITY).ready.idle
+        if self.ai.units(unit.OBSERVER).amount + self.ai.units(unit.OBSERVERSIEGEMODE).amount < 1 and \
+                self.ai.can_afford(unit.OBSERVER):
+            for factory in robotics:
+                self.ai.do(factory.train(unit.OBSERVER))
+                return
 
     def standard(self):
         robotics = self.ai.structures(unit.ROBOTICSFACILITY).ready.idle

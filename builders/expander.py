@@ -88,22 +88,25 @@ class Expander:
             if self.ai.can_afford(unit.NEXUS) and not self.ai.already_pending(unit.NEXUS):
                 await self._expand_now2()
         elif nexuses.amount > 2:
-            totalExcess = 0
-            for location,townhall in self.ai.owned_expansions.items():
-                actual = townhall.assigned_harvesters
-                ideal = townhall.ideal_harvesters
-                excess = actual - ideal
-                totalExcess += excess
-            for g in self.ai.vespene_geyser:
-                actual = g.assigned_harvesters
-                ideal = g.ideal_harvesters
-                excess = actual - ideal
-                totalExcess += excess
-            totalExcess += self.ai.units(unit.PROBE).ready.idle.amount
-            if totalExcess > 2 and not self.ai.already_pending(unit.NEXUS):
-                self.ai.proper_nexus_count = 4
-                if self.ai.can_afford(unit.NEXUS):
-                    await self._expand_now2()
+            if self.ai.minerals > 1000:
+                await self._expand_now2()
+            else:
+                totalExcess = 0
+                for location,townhall in self.ai.owned_expansions.items():
+                    actual = townhall.assigned_harvesters
+                    ideal = townhall.ideal_harvesters
+                    excess = actual - ideal
+                    totalExcess += excess
+                for g in self.ai.vespene_geyser:
+                    actual = g.assigned_harvesters
+                    ideal = g.ideal_harvesters
+                    excess = actual - ideal
+                    totalExcess += excess
+                totalExcess += self.ai.units(unit.PROBE).ready.idle.amount
+                if totalExcess > 2 and not self.ai.already_pending(unit.NEXUS):
+                    self.ai.proper_nexus_count = 4
+                    if self.ai.can_afford(unit.NEXUS):
+                        await self._expand_now2()
 
     async def two_bases(self):
         gates_count = self.ai.structures(unit.GATEWAY).amount

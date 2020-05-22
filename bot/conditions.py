@@ -28,7 +28,7 @@ class ConditionAttack:
         return (not self.ai.first_attack) and self.ai.army(unit.COLOSSUS).amount > 2
 
     def archons(self):
-        return (not self.ai.first_attack) and self.ai.army(unit.ARCHON).amount > 3
+        return (not self.ai.first_attack) and self.ai.army(unit.IMMORTAL).amount > 5
 
     def macro(self):
         return upgrade.PROTOSSGROUNDWEAPONSLEVEL2 in self.ai.state.upgrades and\

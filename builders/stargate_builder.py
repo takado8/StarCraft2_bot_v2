@@ -17,8 +17,7 @@ class StargateBuilder:
         else:
             amount = 1
 
-        if not beacon.exists and stargates.ready.exists and (self.ai.already_pending(unit.ORACLE) or\
-                self.ai.units(unit.ORACLE).exists or self.ai.time > 300):
+        if not beacon.exists and stargates.ready.exists:
             await self.ai.build(unit.FLEETBEACON,near=self.ai.get_proper_pylon())
         elif self.ai.structures(unit.CYBERNETICSCORE).ready.exists \
                 and self.ai.can_afford(unit.STARGATE) and self.ai.already_pending(unit.STARGATE) < 1 and \

@@ -83,8 +83,6 @@ class Octopus(sc2.BotAI):
 
     async def on_start(self):
         try:
-
-
             # enemy_info
             print('----------------------- new game ---------------------------------')
             now = datetime.now()
@@ -96,7 +94,7 @@ class Octopus(sc2.BotAI):
             print('getting enemy info done.')
             if not strategy_name:
                 print('enemy is None. default strat')
-                strategy_name = 'air'
+                strategy_name = 'stalker_proxy'
             print('setting strat: ' + str(strategy_name))
             self.starting_strategy = strategy_name
             await self.set_strategy(strategy_name)
@@ -243,6 +241,7 @@ class Octopus(sc2.BotAI):
                 self.attack = False
                 self.after_first_attack = True
         except Exception as ex:
+            raise ex
             print(ex)
             await self.chat_send('on_step error 8')
         try:
@@ -535,7 +534,12 @@ class Octopus(sc2.BotAI):
                 else:  # flee
                     self.do(probe.move(position))
             else:  # fight or ignore
-                if self.enemy_units().exists:
+                enemy = self.enemy_units()
+                if enemy.exists:
+                    if enemy.amount == 1:
+                        close_units = self.units().closer_than(6, enemy.closest_to(probe))
+                        if not close_units.filter(lambda x: x.shield_percentage < 1).exists:
+                            continue
                     nex = self.structures(unit.NEXUS)
                     if not nex.exists:
                         return
@@ -544,13 +548,13 @@ class Octopus(sc2.BotAI):
                         closest_enemy = enemy_total.closest_to(probe)
                     else:
                         closest_enemy = None
-                    if probe.distance_to(closest_nex) > 7 and \
+                    if probe.distance_to(closest_nex) > 5 and \
                             probe.is_attacking:  # too far away, return
                         self.do(probe.move(closest_nex.position.random_on_distance(5)))
                     else:
                         if probe.shield > 5 and closest_enemy:
                             path = await self._client.query_pathing(probe,closest_enemy.position)
-                            if path and path < 4:  # attack
+                            if path and path < 3:  # attack
                                 self.do(probe.attack(closest_enemy))
 
     def set_game_step(self):
@@ -930,10 +934,10 @@ def botVsComputer(real_time):
     races = [Race.Protoss, Race.Zerg, Race.Terran]
 
     # computer_builds = [AIBuild.Rush]
-    # computer_builds = [AIBuild.Timing]
+    computer_builds = [AIBuild.Timing]
     # computer_builds = [AIBuild.Air]
     # computer_builds = [AIBuild.Power]
-    computer_builds = [AIBuild.Macro]
+    # computer_builds = [AIBuild.Macro]
     build = random.choice(computer_builds)
     # map_index = random.randint(0, 6)
     race_index = random.randint(0, 2)
@@ -946,4 +950,4 @@ def botVsComputer(real_time):
 
 
 if __name__ == '__main__':
-    test(real_time=1, n=1)
+    test(real_time=0, n=1)

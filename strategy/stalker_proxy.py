@@ -105,3 +105,8 @@ class StalkerProxy(Strategy):
 
     async def transformation(self):
         await self._condition_transform.stalker_proxy()
+
+        # ======================================================== Buffs
+
+    async def chronoboost(self):
+        await self._chronobooster.stalker_proxy()

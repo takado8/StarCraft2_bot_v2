@@ -103,3 +103,8 @@ class DefendRush(Strategy):
 
     async def transformation(self):
         await self._condition_transform.adept_defend()
+
+    # ======================================================== Buffs
+
+    async def chronoboost(self):
+        await self._chronobooster.stalker_proxy()

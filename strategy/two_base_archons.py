@@ -21,10 +21,10 @@ class TwoBaseArchons(Strategy):
         await self._forge_builder.none()
 
     async def twilight_build(self):
-        await self._twilight_builder.standard()
+        await self._twilight_builder.none()
 
     async def templar_archives_build(self):
-        await self._templar_archives_builder.standard()
+        await self._templar_archives_builder.none()
 
     async def pylon_first_build(self):
         await self._pylon_builder.first_and_next_standard()
@@ -39,7 +39,7 @@ class TwoBaseArchons(Strategy):
         await self._cybernetics_builder.standard()
 
     async def robotics_build(self):
-        await self._robotics_builder.macro()
+        await self._robotics_builder.double()
 
     async def robotics_bay_build(self):
         pass
@@ -107,3 +107,8 @@ class TwoBaseArchons(Strategy):
 
     async def transformation(self):
         await self._condition_transform.two_base_archons()
+
+ # ======================================================== Buffs
+
+    async def chronoboost(self):
+        await self._chronobooster.standard()
