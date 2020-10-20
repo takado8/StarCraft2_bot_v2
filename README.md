@@ -1,6 +1,8 @@
 # Octopus
 Gaming bot for real time strategy - StarCraft2
 
+![img1](.idea/zAwSN1u.gif)
+
 ## Achievements
  [Starcraft 2 AI Ladder Season 9](https://sc2ai.net/index.php?season=9) - Octopus qualified for the tournament, took 3rd place in group A elimination.
 
