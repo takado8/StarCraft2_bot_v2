@@ -9,7 +9,7 @@ Gaming bot for real time strategy - StarCraft2
  [AI Arena Season 1](https://aiarena.net/seasons/stats/40/octopus_v2-season-1) - Top 4
 
 ## project structure
-![img1](.idea/sc2_bot_v2_project_graph.jpg)
+![img1](.idea/sc2_bot_v2_project_graph_2.jpg)
 
 
  
