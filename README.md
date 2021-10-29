@@ -4,6 +4,7 @@ Gaming bot for real time strategy - StarCraft2
 ![img1](.idea/zAwSN1u.gif)
 
 ## Achievements
+![img2](.idea/sc2tournament.jpg)
 [Watch octopus on EX1A-AL Tournament](https://vod.afreecatv.com/ST/59563399?change_second=16543) - Octopus qualified and took part in the Korean tournament EX1A-AL 
 
  [AI Arena Season 1](https://aiarena.net/competitions/stats/40/octopus_v2-ai-arena-season-1) - Top 4
