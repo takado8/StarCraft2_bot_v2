@@ -8,11 +8,13 @@ Gaming bot for real time strategy - StarCraft2
 
 [Watch octopus on EX1A-AL Tournament](https://vod.afreecatv.com/ST/59563399?change_second=16543) - Octopus took part in the Korean EX1A-AL tournament
 
+![img3](.idea/octopusTop4.png)
+
  [AI Arena Season 1](https://aiarena.net/competitions/stats/40/octopus_v2-ai-arena-season-1) - Top 4
 
-Starcraft 2 AI Ladder Season 9 (page does not exist anymore) - Octopus qualified for the tournament, took 3rd place in group A elimination.
+Starcraft 2 AI Ladder Season 9 (page does not exist anymore) - Octopus qualified for the tournament, took 3rd place in group elimination.
 
-## project structure
+## Project structure
 ![img1](.idea/sc2_bot_v2_project_graph_2.jpg)
 
 
