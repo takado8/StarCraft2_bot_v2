@@ -1,0 +1,1435 @@
+{
+    "Results": [
+        {
+            "Bot1": "Octopus",
+            "Bot2": "Overmind",
+            "Winner": "Octopus",
+            "Map": "Treachery.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 6785,
+            "TimeStamp": "02-05-2019 00-17-16UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "Overmind",
+            "Winner": "Octopus",
+            "Map": "Triton.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 12296,
+            "TimeStamp": "02-05-2019 00-21-54UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "Overmind",
+            "Winner": "Octopus",
+            "Map": "OldSunshine.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 12513,
+            "TimeStamp": "02-05-2019 00-26-30UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "Overmind",
+            "Winner": "Octopus",
+            "Map": "DigitalFrontier.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 6800,
+            "TimeStamp": "02-05-2019 00-28-42UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "Overmind",
+            "Winner": "Octopus",
+            "Map": "Artana.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 8008,
+            "TimeStamp": "02-05-2019 00-31-05UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "Overmind",
+            "Winner": "Octopus",
+            "Map": "CrystalCavern.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 8433,
+            "TimeStamp": "02-05-2019 00-33-06UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "Overmind",
+            "Winner": "Octopus",
+            "Map": "Acropolis.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 7313,
+            "TimeStamp": "02-05-2019 00-35-07UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "Treachery.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 22697,
+            "TimeStamp": "02-05-2019 01-19-41UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Error",
+            "Map": "Artana.SC2Map",
+            "Result": "InitializationError",
+            "GameTime": 0,
+            "TimeStamp": ""
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "ANIbot",
+            "Map": "Acropolis.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 28784,
+            "TimeStamp": "02-05-2019 01-27-01UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "ANIbot",
+            "Map": "Triton.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 21264,
+            "TimeStamp": "02-05-2019 01-31-15UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "CrystalCavern.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 23776,
+            "TimeStamp": "02-05-2019 01-36-17UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "ANIbot",
+            "Map": "DigitalFrontier.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 27656,
+            "TimeStamp": "02-05-2019 01-42-16UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "OldSunshine.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 22184,
+            "TimeStamp": "02-05-2019 01-47-36UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "ANIbot",
+            "Map": "Treachery.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 13328,
+            "TimeStamp": "02-05-2019 01-50-24UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "Overmind",
+            "Winner": "Octopus",
+            "Map": "Acropolis.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 10297,
+            "TimeStamp": "06-05-2019 20-26-08UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "RoachRush",
+            "Winner": "RoachRush",
+            "Map": "Artana.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 7552,
+            "TimeStamp": "06-05-2019 21-02-34UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "RoachRush",
+            "Winner": "RoachRush",
+            "Map": "Artana.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 8000,
+            "TimeStamp": "06-05-2019 21-04-38UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "RoachRush",
+            "Winner": "Error",
+            "Map": "Artana.SC2Map",
+            "Result": "InitializationError",
+            "GameTime": 0,
+            "TimeStamp": ""
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "RoachRush",
+            "Winner": "RoachRush",
+            "Map": "Artana.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 7040,
+            "TimeStamp": "07-05-2019 20-27-07UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ZeusBot",
+            "Winner": "Octopus",
+            "Map": "Bandwidth.SC2Map",
+            "Result": "Player2Crash",
+            "GameTime": 22,
+            "TimeStamp": "14-12-2019 20-58-22UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ZeusBot",
+            "Winner": "Octopus",
+            "Map": "Bandwidth.SC2Map",
+            "Result": "Player2Crash",
+            "GameTime": 8,
+            "TimeStamp": "14-12-2019 21-01-15UTC"
+        },
+        {
+            "Bot1": "AdditionalPylons",
+            "Bot2": "Octopus",
+            "Winner": "Octopus",
+            "Map": "Bandwidth.SC2Map",
+            "Result": "Player1Crash",
+            "GameTime": 16096,
+            "TimeStamp": "19-12-2019 22-37-47UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "Bot_Stardust_II",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9705,
+            "TimeStamp": "05-01-2020 00-43-23UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "Bot_Stardust_II",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9376,
+            "TimeStamp": "05-01-2020 00-45-35UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "Bot_Stardust_II",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 17136,
+            "TimeStamp": "05-01-2020 00-55-36UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "RoachRush",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9152,
+            "TimeStamp": "16-01-2020 01-12-36UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "MicroMachine",
+            "Winner": "MicroMachine",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 6904,
+            "TimeStamp": "16-01-2020 01-52-16UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "MicroMachine",
+            "Winner": "MicroMachine",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 7488,
+            "TimeStamp": "16-01-2020 01-58-23UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "MicroMachine",
+            "Winner": "MicroMachine",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 14682,
+            "TimeStamp": "16-01-2020 03-46-58UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "RoachRush",
+            "Winner": "Error",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "InitializationError",
+            "GameTime": 0,
+            "TimeStamp": ""
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "RoachRush",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 7956,
+            "TimeStamp": "16-01-2020 04-00-50UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "RoachRush",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 8412,
+            "TimeStamp": "16-01-2020 04-05-23UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "OneTrickPonyCore",
+            "Winner": "Error",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "InitializationError",
+            "GameTime": 0,
+            "TimeStamp": ""
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "OneTrickPonyCore",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 11484,
+            "TimeStamp": "16-01-2020 04-56-28UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "OneTrickPonyCore",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 11584,
+            "TimeStamp": "16-01-2020 18-33-01UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "MicroMachine",
+            "Winner": "MicroMachine",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 6612,
+            "TimeStamp": "16-01-2020 18-43-14UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "RoachRush",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 7825,
+            "TimeStamp": "16-01-2020 19-38-23UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player2Crash",
+            "GameTime": 7444,
+            "TimeStamp": "16-01-2020 19-52-40UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player2Crash",
+            "GameTime": 6124,
+            "TimeStamp": "16-01-2020 19-56-27UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player2Crash",
+            "GameTime": 14456,
+            "TimeStamp": "16-01-2020 20-10-14UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "RoachRush",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 7625,
+            "TimeStamp": "16-01-2020 20-42-41UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 32025,
+            "TimeStamp": "16-01-2020 22-06-09UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 19564,
+            "TimeStamp": "16-01-2020 22-34-49UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 20472,
+            "TimeStamp": "17-01-2020 01-23-12UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 19040,
+            "TimeStamp": "25-01-2020 21-59-04UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "OneTrickPonyCore",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 11248,
+            "TimeStamp": "25-01-2020 22-12-18UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "RoachRush",
+            "Winner": "RoachRush",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Crash",
+            "GameTime": 6736,
+            "TimeStamp": "27-01-2020 23-55-46UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "RoachRush",
+            "Winner": "RoachRush",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 6640,
+            "TimeStamp": "28-01-2020 00-00-24UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "RoachRush",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 5649,
+            "TimeStamp": "28-01-2020 23-37-55UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "RoachRush",
+            "Winner": "RoachRush",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 9136,
+            "TimeStamp": "28-01-2020 23-42-04UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "AdditionalPylons",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 7440,
+            "TimeStamp": "28-01-2020 23-45-46UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 4674,
+            "TimeStamp": "28-01-2020 23-47-38UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 8370,
+            "TimeStamp": "28-01-2020 23-52-04UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 11184,
+            "TimeStamp": "28-01-2020 23-56-53UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9488,
+            "TimeStamp": "29-01-2020 00-05-21UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9808,
+            "TimeStamp": "29-01-2020 00-09-55UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 10672,
+            "TimeStamp": "29-01-2020 00-15-31UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 10592,
+            "TimeStamp": "29-01-2020 00-21-56UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 10768,
+            "TimeStamp": "29-01-2020 00-27-46UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 7906,
+            "TimeStamp": "29-01-2020 00-31-39UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 25776,
+            "TimeStamp": "29-01-2020 00-51-51UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 11840,
+            "TimeStamp": "29-01-2020 01-12-57UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "AdditionalPylons",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 7376,
+            "TimeStamp": "29-01-2020 01-49-24UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 1569,
+            "TimeStamp": "29-01-2020 02-06-43UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9248,
+            "TimeStamp": "29-01-2020 02-12-28UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 8960,
+            "TimeStamp": "29-01-2020 02-16-48UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "ANIbot",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 10368,
+            "TimeStamp": "29-01-2020 02-20-11UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 11632,
+            "TimeStamp": "29-01-2020 02-24-56UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 12096,
+            "TimeStamp": "29-01-2020 02-34-47UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 10353,
+            "TimeStamp": "29-01-2020 02-38-34UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9504,
+            "TimeStamp": "29-01-2020 02-41-38UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 10592,
+            "TimeStamp": "29-01-2020 02-45-02UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 21664,
+            "TimeStamp": "29-01-2020 20-38-50UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 8720,
+            "TimeStamp": "29-01-2020 21-08-26UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9312,
+            "TimeStamp": "29-01-2020 21-12-59UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 15165,
+            "TimeStamp": "29-01-2020 21-26-25UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "AdditionalPylons",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 16112,
+            "TimeStamp": "29-01-2020 21-40-09UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 14816,
+            "TimeStamp": "29-01-2020 21-50-29UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 18112,
+            "TimeStamp": "29-01-2020 21-59-13UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 11505,
+            "TimeStamp": "01-02-2020 21-20-19UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9360,
+            "TimeStamp": "01-02-2020 21-34-43UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9828,
+            "TimeStamp": "01-02-2020 21-39-42UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "RoachRush",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 8765,
+            "TimeStamp": "01-02-2020 21-43-25UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9309,
+            "TimeStamp": "02-02-2020 00-25-52UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "ANIbot",
+            "Map": "AcropolisLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 8224,
+            "TimeStamp": "02-02-2020 00-28-28UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9188,
+            "TimeStamp": "03-02-2020 21-05-07UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "ANIbot",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 8228,
+            "TimeStamp": "03-02-2020 21-14-02UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 14993,
+            "TimeStamp": "03-02-2020 21-18-59UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Crash",
+            "GameTime": 20277,
+            "TimeStamp": "03-02-2020 21-26-54UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9920,
+            "TimeStamp": "04-02-2020 18-06-16UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 8985,
+            "TimeStamp": "04-02-2020 18-27-47UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 8909,
+            "TimeStamp": "04-02-2020 18-58-33UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9440,
+            "TimeStamp": "04-02-2020 19-02-35UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 26961,
+            "TimeStamp": "04-02-2020 19-50-26UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 20256,
+            "TimeStamp": "04-02-2020 19-59-36UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "ANIbot",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Crash",
+            "GameTime": 6480,
+            "TimeStamp": "04-02-2020 20-04-36UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 10172,
+            "TimeStamp": "04-02-2020 20-07-58UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 12137,
+            "TimeStamp": "04-02-2020 20-12-24UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9664,
+            "TimeStamp": "04-02-2020 20-16-19UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 16693,
+            "TimeStamp": "04-02-2020 20-22-36UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "ANIbot",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 10660,
+            "TimeStamp": "04-02-2020 20-26-19UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Crash",
+            "GameTime": 16126,
+            "TimeStamp": "04-02-2020 20-32-42UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Crash",
+            "GameTime": 16814,
+            "TimeStamp": "04-02-2020 20-39-27UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "ANIbot",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 12356,
+            "TimeStamp": "04-02-2020 20-43-59UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "ANIbot",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Crash",
+            "GameTime": 0,
+            "TimeStamp": "04-02-2020 20-45-20UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "ANIbot",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 11236,
+            "TimeStamp": "04-02-2020 22-49-06UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 24962,
+            "TimeStamp": "04-02-2020 23-36-14UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "OneTrickPonyCore",
+            "Winner": "OneTrickPonyCore",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Crash",
+            "GameTime": 8396,
+            "TimeStamp": "04-02-2020 23-42-46UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "OneTrickPonyCore",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 10124,
+            "TimeStamp": "04-02-2020 23-47-35UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "OneTrickPonyCore",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 10452,
+            "TimeStamp": "05-02-2020 00-07-18UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Crash",
+            "GameTime": 16950,
+            "TimeStamp": "05-02-2020 00-49-00UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Crash",
+            "GameTime": 16662,
+            "TimeStamp": "05-02-2020 00-55-11UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 13120,
+            "TimeStamp": "06-02-2020 01-00-16UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 10548,
+            "TimeStamp": "06-02-2020 01-05-30UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "AdditionalPylons",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 15808,
+            "TimeStamp": "06-02-2020 01-14-41UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "AdditionalPylons",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 11604,
+            "TimeStamp": "06-02-2020 01-28-24UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 13430,
+            "TimeStamp": "06-02-2020 02-11-25UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 12248,
+            "TimeStamp": "06-02-2020 16-40-10UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 12685,
+            "TimeStamp": "06-02-2020 16-45-25UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "AdditionalPylons",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 21689,
+            "TimeStamp": "06-02-2020 16-53-21UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 12868,
+            "TimeStamp": "06-02-2020 16-58-27UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 21109,
+            "TimeStamp": "06-02-2020 17-11-36UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 13934,
+            "TimeStamp": "06-02-2020 17-34-05UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 10244,
+            "TimeStamp": "07-02-2020 23-20-49UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 14740,
+            "TimeStamp": "08-02-2020 00-34-10UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 14046,
+            "TimeStamp": "08-02-2020 00-48-03UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "OneTrickPonyCore",
+            "Winner": "OneTrickPonyCore",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Crash",
+            "GameTime": 9024,
+            "TimeStamp": "09-02-2020 01-42-59UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9857,
+            "TimeStamp": "09-02-2020 02-08-11UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "ANIbot",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Crash",
+            "GameTime": 9704,
+            "TimeStamp": "09-02-2020 02-12-28UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Crash",
+            "GameTime": 13554,
+            "TimeStamp": "09-02-2020 02-19-22UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 15710,
+            "TimeStamp": "09-02-2020 02-34-13UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "AdditionalPylons",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 16100,
+            "TimeStamp": "09-02-2020 22-36-02UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 28094,
+            "TimeStamp": "09-02-2020 22-47-55UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 24757,
+            "TimeStamp": "09-02-2020 23-52-13UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "ANIbot",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 7008,
+            "TimeStamp": "10-02-2020 00-18-08UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "ANIbot",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 7948,
+            "TimeStamp": "10-02-2020 00-24-54UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "ANIbot",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 10460,
+            "TimeStamp": "10-02-2020 00-28-31UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "OneTrickPonyCore",
+            "Winner": "OneTrickPonyCore",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 10996,
+            "TimeStamp": "10-02-2020 04-14-59UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "OneTrickPonyCore",
+            "Winner": "Octopus",
+            "Map": "ThunderbirdLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 11456,
+            "TimeStamp": "10-02-2020 04-20-51UTC"
+        },
+        {
+            "Bot1": "PerfectSplit",
+            "Bot2": "Octopus",
+            "Winner": "Octopus",
+            "Map": "TritonLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 11513,
+            "TimeStamp": "14-02-2020 20-58-34UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "Chance",
+            "Winner": "Chance",
+            "Map": "WorldofSleepersLE.SC2Map",
+            "Result": "Player1Crash",
+            "GameTime": 0,
+            "TimeStamp": "18-02-2020 11-44-55UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "Chance",
+            "Winner": "Octopus",
+            "Map": "WorldofSleepersLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 14424,
+            "TimeStamp": "18-02-2020 20-02-56UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "WorldofSleepersLE.SC2Map",
+            "Result": "Player2Crash",
+            "GameTime": 5172,
+            "TimeStamp": "18-02-2020 20-05-41UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "ANIbot",
+            "Winner": "Octopus",
+            "Map": "WorldofSleepersLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 12688,
+            "TimeStamp": "19-02-2020 19-42-55UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "Gumbys",
+            "Winner": "Gumbys",
+            "Map": "WorldofSleepersLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 9212,
+            "TimeStamp": "24-02-2020 19-49-42UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "Gumbys",
+            "Winner": "Octopus",
+            "Map": "WorldofSleepersLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 11956,
+            "TimeStamp": "25-02-2020 16-09-30UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus",
+            "Map": "ZenLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 10605,
+            "TimeStamp": "25-02-2020 18-21-34UTC"
+        },
+        {
+            "Bot1": "Octopus",
+            "Bot2": "RoachRush",
+            "Winner": "Octopus",
+            "Map": "ZenLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9953,
+            "TimeStamp": "25-02-2020 18-26-56UTC"
+        },
+        {
+            "Bot1": "Octopus_v2",
+            "Bot2": "PerfectSplit",
+            "Winner": "PerfectSplit",
+            "Map": "TritonLE.SC2Map",
+            "Result": "Player2Win",
+            "GameTime": 14712,
+            "TimeStamp": "10-03-2020 00-56-11UTC"
+        },
+        {
+            "Bot1": "Octopus_v2",
+            "Bot2": "PerfectSplit",
+            "Winner": "Octopus_v2",
+            "Map": "TritonLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 20700,
+            "TimeStamp": "10-03-2020 01-32-32UTC"
+        },
+        {
+            "Bot1": "Octopus_v2",
+            "Bot2": "AdditionalPylons",
+            "Winner": "Octopus_v2",
+            "Map": "TritonLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9576,
+            "TimeStamp": "17-03-2020 02-20-53UTC"
+        },
+        {
+            "Bot1": "Octopus_v2",
+            "Bot2": "PerfectSplit",
+            "Winner": "Octopus_v2",
+            "Map": "TritonLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 10300,
+            "TimeStamp": "18-03-2020 22-46-37UTC"
+        },
+        {
+            "Bot1": "Octopus_v2",
+            "Bot2": "BetterThanNothing",
+            "Winner": "Octopus_v2",
+            "Map": "TritonLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9340,
+            "TimeStamp": "19-03-2020 02-17-46UTC"
+        },
+        {
+            "Bot1": "Octopus_v2",
+            "Bot2": "Gumbys",
+            "Winner": "Octopus_v2",
+            "Map": "TritonLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9984,
+            "TimeStamp": "20-03-2020 20-34-30UTC"
+        },
+        {
+            "Bot1": "Octopus_v2",
+            "Bot2": "RoachRush",
+            "Winner": "Octopus_v2",
+            "Map": "TritonLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 9881,
+            "TimeStamp": "21-03-2020 20-14-39UTC"
+        },
+        {
+            "Bot1": "Octopus_v2",
+            "Bot2": "PerfectSplit",
+            "Winner": "Octopus_v2",
+            "Map": "TritonLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 10216,
+            "TimeStamp": "22-05-2020 17-18-59UTC"
+        },
+        {
+            "Bot1": "Octopus_v2",
+            "Bot2": "PerfectSplit",
+            "Winner": "Octopus_v2",
+            "Map": "TritonLE.SC2Map",
+            "Result": "Player1Win",
+            "GameTime": 10072,
+            "TimeStamp": "22-05-2020 17-24-20UTC"
+        },
+        {
+            "Bot1": "Octopus_v2",
+            "Bot2": "Chance",
+            "Winner": "Error",
+            "Map": "TritonLE.SC2Map",
+            "Result": "InitializationError",
+            "GameTime": 0,
+            "TimeStamp": ""
+        }
+    ]
+}

@@ -6,7 +6,7 @@ from sc2.ids.ability_id import AbilityId as ability
 from sc2.ids.unit_typeid import UnitTypeId as unit
 from sc2.ids.effect_id import EffectId as effect
 from sc2.player import Bot, Computer
-from sc2.ids.buff_id import BuffId as buff
+# from sc2.ids.buff_id import BuffId as buff
 from sc2.ids.upgrade_id import UpgradeId as upgrade
 from sc2.position import Point2, Point3
 from bot.coords import coords as cd
@@ -15,9 +15,17 @@ from typing import Union
 from bot.enemy_info import EnemyInfo
 from strategy import *
 from datetime import datetime
+import cv2
+import numpy as np
+from copy import deepcopy
+from neural.visual import Visual
 
 
 class Octopus(sc2.BotAI):
+    def __init__(self):
+        super().__init__()
+        # self.unit_command_uses_self_do = True
+
     enemy_attack = False
     second_ramp = None
     enemy_main_base_down = False
@@ -80,8 +88,66 @@ class Octopus(sc2.BotAI):
     y2 = []
     enemy_info_displayed = False
 
+    game_map_terrain_rendered = None
+    game_map_units_rendered = None
+
+
+    # def __init__(self):
+    #     super().__init__()
+    #     self.unit_command_uses_self_do = True
+    def render_terrain(self):
+        self.game_map_terrain_rendered = np.zeros((self.game_info.map_size[1],self.game_info.map_size[0],3),np.uint8)
+        print('game map size: {}'.format(self.game_info.map_size))
+        for y in range(self.game_info.map_size[1]):
+            for x in range(self.game_info.map_size[0]):
+                self.game_map_terrain_rendered[y,x] = (200,200,200) if self.in_pathing_grid(Point2((x,y))) else (40,40,40)
+
+        # flip horizontally
+        flipped = cv2.flip(self.game_map_terrain_rendered,0)
+        # resize
+        resized = cv2.resize(flipped,dsize=None,fx=2,fy=2)
+        # show
+        cv2.imshow('Visual',resized)
+        cv2.waitKey(1)
+
+    def get_building_render_radius(self, radius):
+        if radius <= 1.5:
+            return 1
+        elif radius <= 2.5:
+            return 2
+        else:
+            return 3
+
+    def render_units(self):
+        self.game_map_units_rendered = deepcopy(self.game_map_terrain_rendered)
+        # cv2.circle(self.game_map_units_rendered,(0,self.game_info.map_size[1]-1),5,(20,200,10),-1)  # BGR
+
+        for b in self.structures:
+            # print("building footprint_radius:{} format: {}".format(b.footprint_radius, type(b.radius)))
+
+            cv2.circle(self.game_map_units_rendered,(int(b.position[0]),int(b.position[1])),
+                       self.get_building_render_radius(b.radius),(200,120,10),-1)  # BGR
+
+        for b in self.enemy_structures:
+            cv2.circle(self.game_map_units_rendered,(int(b.position[0]),int(b.position[1])),
+                       self.get_building_render_radius(b.radius),(120,10,200),-1)  # BGR
+        for u in self.units:
+            cv2.circle(self.game_map_units_rendered,(int(u.position[0]),int(u.position[1])),1,(20,200,10),-1)  # BGR
+
+        for u in self.enemy_units:
+            cv2.circle(self.game_map_units_rendered,(int(u.position[0]),int(u.position[1])),1,(20,10,240),-1)  # BGR
+        # flip horizontally
+        flipped = cv2.flip(self.game_map_units_rendered,0)
+        # resize
+        resized = cv2.resize(flipped,dsize=None,fx=3,fy=3)
+        # show
+        cv2.imshow('Visual',resized)
+        cv2.waitKey(1)
+
 
     async def on_start(self):
+        # render map terrain
+        self.render_terrain()
         try:
             # enemy_info
             print('----------------------- new game ---------------------------------')
@@ -137,6 +203,7 @@ class Octopus(sc2.BotAI):
             print(ex)
 
     async def on_step(self, iteration):
+        self.render_units()
         try:
             if not self.enemy_info_displayed and iteration > 20:
                 enemy_name = str(self.enemy_info.opponent_id)
@@ -150,6 +217,7 @@ class Octopus(sc2.BotAI):
             self.set_game_step()
         except:
             pass
+        probes_in_army = False
         try:
             self.assign_defend_position()
             self.army = self.units().filter(lambda x: x.type_id in self.army_ids and x.is_ready)
@@ -161,11 +229,13 @@ class Octopus(sc2.BotAI):
                         probes = self.units().filter(lambda x: x.type_id == unit.PROBE)
                         if probes.exists:
                             probes = probes.sorted(lambda x: x.health + x.shield, reverse=True)
-                            middle = int(probes.amount/2)
+                            middle = int(probes.amount/4)
                             if probes[middle].shield_percentage == 1:
                                 probes = probes.sorted_by_distance_to(self.defend_position)
-                            probes = probes[:middle]
+                            probes = probes[:-middle]
                             self.army.extend(probes)
+                            probes_in_army = True
+
             self.army_supply = self.state.score.food_used_army
             # print('army_supply: ' + str(self.army_supply))
             await self.morph_Archons()
@@ -173,82 +243,83 @@ class Octopus(sc2.BotAI):
             print(ex)
             await self.chat_send('on_step error 1')
         try:
-            self.train_workers()
             await self.distribute_workers()
-            await self.morph_gates()
-        except Exception as ex:
-            print(ex)
-            await self.chat_send('on_step error 2')
-        try:
-            await self.pylon_first_build()
-            await self.pylon_next_build()
-
-            await self.proxy()
-        except Exception as ex:
-            print(ex)
-            await self.chat_send('on_step error 3')
-        try:
-            await self.transformation()
-            await self.expand()
-        except Exception as ex:
-            print(ex)
-            await self.chat_send('on_step error 4')
-
-        if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS) or self.minerals > 400:
-            try:
-                await self.twilight_upgrades()
-                await self.templar_archives_upgrades()
-                await self.fleet_beacon_upgrades()
-                self.cybernetics_core_upgrades()
-                self.forge_upgrades()
-                await self.twilight_council_build()
-                await self.dark_shrine_build()
-                await self.templar_archives_build()
-                await self.robotics_build()
-                await self.robotics_bay_build()
-                await self.stargate_build()
-                await self.forge_build()
-            except Exception as ex:
-                print(ex)
-                await self.chat_send('on_step error 5')
-            try:
-                await self.cybernetics_core_build()
-                await self.gate_build()
-                self.build_assimilators()
-            except Exception as ex:
-                print(ex)
-                await self.chat_send('on_step error 6')
-            try:
-                self.robotics_train()
-                self.strategy.stargate_train()
-                self.gate_train()
-                await self.warpgate_train()
-            except Exception as ex:
-                print(ex)
-                await self.chat_send('on_step error 7')
-        try:
-            await self.nexus_buff()
-            # attack
-            if (not self.attack) and (not self.retreat_condition()) and (self.counter_attack_condition() or self.attack_condition()):
-                # await self.chat_send('Attack!  army len: ' + str(len(self.army)))
-                self.first_attack = True
-                self.attack = True
-                self.retreat = False
-            # retreat
-            if self.retreat_condition():
-                # await self.chat_send('Retreat! army len: ' + str(len(self.army)))
-                self.retreat = True
-                self.attack = False
-                self.after_first_attack = True
-        except Exception as ex:
-            raise ex
-            print(ex)
-            await self.chat_send('on_step error 8')
-        try:
             await self.probes_micro()
+            self.train_workers()
         except Exception as ex:
             print(ex)
             await self.chat_send('on step error - probes micro')
+        if not probes_in_army:
+            try:
+                await self.morph_gates()
+            except Exception as ex:
+                print(ex)
+                await self.chat_send('on_step error 2')
+            try:
+                await self.pylon_first_build()
+                await self.pylon_next_build()
+
+                await self.proxy()
+            except Exception as ex:
+                print(ex)
+                await self.chat_send('on_step error 3')
+            try:
+                await self.transformation()
+                await self.expand()
+            except Exception as ex:
+                print(ex)
+                await self.chat_send('on_step error 4')
+
+            if self.structures(unit.NEXUS).amount >= self.proper_nexus_count or self.already_pending(unit.NEXUS) or self.minerals > 400:
+                try:
+                    await self.twilight_upgrades()
+                    await self.templar_archives_upgrades()
+                    await self.fleet_beacon_upgrades()
+                    self.cybernetics_core_upgrades()
+                    self.forge_upgrades()
+                    await self.twilight_council_build()
+                    await self.dark_shrine_build()
+                    await self.templar_archives_build()
+                    await self.robotics_build()
+                    await self.robotics_bay_build()
+                    await self.stargate_build()
+                    await self.forge_build()
+                except Exception as ex:
+                    print(ex)
+                    await self.chat_send('on_step error 5')
+                try:
+                    await self.cybernetics_core_build()
+                    await self.gate_build()
+                    self.build_assimilators()
+                except Exception as ex:
+                    print(ex)
+                    await self.chat_send('on_step error 6')
+                try:
+                    self.robotics_train()
+                    self.strategy.stargate_train()
+                    self.gate_train()
+                    await self.warpgate_train()
+                except Exception as ex:
+                    print(ex)
+                    await self.chat_send('on_step error 7')
+            try:
+                await self.nexus_buff()
+                # attack
+                if (not self.attack) and (not self.retreat_condition()) and (self.counter_attack_condition() or self.attack_condition()):
+                    # await self.chat_send('Attack!  army len: ' + str(len(self.army)))
+                    self.first_attack = True
+                    self.attack = True
+                    self.retreat = False
+                # retreat
+                if self.retreat_condition():
+                    # await self.chat_send('Retreat! army len: ' + str(len(self.army)))
+                    self.retreat = True
+                    self.attack = False
+                    self.after_first_attack = True
+            except Exception as ex:
+                print(ex)
+                await self.chat_send('on_step error 8')
+
         if self.strategy.type == 'rush' or self.strategy.type == 'air':
             try:
                 if self.attack:
@@ -486,6 +557,7 @@ class Octopus(sc2.BotAI):
         await self.strategy.transformation()
 
     def avoid_aoe(self):
+
         aoes_ids = [effect.RAVAGERCORROSIVEBILECP, effect.PSISTORMPERSISTENT, effect.NUKEPERSISTENT,
                     effect.LIBERATORTARGETMORPHDELAYPERSISTENT]
         purification_novas = self.enemy_units(unit.DISRUPTORPHASED)
@@ -508,14 +580,14 @@ class Octopus(sc2.BotAI):
             if enemy_total.exists:
                 enemy = enemy_total.closer_than(4, probe)
             else:
-                return
+                continue
             if enemy_total.amount > 2:
                 nex = self.structures(unit.NEXUS).ready
                 if not nex.exists or not enemy.exists:
                     return
                 nexus = nex.closest_to(probe)
                 closest_enemy = enemy.closest_to(probe)
-                position = nexus.position.towards(closest_enemy,-7)
+                position = nexus.position.towards(closest_enemy,-6)
                 if self.time < 300:  # rush -> fight
                     if (probe.shield_percentage == 0 and await self._client.query_pathing(probe,position)) or\
                             probe.distance_to(nexus) > 9:
@@ -523,14 +595,20 @@ class Octopus(sc2.BotAI):
                         enemy_units = self.enemy_units()
                         if enemy_units.exists:
                             mineral_field = self.mineral_field.closest_to(nexus)
-                            if not enemy_units.closer_than(6, mineral_field):
+                            if not enemy_units.closer_than(4, mineral_field):
                                 self.do(probe.gather(mineral_field))
                             else:
                                 self.do(probe.move(position))
                     else:  # ready to fight
-                        path = await self._client.query_pathing(probe,closest_enemy.position)
-                        if path and path < 11:  # attack if possible
-                            self.do(probe.attack(closest_enemy))
+                        low_hp_enemy = enemy.sorted(lambda x: x.distance_to(probe) * x.health)[0]
+                        path_close = await self._client.query_pathing(probe,closest_enemy.position)
+                        path_low_hp = await self._client.query_pathing(probe,low_hp_enemy.position)
+                        if path_close:
+                            if path_low_hp and path_close + 4 >= path_low_hp:  # attack if possible
+                                self.do(probe.attack(low_hp_enemy))
+                            else:
+                                self.do(probe.attack(path_close))
+
                 else:  # flee
                     self.do(probe.move(position))
             else:  # fight or ignore
@@ -583,7 +661,7 @@ class Octopus(sc2.BotAI):
                             scouts = self.units().closest_n_units(self.enemy_start_locations[0], 3)
         if scouts.exists:
             if len(self.observer_scouting_points) == 0:
-                for exp in self.expansion_locations:
+                for exp in self.expansion_locations_list:
                     if not self.structures().closer_than(7,exp).exists:
                         self.observer_scouting_points.append(exp)
                 self.observer_scouting_points = sorted(self.observer_scouting_points,
@@ -933,8 +1011,8 @@ def botVsComputer(real_time):
                 'World of Sleepers LE', 'AcropolisLE', 'ThunderbirdLE', 'WintersGateLE']
     races = [Race.Protoss, Race.Zerg, Race.Terran]
 
-    # computer_builds = [AIBuild.Rush]
-    computer_builds = [AIBuild.Timing]
+    computer_builds = [AIBuild.Rush]
+    # computer_builds = [AIBuild.Timing]
     # computer_builds = [AIBuild.Air]
     # computer_builds = [AIBuild.Power]
     # computer_builds = [AIBuild.Macro]
@@ -943,11 +1021,11 @@ def botVsComputer(real_time):
     race_index = random.randint(0, 2)
     res = run_game(map_settings=maps.get(random.choice(maps_set)), players=[
         Bot(race=Race.Protoss, ai=Octopus(), name='Octopus'),
-        Computer(race=races[0], difficulty=Difficulty.VeryHard, ai_build=build)
+        Computer(race=races[0], difficulty=Difficulty.CheatMoney, ai_build=build)
     ], realtime=real_time)
     return res, build, races[race_index]
 # CheatMoney   VeryHard
 
 
 if __name__ == '__main__':
-    test(real_time=0, n=1)
+    test(real_time=1, n=1)

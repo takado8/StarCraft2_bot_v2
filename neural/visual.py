@@ -10,6 +10,10 @@ class Visual:
 
     def render(self, units, enemy_units):
         game_data = np.zeros((self.map_size[1],self.map_size[0],3),np.uint8)
+        for y in range(self.map_size[1]):
+            for x in range(self.map_size[0]):
+                # game_data[y,x] = 0 if
+                pass
         for unit in units:
             position = unit.position
             cv2.circle(game_data,(int(position[0]),int(position[1])),1,(50,200,0),-1)  # BGR

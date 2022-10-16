@@ -1,0 +1,10 @@
+{
+    "Bots": {
+        "Octopus": {
+            "Race": "Protoss",
+            "Type": "Python",
+            "RootPath": "./",
+            "FileName": "run.py"
+        }
+    }
+}

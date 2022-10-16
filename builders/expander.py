@@ -149,7 +149,7 @@ class Expander:
         def is_near_to_expansion(t):
             return t.position.distance_to(el) < 5
 
-        for el in self.ai.expansion_locations:
+        for el in self.ai.expansion_locations_list:
             if any(map(is_near_to_expansion,self.ai.townhalls)):
                 # already taken
                 continue

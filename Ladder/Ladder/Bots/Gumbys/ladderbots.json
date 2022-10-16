@@ -1,0 +1,10 @@
+{
+	"Bots": {
+		"Gumbys": {
+			"Race": "Protoss",
+			"Type": "BinaryCpp",
+			"RootPath": "./",
+			"FileName": "Gumbys.exe"
+		}
+	}
+}

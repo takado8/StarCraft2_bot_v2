@@ -1,0 +1,12 @@
+{
+  "Bots": {
+    "BetterThanNothing": {
+      "Race": "Terran",
+      "Type": "BinaryCpp",
+      "RootPath": "./",
+      "FileName": "BetterThanNothing.exe",
+      "Debug": true,
+      "SurrenderPhrase": "gg"
+    }
+  }
+}

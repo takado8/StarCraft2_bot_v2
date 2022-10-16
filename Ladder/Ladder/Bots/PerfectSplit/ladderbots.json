@@ -1,0 +1,11 @@
+{
+  "Bots": {
+    "PerfectSplit": {
+      "Race": "Zerg",
+      "Type": "BinaryCpp",
+      "RootPath": "./",
+      "FileName": "PerfectSplit.exe",
+      "Debug": false
+    }
+  }
+}

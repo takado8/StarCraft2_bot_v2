@@ -1,0 +1,10 @@
+{
+	"Bots": {
+		"WorthlessBot": {
+			"Race": "Zerg",
+			"Type": "Python",
+			"RootPath": "./",
+			"FileName": "run.py"
+		}
+	}
+}
