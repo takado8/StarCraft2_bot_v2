@@ -1,6 +1,9 @@
 # Octopus
 Gaming bot for real time strategy - StarCraft2
 
+[*Checkout new version*](https://github.com/takado8/starcraft2_ai_octopus_v3)
+
+
 ![img1](.idea/zAwSN1u.gif)
 
 ## Achievements
